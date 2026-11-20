@@ -23,7 +23,11 @@ For safety, Claude can't touch your PC from the site: Bash, file reading and fil
 
 ---
 
-## Setup (one time, about 15 minutes)
+## Setup (one time)
+
+**Easy way:** download this repo (Code → Download ZIP), unzip it, open the `server` folder and double-click **INSTALL-WINDOWS.bat** (on a Mac, **INSTALL-MAC.command**). It installs everything, has you sign in to Claude, asks for your password, and starts Forge. After that, just run `start.bat` each time.
+
+**Manual way:**
 
 ### 1. On your PC
 1. Install **Node.js 18+** from nodejs.org.
