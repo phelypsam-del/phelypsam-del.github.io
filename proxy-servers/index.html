@@ -18,6 +18,28 @@
 <body>
 <main>
 <h1>Python Proxy Servers</h1>
+<form id="go" style="display:flex;gap:8px;margin:0 0 12px">
+  <input id="addr" type="text" inputmode="url" autocomplete="off" placeholder="Type a website, e.g. example.com"
+    style="flex:1;min-width:0;padding:12px 14px;border-radius:8px;border:1px solid #2c2a25;background:#1b1a17;color:#ece6d8;font-size:16px">
+  <button style="padding:12px 18px;border:0;border-radius:8px;background:#ff8a2a;color:#121110;font-weight:600;font-size:16px">Go</button>
+</form>
+<p id="status" style="color:#a39c8c;font-size:14px;margin:0 0 32px"></p>
+<script>
+  // Paste your Cloudflare Worker address here, e.g. "https://my-proxy.yourname.workers.dev"
+  const WORKER = "";
+  const status = document.getElementById("status");
+  if (!WORKER) status.textContent = "Web proxy not connected yet — a Cloudflare Worker address needs to be added.";
+  document.getElementById("go").addEventListener("submit", (e) => {
+    e.preventDefault();
+    let u = document.getElementById("addr").value.trim();
+    if (!u) return;
+    if (!/^https?:\/\//i.test(u)) u = "https://" + u;
+    if (!WORKER) { status.textContent = "Web proxy not connected yet."; return; }
+    location.href = WORKER.replace(/\/$/, "") + "/?url=" + encodeURIComponent(u);
+  });
+</script>
+
+<h2>Run your own</h2>
 <p>Two dependency-free forward proxies written with Python's asyncio. Requires Python 3.8+.</p>
 <a class="dl" href="http_proxy.py" download>Download http_proxy.py</a>
 <a class="dl" href="socks5_proxy.py" download>Download socks5_proxy.py</a>
