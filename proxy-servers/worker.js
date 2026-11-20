@@ -1,11 +1,29 @@
 // Cloudflare Worker web proxy.
 // Open:  https://YOUR-WORKER.workers.dev/?url=https://example.com
 // Links, images, scripts and redirects on the page are rewritten to keep going through the proxy.
+//
+// Optional environment variables (Worker settings -> Variables):
+//   ACCESS_TOKEN   if set, requests must include ?token=... (or header X-Proxy-Token) to be served.
+//   ALLOWED_HOSTS  comma-separated domains; if set, only these (and subdomains) may be fetched.
+
+const MAX_BODY = 25 * 1024 * 1024;              // refuse to proxy responses larger than this
+const OK_METHODS = new Set(["GET", "HEAD", "POST"]);
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const self = new URL(request.url);
-    const wrap = (u) => self.origin + "/?url=" + encodeURIComponent(u);
+    const token = self.searchParams.get("token") || request.headers.get("x-proxy-token");
+    const wrap = (u) => {
+      const w = self.origin + "/?url=" + encodeURIComponent(u);
+      return env.ACCESS_TOKEN ? w + "&token=" + encodeURIComponent(token || "") : w;
+    };
+
+    if (env.ACCESS_TOKEN && token !== env.ACCESS_TOKEN) {
+      return new Response("Access denied.", { status: 401 });
+    }
+    if (!OK_METHODS.has(request.method)) {
+      return new Response("Method not allowed.", { status: 405 });
+    }
 
     const raw = self.searchParams.get("url");
     if (!raw) {
@@ -24,9 +42,18 @@ export default {
       return new Response("Only http and https addresses work.", { status: 400 });
     }
 
+    // Host allowlist (optional).
+    if (env.ALLOWED_HOSTS) {
+      const allow = env.ALLOWED_HOSTS.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+      const host = target.hostname.toLowerCase();
+      if (!allow.some((d) => host === d || host.endsWith("." + d))) {
+        return new Response("That site is not on this proxy's allowlist.", { status: 403 });
+      }
+    }
+
     // Build the outgoing request without leaking the visitor's cookies or IP headers.
     const headers = new Headers(request.headers);
-    for (const h of ["host", "cookie", "origin", "cf-connecting-ip", "x-forwarded-for", "x-real-ip"]) {
+    for (const h of ["host", "cookie", "origin", "cf-connecting-ip", "x-forwarded-for", "x-real-ip", "x-proxy-token"]) {
       headers.delete(h);
     }
     headers.set("referer", target.origin + "/");
@@ -38,9 +65,16 @@ export default {
         headers,
         body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
         redirect: "manual",
+        signal: AbortSignal.timeout(20000),
       });
     } catch (e) {
-      return new Response("Couldn't reach that site: " + e.message, { status: 502 });
+      const msg = e.name === "TimeoutError" ? "The site took too long to respond." : "Couldn't reach that site: " + e.message;
+      return new Response(msg, { status: 504 });
+    }
+
+    const len = Number(resp.headers.get("content-length") || 0);
+    if (len && len > MAX_BODY) {
+      return new Response("That response is too large to proxy.", { status: 413 });
     }
 
     const out = new Headers(resp.headers);

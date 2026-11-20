@@ -4,15 +4,13 @@ HTTP/HTTPS forward proxy (stdlib only, asyncio).
 
 - Plain HTTP: forwards the request to the target and streams the response back.
 - HTTPS: handles CONNECT and tunnels encrypted bytes (no decryption).
-- Optional Basic auth and a host allowlist/blocklist.
+- Basic auth, host allowlist/blocklist, idle timeouts, header-size caps.
 
 Usage:
-  python3 http_proxy.py --port 8080
-  python3 http_proxy.py --port 8080 --auth user:pass --block example.com
+  python3 http_proxy.py --port 8080 --auth user:pass --allow example.com
 
 Client:
-  curl -x http://127.0.0.1:8080 https://example.com
-  (or set your browser/OS proxy to 127.0.0.1:8080)
+  curl -x http://user:pass@127.0.0.1:8080 https://example.com
 """
 import argparse
 import asyncio
@@ -22,15 +20,23 @@ from urllib.parse import urlsplit
 
 log = logging.getLogger("http_proxy")
 BUF = 64 * 1024
+MAX_HEADER = 64 * 1024          # refuse absurdly large request headers
+IDLE_TIMEOUT = 300              # drop a tunnel idle this many seconds
 HOP_HEADERS = {
     "proxy-connection", "proxy-authorization", "connection", "keep-alive",
     "te", "trailer", "transfer-encoding", "upgrade",
 }
 
 
-async def pipe(reader, writer):
+async def pipe(reader, writer, idle=IDLE_TIMEOUT):
     try:
-        while data := await reader.read(BUF):
+        while True:
+            try:
+                data = await asyncio.wait_for(reader.read(BUF), idle)
+            except asyncio.TimeoutError:
+                break
+            if not data:
+                break
             writer.write(data)
             await writer.drain()
     except (ConnectionError, asyncio.CancelledError):
@@ -64,9 +70,13 @@ class Proxy:
         peer = cw.get_extra_info("peername")
         try:
             head = await asyncio.wait_for(cr.readuntil(b"\r\n\r\n"), self.timeout)
+        except asyncio.LimitOverrunError:
+            return await self.reply(cw, 431, "Request Header Fields Too Large")
         except Exception:
             cw.close()
             return
+        if len(head) > MAX_HEADER:
+            return await self.reply(cw, 431, "Request Header Fields Too Large")
         lines = head.decode("latin-1").split("\r\n")
         try:
             method, target, version = lines[0].split(" ", 2)
@@ -116,9 +126,11 @@ class Proxy:
         await relay(cr, cw, ur, uw)
 
     async def reply(self, w, code, msg, extra=""):
-        w.write(f"HTTP/1.1 {code} {msg}\r\n{extra}Content-Length: 0\r\nConnection: close\r\n\r\n".encode())
         try:
+            w.write(f"HTTP/1.1 {code} {msg}\r\n{extra}Content-Length: 0\r\nConnection: close\r\n\r\n".encode())
             await w.drain()
+        except ConnectionError:
+            pass
         finally:
             w.close()
 
@@ -132,6 +144,8 @@ async def main():
     p.add_argument("--allow", nargs="*", default=[], help="only allow these domains")
     a = p.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
+    if a.host not in ("127.0.0.1", "::1", "localhost") and not a.auth:
+        log.warning("Listening on %s with no --auth: anyone who reaches this port can use it.", a.host)
     proxy = Proxy(a.auth, a.block, a.allow)
     server = await asyncio.start_server(proxy.handle, a.host, a.port)
     log.info("HTTP proxy on %s:%s", a.host, a.port)
