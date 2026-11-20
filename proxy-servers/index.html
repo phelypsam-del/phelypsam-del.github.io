@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Proxy Servers</title>
+<style>
+  body{margin:0;background:#121110;color:#ece6d8;font:400 16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:720px;margin:0 auto;padding:48px 20px 64px}
+  h1{font-size:15px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#a39c8c;margin:0 0 28px}
+  h2{font-size:18px;margin:32px 0 8px}
+  a{color:#ff8a2a}
+  .dl{display:inline-block;margin:6px 10px 6px 0;padding:10px 16px;border-radius:8px;background:#1b1a17;border:1px solid #2c2a25;text-decoration:none}
+  pre{background:#1b1a17;padding:14px;border-radius:8px;overflow-x:auto;font-size:14px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace}
+</style>
+</head>
+<body>
+<main>
+<h1>Python Proxy Servers</h1>
+<p>Two dependency-free forward proxies written with Python's asyncio. Requires Python 3.8+.</p>
+<a class="dl" href="http_proxy.py" download>Download http_proxy.py</a>
+<a class="dl" href="socks5_proxy.py" download>Download socks5_proxy.py</a>
+
+<h2>HTTP / HTTPS proxy</h2>
+<p>Forwards HTTP requests and tunnels HTTPS (CONNECT) without decrypting it. Optional Basic auth and allow/block lists. Default port 8080.</p>
+<pre><code>python3 http_proxy.py --port 8080 --auth user:pass
+curl -x http://user:pass@127.0.0.1:8080 https://example.com</code></pre>
+
+<h2>SOCKS5 proxy</h2>
+<p>TCP CONNECT with IPv4, IPv6 and domain targets. Optional username/password auth. Default port 1080.</p>
+<pre><code>python3 socks5_proxy.py --port 1080 --auth user:pass
+curl --socks5-hostname user:pass@127.0.0.1:1080 https://example.com</code></pre>
+
+<h2>Options</h2>
+<p><code>--host</code> bind address (default 127.0.0.1; use 0.0.0.0 for remote clients and always set <code>--auth</code>) ·
+<code>--port</code> · <code>--auth user:pass</code> · <code>--block</code> / <code>--allow</code> (HTTP proxy only)</p>
+
+<p><a href="/">← Back to Hammerfall Games</a></p>
+</main>
+</body>
+</html>
