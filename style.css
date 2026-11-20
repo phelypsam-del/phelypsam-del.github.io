@@ -180,3 +180,5 @@ svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 }
 .app.is-empty .topbar{position:absolute;top:0;left:0;right:0}
 .login-card a{color:var(--accent-2)}
+.btn.install{display:block;border:1px solid var(--line);background:var(--card);color:var(--text);text-decoration:none}
+.btn.install:hover{border-color:var(--muted)}
