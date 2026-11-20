@@ -26,7 +26,7 @@
 <p id="status" style="color:#a39c8c;font-size:14px;margin:0 0 32px"></p>
 <script>
   // Paste your Cloudflare Worker address here, e.g. "https://my-proxy.yourname.workers.dev"
-  const WORKER = "";
+  const WORKER = "https://my-proxy.phelypsam.workers.dev";
   const status = document.getElementById("status");
   if (!WORKER) status.textContent = "Web proxy not connected yet — a Cloudflare Worker address needs to be added.";
   document.getElementById("go").addEventListener("submit", (e) => {
