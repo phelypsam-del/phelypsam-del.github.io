@@ -1,83 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hammerfall Games</title>
-<meta name="description" content="Games by Hammerfall Games: Ironclad Duel, Testament of the Star, and more on the way.">
-<meta name="theme-color" content="#121110">
-<style>
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; background:#121110; color:#ece6d8;
-    font:400 16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;
-    display:flex; flex-direction:column; align-items:center;
-  }
-  h1{
-    margin:56px 20px 36px; font-size:15px; font-weight:600;
-    letter-spacing:.32em; text-transform:uppercase; color:#a39c8c; text-align:center;
-  }
-  .grid{
-    width:100%; max-width:760px; padding:0 20px 64px;
-    display:grid; gap:20px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  }
-  .tile{
-    position:relative; display:block; aspect-ratio:1/1; overflow:hidden;
-    border-radius:10px; background:#1b1a17; text-decoration:none; color:#fff;
-    transition:transform .15s ease;
-  }
-  .tile:hover,.tile:focus-visible{transform:scale(1.03)}
-  .tile:focus-visible{outline:2px solid #ff8a2a; outline-offset:3px}
-  .tile img,.tile svg{position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover}
-  .tile img{image-rendering:pixelated}
-  .title{
-    position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:6px; padding:16px; text-align:center;
-    background:rgba(8,7,6,.82); opacity:0; transition:opacity .15s ease;
-  }
-  .title b{font-size:22px; font-weight:700; line-height:1.15}
-  .title small{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#c9c1ae}
-  .tile:hover .title,.tile:focus-visible .title{opacity:1}
-  /* phones and tablets can't hover, so the title sits along the bottom */
-  @media (hover:none){
-    .title{inset:auto 0 0 0; opacity:1; padding:10px 12px; background:rgba(8,7,6,.8)}
-    .title b{font-size:16px}
-  }
-  @media (prefers-reduced-motion:reduce){ .tile,.title{transition:none} }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Forge</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Hammerfall Games</h1>
+<!-- ============ SIGN IN ============ -->
+<section id="login" class="login" hidden>
+  <form id="loginForm" class="login-card" autocomplete="on">
+    <img src="logo.svg" alt="" class="login-logo">
+    <h1>Forge</h1>
+    <p class="muted">Private. Sign in to continue.</p>
+    <input type="text" name="username" autocomplete="username" value="me" hidden>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
+    <details id="serverBox">
+      <summary>Server address</summary>
+      <input id="serverUrl" type="url" placeholder="https://your-tunnel.example.com" spellcheck="false">
+      <small class="muted">Where your PC's Forge server is reachable (your Cloudflare Tunnel URL).</small>
+    </details>
+    <button class="btn primary" type="submit">Sign in</button>
+    <p id="loginError" class="error" role="alert"></p>
+  </form>
+</section>
 
-<!--
-  ADDING A GAME: copy one whole <a class="tile"> block, then change the
-  link (href), the logo (img src) and the title.
--->
-<main class="grid">
+<!-- ============ APP ============ -->
+<div id="app" class="app" hidden>
+  <aside id="sidebar" class="sidebar">
+    <div class="side-top">
+      <div class="brand"><img src="logo.svg" alt=""><span id="brandName">Forge</span></div>
+      <button class="icon-btn" id="collapseBtn" title="Close sidebar" aria-label="Close sidebar">
+        <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+      </button>
+    </div>
+    <button id="newChatBtn" class="new-chat"><span class="plus">+</span> New chat</button>
+    <input id="searchChats" class="search" type="search" placeholder="Search chats">
+    <nav class="chat-list" id="chatList"></nav>
 
-  <a class="tile" href="https://phelypsam-del.github.io/ironclad/">
-    <img src="https://phelypsam-del.github.io/ironclad/icon-192.png" alt="Ironclad Duel logo">
-    <span class="title"><b>Ironclad Duel</b><small>Play now</small></span>
-  </a>
+    <button class="usage-mini" id="usageMini" title="Usage details">
+      <div class="usage-mini-row"><span>Monthly credit</span><span id="miniPct">—</span></div>
+      <div class="bar"><i id="miniBar"></i></div>
+      <div class="usage-mini-row small muted"><span id="miniLeft">—</span><span id="miniToday"></span></div>
+    </button>
+    <button class="side-link" id="logoutBtn">Sign out</button>
+  </aside>
 
-  <!-- No link yet: add href="YOUR-GAME-LINK" to this tile when the game is playable,
-       and swap the <svg> for <img src="your-logo.png" alt="..."> when you have a logo. -->
-  <a class="tile" tabindex="0">
-    <svg viewBox="0 0 64 64" shape-rendering="crispEdges" role="img" aria-label="Testament of the Star logo">
-      <rect width="64" height="64" fill="#07060a"/>
-      <rect x="30" y="8" width="4" height="26" fill="#c21f25"/>
-      <rect x="19" y="19" width="26" height="4" fill="#c21f25"/>
-      <rect x="27" y="16" width="10" height="10" fill="#ff5a4d"/>
-      <polygon points="0,64 10,34 20,64" fill="#150d10"/>
-      <polygon points="14,64 26,40 38,64" fill="#1a0f12"/>
-      <polygon points="30,64 42,36 54,64" fill="#150d10"/>
-      <polygon points="46,64 57,30 68,64" fill="#1a0f12"/>
-    </svg>
-    <span class="title"><b>Testament of the Star</b><small>Coming soon</small></span>
-  </a>
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="openSideBtn" title="Open sidebar" aria-label="Open sidebar">
+        <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+      </button>
+      <div id="chatTitle" class="chat-title"></div>
+      <button class="usage-pill" id="usagePill" title="Usage"><span class="dot"></span><span id="pillText">Usage</span></button>
+    </header>
 
-</main>
+    <div id="scroller" class="scroller">
+      <div id="empty" class="empty">
+        <div class="greet"><img src="logo.svg" alt=""><h2 id="greeting">Hello</h2></div>
+      </div>
+      <div id="messages" class="messages"></div>
+    </div>
 
+    <div class="composer-wrap" id="composerWrap">
+      <form id="composer" class="composer">
+        <textarea id="input" rows="1" placeholder="How can I help you today?" autocomplete="off"></textarea>
+        <div class="composer-bar">
+          <div class="model-picker">
+            <button type="button" id="modelBtn" class="model-btn"><span id="modelLabel">Auto</span><svg viewBox="0 0 20 20"><path d="M6 8l4 4 4-4"/></svg></button>
+            <div id="modelMenu" class="menu" hidden></div>
+          </div>
+          <span id="routeHint" class="route-hint"></span>
+          <button id="sendBtn" class="send" type="submit" aria-label="Send" disabled>
+            <svg class="i-send" viewBox="0 0 20 20"><path d="M10 15V5M5 10l5-5 5 5"/></svg>
+            <svg class="i-stop" viewBox="0 0 20 20"><rect x="6" y="6" width="8" height="8" rx="1.5"/></svg>
+          </button>
+        </div>
+      </form>
+      <p class="fine muted">Runs on your Claude subscription through Claude Code. Claude can make mistakes.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ============ USAGE PANEL ============ -->
+<div id="usagePanel" class="sheet" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head">
+      <h3>Usage</h3>
+      <button class="icon-btn" id="closeUsage" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <div id="usageBody"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="router.js"></script>
+<script src="markdown.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
