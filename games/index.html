@@ -68,7 +68,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
 footer a{color:#cdbfa8}
 #installBtn[hidden]{display:none}
-@media(max-width:560px){.hero{padding:34px 0 20px}.games{grid-template-columns:1fr}}
+@media(max-width:560px){.pill span{display:none}.pill{padding:6px}.hero{padding:34px 0 20px}.games{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -78,6 +78,7 @@ footer a{color:#cdbfa8}
     <div style="display:flex;gap:8px;align-items:center">
       <span class="pill" id="offline" title="Chess Coach is saved on this device and can be played without internet"><i></i><span>Checking offline…</span></span>
       <button class="btn" id="installBtn" hidden>Install app</button>
+      <div id="account"></div>
     </div>
   </div>
 </header>
@@ -146,6 +147,15 @@ if('serviceWorker' in navigator){
 let deferred=null;const ib=document.getElementById('installBtn');
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;ib.hidden=false;});
 ib.onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice;}catch(e){}deferred=null;ib.hidden=true;};
+</script>
+<script type="module">
+import {mountAccount,onAuth,loadPlayer} from './auth.js';
+let chess=null;
+const acct=mountAccount(document.getElementById('account'),()=>chess?[['Chess rating',String(chess.rating??'—')],['Rated chess games',String(chess.games||0)]]:[['Chess rating','Play a rated game']]);
+onAuth(async st=>{
+  if(!st.user){chess=null;return;}
+  try{const d=await loadPlayer();chess=d&&d.chess||null;acct.redraw();}catch(e){}
+});
 </script>
 </body>
 </html>

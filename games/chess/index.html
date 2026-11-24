@@ -77,7 +77,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 .ai{font-size:14px;color:#d9d0c2;background:#221f1b;border-radius:8px;padding:10px 12px;border:1px dashed var(--line)}
 .ai b{color:var(--text)}
 .ai .warn{color:#ffb4a6;display:block;margin-top:4px}
-.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.btns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .btn{background:#35302a;border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:13px;font-weight:600}
 .btn:hover:not(:disabled){background:#433c34}
 .btn:disabled{opacity:.4;cursor:default}
@@ -158,7 +158,9 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 .opt[hidden]{display:none}
 .tog{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}.tog input{width:18px;height:18px;accent-color:var(--accent)}
 .endbot[hidden]{display:none}
-.home{font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:-6px}.home:hover{color:var(--text)}
+.msign{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#221f1b;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:-4px 0 14px;font-size:13px;color:var(--muted)}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:-4px;min-height:36px}
+.home{font-size:13px;color:var(--muted);text-decoration:none}.home:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -176,7 +178,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
     <div class="prow"><div class="who" id="meWho"></div><span class="caps" id="capBot"></span><span class="clock" id="clkBot" hidden></span></div>
   </div>
   <aside class="panel">
-    <a class="home" href="../">← All games</a>
+    <div class="toprow"><a class="home" href="../">← All games</a><div id="account"></div></div>
     <h1>Chess Coach <span id="sideTxt"></span></h1>
     <div class="opening" id="opening"><span class="olab">Opening</span><span id="openTxt">Starting position</span></div>
     <div class="status" id="status"><span class="pip"></span><span id="statusTxt">Your move</span></div>
@@ -184,6 +186,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
     <div id="card"></div>
     <div class="btns">
       <button class="btn" id="flipBtn" title="Flip the board">Flip</button>
+      <button class="btn" id="undoBtn" title="Take back your last move">Undo</button>
       <button class="btn" id="resignBtn" title="Resign this game">Resign</button>
       <button class="btn pri" id="newBtn">New game</button>
     </div>
@@ -197,6 +200,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   <div class="modal wide">
     <h2>New game</h2>
     <p>Pick a time control and an opponent. The coach rates every move you make.</p>
+    <div class="msign"><span>Sign in to keep your rating and record on every device.</span><div id="menuAccount"></div></div>
     <div class="opt"><div class="lab">Mode</div><div class="seg wrap" id="modeSeg"></div></div>
     <div class="opt"><div class="lab">Opponent <span id="myRating" class="myr"></span></div><div class="botgrid" id="botGrid"></div></div>
     <div class="opt" id="flipOpt" hidden><label class="tog"><input type="checkbox" id="autoFlip" checked> Turn the board around after each move</label></div>
@@ -217,8 +221,9 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
     <div class="endbot" id="endBot"></div>
     <div class="sum" id="endSum"></div>
     <div class="rating" id="endRating"></div>
-    <div class="btns" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="btns" style="grid-template-columns:repeat(4,1fr)">
       <button class="btn" id="reviewBtn">View board</button>
+      <button class="btn" id="endUndoBtn">Undo</button>
       <button class="btn" id="rematchBtn">Rematch</button>
       <button class="btn pri" id="againBtn">New game</button>
     </div>
@@ -575,6 +580,11 @@ function avatar(B){
   return`<span class="av"><svg viewBox="0 0 40 40"><defs><linearGradient id="ag${B.id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${B.col}"/><stop offset="1" stop-color="#1d1b18" stop-opacity=".9"/></linearGradient></defs><circle cx="20" cy="20" r="19" fill="url(#ag${B.id})" stroke="#0006"/><text x="20" y="25.5" text-anchor="middle" font-size="${ini.length>1?14:17}" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">${ini}</text></svg></span>`;
 }
 const ME={id:'me',name:'You',col:'#8c8172'};
+let PROFILE=null; // {name, photo} when signed in on the website
+function setProfile(p){PROFILE=p;if(S&&S.mode)render();if($('setup').classList.contains('on'))buildMenu();}
+window.ChessCoach={setProfile,getRating:()=>store.get('rating',800),setRating:r=>{store.set('rating',r);if(S&&S.mode)render();if($('setup').classList.contains('on'))buildMenu();}};
+const meAvatar=()=>PROFILE&&PROFILE.photo?`<span class="av"><img src="${PROFILE.photo}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;display:block"></span>`:avatar(PROFILE&&PROFILE.name?{id:'me',name:PROFILE.name.split(' ')[0],col:'#8c6a3e'}:ME);
+const meName=()=>PROFILE&&PROFILE.name?PROFILE.name.split(' ')[0]:'You';
 const pickLine=(B,k)=>{const a=B.lines[k];return a[Math.floor(Math.random()*a.length)];};
 const store={get(k,d){try{const v=localStorage.getItem('cc_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('cc_'+k,JSON.stringify(v));}catch(e){}}};
 
@@ -617,10 +627,11 @@ function endGame(res){
   const B=S.bot;let score=.5;
   if(res.winner)score=res.winner===S.human?1:0;
   if(!S.local)S.chat={text:pickLine(B,score===1?'lose':score===0?'win':'draw')};
-  if(!S.local&&S.hist.length>=2&&!S.rated){
+  if(!S.local&&!S.takebacks&&S.hist.length>=2&&!S.rated){
     S.rated=true;const r0=store.get('rating',800);
     const exp=1/(1+Math.pow(10,(B.elo-r0)/400));
     const r1=Math.max(100,Math.round(r0+32*(score-exp)));store.set('rating',r1);S.ratingChange=[r0,r1];
+    try{document.dispatchEvent(new CustomEvent('cc:rated',{detail:{rating:r1,before:r0,score,bot:B.id,botElo:B.elo,mode:S.mode.id}}));}catch(e){}
   }else S.ratingChange=null;
   render();setTimeout(()=>showEnd(S.gid),700);
 }
@@ -639,14 +650,14 @@ function startGame(side,botId,modeId){
   if(side==='r')side=Math.random()<.5?'w':'b';
   const B=botById(botId),M=modeById(modeId),local=B.id==='friend';
   if(local)side='w';
-  S={gid:(S.gid||0)+1,human:side,bot:B,mode:M,local,autoFlip:local&&pref.autoFlip!==false,hist:[],keys:[posKey()],over:null,busy:false,flip:side==='b',sel:null,targets:[],
+  S={gid:(S.gid||0)+1,aiTok:0,takebacks:0,human:side,bot:B,mode:M,local,autoFlip:local&&pref.autoFlip!==false,hist:[],keys:[posKey()],over:null,busy:false,flip:side==='b',sel:null,targets:[],
      coach:null,evalW:0,last:null,note:null,legal:[],ponder:null,opening:null,rated:false,
      clock:{w:M.t*1000,b:M.t*1000},clockOn:false,tickLast:performance.now(),
      card:{q:null,title:'Good luck!',text:local?'Two-player game on this device. White moves first — pass the device after each move. The coach rates both players.':side==='w'?'You have White — drag a piece to move it, or click it to see where it can go.':`You have Black. ${B.name} moves first.`},
      chat:local?null:{text:pickLine(B,'hi')}};
   $('setup').classList.remove('on');$('endOv').classList.remove('on');$('promoOv').classList.remove('on');
   resetResign();
-  if(humanTurn())beginHumanTurn();else{S.busy=true;render();const g=S.gid;setTimeout(()=>{if(S.gid===g&&!S.over)aiTurn();},500);}
+  if(humanTurn())beginHumanTurn();else{S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},500);}
 }
 function beginHumanTurn(){
   S.coach=null;S.sel=null;S.targets=[];
@@ -699,7 +710,7 @@ function humanMove(m){
     beginHumanTurn();return;
   }
   if(capVal>=300&&Math.random()<.6)S.chat={text:pickLine(S.bot,'lost'),played:S.chat&&S.chat.played};
-  if(!checkEnd()){S.busy=true;render();const g=S.gid;setTimeout(()=>{if(S.gid===g&&!S.over)aiTurn();},300);}
+  if(!checkEnd()){S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},300);}
 }
 function sqCenter(sq){const el=$('board').children[S.flip?63-sq:sq].getBoundingClientRect();return[el.left+el.width/2,el.top+el.height/2];}
 function animateMove(m,dur0,done){
@@ -734,9 +745,9 @@ function botSearch(B){
   return{move:best,score:raw};
 }
 function aiTurn(){
-  const gid=S.gid;S.busy=true;S.ponder=null;render();
+  const gid=S.gid,tok=S.aiTok;S.busy=true;S.ponder=null;render();
   setTimeout(()=>{
-    if(S.gid!==gid||S.over)return;
+    if(S.gid!==gid||S.aiTok!==tok||S.over)return;
     const t0=performance.now(),B=S.bot;
     const{move,score,book}=botSearch(B);
     const lm=legal(false);const aiW=G.w;const sanStr=san(move,lm);
@@ -756,10 +767,10 @@ function aiTurn(){
     const per=seq.length?remain/seq.length:0;
     let i=0;
     const next=()=>{
-      if(S.gid!==gid||S.over)return;
+      if(S.gid!==gid||S.aiTok!==tok||S.over)return;
       if(i<seq.length){S.ponder={from:seq[i].from,to:seq[i].to};render();i++;setTimeout(next,per);return;}
       animateMove(move,anim,()=>{
-        if(S.gid!==gid||S.over)return;
+        if(S.gid!==gid||S.aiTok!==tok||S.over)return;
         doMove(move,sanStr,{ai:true});
         S.evalW=aiW?score:-score;
         let say=null;
@@ -799,6 +810,32 @@ setInterval(()=>{
   }
   renderClocks();
 },100);
+/* ---- undo (takeback) ---- */
+function canUndo(){
+  if(!S.human||!S.hist.length)return false;
+  return S.local?true:S.hist.some(h=>h.q);
+}
+function undo(){
+  if(!canUndo())return;
+  // stop the bot if it's thinking or mid-move
+  S.aiTok=(S.aiTok||0)+1;S.busy=false;S.ponder=null;S.dragFrom=null;
+  document.querySelectorAll('.pc.ghost').forEach(g=>g.remove());D=null;document.body.classList.remove('dragging');
+  $('promoOv').classList.remove('on');$('endOv').classList.remove('on');
+  const wasOver=!!S.over;S.over=null;
+  const popOne=()=>{const h=S.hist.pop();unmake(h.m);S.keys.pop();return h;};
+  if(S.local){popOne();S.human=G.w?'w':'b';if(S.autoFlip)S.flip=S.human==='b';}
+  else{while(S.hist.length){const h=popOne();if(h.q)break;}S.takebacks++;}
+  S.last=S.hist.length?S.hist[S.hist.length-1].m:null;
+  S.opening=findOpening(gameSans());
+  if(S.hist.length<2)S.clockOn=false;
+  S.tickLast=performance.now();
+  S.card={q:null,title:'Move taken back',text:S.local?`${sideName(G.w?'w':'b')} to move again.`:
+    (S.rated?'Try a different idea. (This game was already rated.)':'Try a different idea. Takebacks mean this game won\'t count toward your rating.')};
+  if(!S.local&&S.chat)S.chat={text:wasOver?'Back for another look? Sure.':'Changed your mind? Go ahead.'};
+  resetResign();
+  beginHumanTurn();
+}
+$('undoBtn').onclick=undo;$('endUndoBtn').onclick=undo;
 /* ---- resign (two-step confirm) ---- */
 let resignTimer=null;
 function resetResign(){clearTimeout(resignTimer);const b=$('resignBtn');b.textContent='Resign';b.classList.remove('warn');}
@@ -918,7 +955,7 @@ function render(){
   // player rows
   const B=S.bot||BOTS[3],rating=store.get('rating',800);
   const who=side=>S.local?`${avatar(side==='w'?PW:PB)}<span>${sideName(side)}${(G.w?'w':'b')===side&&!S.over?' <span class="elo">to move</span>':''}</span>`
-    :side===S.human?`${avatar(ME)}<span>You <span class="elo">${rating}</span></span>`:`${avatar(B)}<span>${B.name} <span class="elo">${B.elo}</span></span>`;
+    :side===(S.human||'w')?`${meAvatar()}<span>${meName()} <span class="elo">${rating}</span></span>`:`${avatar(B)}<span>${B.name} <span class="elo">${B.elo}</span></span>`;
   $('oppWho').innerHTML=who(topSide());$('meWho').innerHTML=who(bottomSide());
   // captured
   const capW=[],capB=[];for(const h of S.hist)if(h.m.cap)(isW(h.m.cap)?capW:capB).push(up(h.m.cap));
@@ -965,6 +1002,7 @@ function render(){
   }
   mv.innerHTML=mh||'<div style="padding:6px 12px;color:var(--muted)">No moves yet</div>';mv.scrollTop=mv.scrollHeight;
   $('resignBtn').disabled=!S.human||!!S.over;
+  $('undoBtn').disabled=!canUndo();
   renderClocks();
 }
 function cell(h){return(h.q?`<i class="qd" style="background:${Q[h.q].col}" title="${Q[h.q].label}"></i>`:'')+h.san;}
@@ -1002,7 +1040,7 @@ function showEnd(gid){
   $('endSum').innerHTML=`<div><b>${hm.length?acc+'%':'—'}</b>accuracy</div><div><b style="color:${Q.best.col}">${cnt('best')+cnt('excellent')+cnt('book')}</b>book / best</div><div><b style="color:${Q.good.col}">${cnt('good')}</b>good</div>
   <div><b style="color:${Q.inacc.col}">${cnt('inacc')}</b>inaccuracies</div><div><b style="color:${Q.mistake.col}">${cnt('mistake')}</b>mistakes</div><div><b style="color:${Q.blunder.col}">${cnt('blunder')}</b>blunders</div>`;
   const rc=S.ratingChange;
-  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:'<span style="color:var(--muted)">Game too short to be rated.</span>';
+  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.takebacks?'Takebacks were used, so this game isn\'t rated.':'Game too short to be rated.'}</span>`;
   $('endOv').classList.add('on');
 }
 /* ---- new-game menu ---- */
@@ -1037,6 +1075,31 @@ resetPos();S={gid:0,human:null,bot:botById(pref.bot),mode:modeById('casual'),his
   card:{q:null,title:'Welcome',text:'Pick a mode and an opponent to begin.'},chat:null};
 render();openMenu();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(()=>{}));
+</script>
+<script type="module">
+// Google sign-in: your rating and game record follow your Google account across devices.
+import {mountAccount,onAuth,loadPlayer,savePlayer,recordChessGame,state} from '../auth.js';
+const CC=window.ChessCoach;let chess=null;
+const rows=()=>[['Chess rating',String(CC.getRating())],['Rated games',String(chess&&chess.games||0)],['Wins · Losses · Draws',chess?`${chess.wins||0} · ${chess.losses||0} · ${chess.draws||0}`:'0 · 0 · 0']];
+const accts=[mountAccount(document.getElementById('account'),rows),mountAccount(document.getElementById('menuAccount'),rows)];
+const acct={redraw:()=>accts.forEach(a=>a.redraw())};
+onAuth(async st=>{
+  if(!st.user){CC.setProfile(null);chess=null;return;}
+  CC.setProfile({name:st.user.name,photo:st.user.photo});
+  try{
+    const d=await loadPlayer();chess=d&&d.chess||null;
+    if(chess&&typeof chess.rating==='number')CC.setRating(chess.rating);
+    else{chess={rating:CC.getRating(),games:0,wins:0,losses:0,draws:0};await savePlayer({chess});}
+    acct.redraw();
+  }catch(e){console.warn('Could not load saved chess data',e);}
+});
+document.addEventListener('cc:rated',async e=>{
+  if(!state.user)return;
+  const{rating,score}=e.detail;
+  if(chess){chess.rating=rating;chess.games=(chess.games||0)+1;if(score===1)chess.wins=(chess.wins||0)+1;else if(score===0)chess.losses=(chess.losses||0)+1;else chess.draws=(chess.draws||0)+1;}
+  try{await recordChessGame({rating,score});}catch(err){console.warn('Could not save game',err);}
+  acct.redraw();
+});
 </script>
 </body>
 </html>
