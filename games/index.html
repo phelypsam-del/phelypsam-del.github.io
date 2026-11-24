@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hammerfall Games</title>
+<meta name="description" content="Free browser games by Hammerfall Games. Chess Coach and Ironclad Duel, playable right in your browser.">
+<meta name="theme-color" content="#15120e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#15120e;--card:#211c16;--card2:#2a241c;--line:#3a3127;--text:#f1e9dc;--muted:#a99c88;--gold:#e9b949;--gold2:#b9842a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:
+  radial-gradient(1200px 600px at 50% -200px,#3a2c1a 0%,transparent 70%),
+  radial-gradient(800px 500px at 100% 100%,#22190f 0%,transparent 70%),var(--bg);
+  color:var(--text);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{padding:34px 0 10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:44px;height:44px;border-radius:10px}
+.brand span{font-family:Cinzel,Georgia,serif;font-weight:800;font-size:22px;letter-spacing:1.5px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:30px;padding:5px 12px;background:#1b1712}
+.pill i{width:8px;height:8px;border-radius:50%;background:#6b6152}
+.pill.on i{background:#4fd18b;box-shadow:0 0 8px #4fd18b}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 15px Inter,system-ui,sans-serif;text-decoration:none;border-radius:10px;padding:11px 18px;border:1px solid var(--line);background:#2d261e;color:var(--text);cursor:pointer;transition:transform .12s,background .15s}
+.btn:hover{background:#3a3126;transform:translateY(-1px)}
+.btn.gold{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#1d1408;border-color:transparent}
+.btn.gold:hover{filter:brightness(1.07)}
+.hero{padding:56px 0 34px;text-align:center}
+.hero h1{font-family:Cinzel,Georgia,serif;font-weight:800;font-size:clamp(34px,6vw,62px);line-height:1.05;margin:0 0 14px;letter-spacing:1px;
+  background:linear-gradient(180deg,#fff3d6,#e9b949 70%,#b9842a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:18px;max-width:560px;margin:0 auto}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;padding:20px 0 50px}
+.game{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 50px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s}
+.game:hover{transform:translateY(-3px);box-shadow:0 26px 60px rgba(0,0,0,.5)}
+.shot{position:relative;aspect-ratio:16/10;background:#0e0c09;overflow:hidden;display:block}
+.shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.game:hover .shot img{transform:scale(1.03)}
+.shot .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,transparent 40%,rgba(10,8,5,.75));opacity:0;transition:opacity .2s}
+.game:hover .shot .play{opacity:1}
+.shot .play b{background:rgba(20,16,10,.8);border:1px solid #fff3;border-radius:40px;padding:10px 20px;font-weight:600}
+.body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
+.head{display:flex;align-items:center;gap:12px}
+.head img{width:46px;height:46px;border-radius:11px;flex:none}
+.head h2{margin:0;font-size:22px;line-height:1.15}
+.head small{display:block;color:var(--muted);font-size:13px;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;font-weight:600;color:#d9cdb9;background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+.tags span.ok{color:#9be6bd;border-color:#2f5a43;background:#1b2a21}
+.body p{margin:0;color:#cfc4b2;font-size:15px}
+.feat{margin:0;padding:0;list-style:none;display:grid;gap:5px;font-size:14px;color:#cfc4b2}
+.feat li{padding-left:20px;position:relative}
+.feat li::before{content:"";position:absolute;left:4px;top:.62em;width:7px;height:7px;border-radius:2px;background:var(--gold);transform:rotate(45deg)}
+.actions{display:flex;gap:8px;margin-top:auto;padding-top:6px}
+.actions .btn{flex:1}
+.soon{border-style:dashed;background:transparent;box-shadow:none;align-items:center;justify-content:center;text-align:center;padding:30px;color:var(--muted);min-height:220px}
+.soon:hover{transform:none;box-shadow:none}
+.soon b{display:block;font-family:Cinzel,Georgia,serif;color:var(--text);font-size:20px;margin-bottom:6px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
+footer a{color:#cdbfa8}
+#installBtn[hidden]{display:none}
+@media(max-width:560px){.hero{padding:34px 0 20px}.games{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <a class="brand" href="./"><img src="icon-192.png" alt=""><span>HAMMERFALL</span></a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="pill" id="offline" title="Chess Coach is saved on this device and can be played without internet"><i></i><span>Checking offline…</span></span>
+      <button class="btn" id="installBtn" hidden>Install app</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Hammerfall Games</h1>
+    <p>Free games you can play right in your browser. No downloads, no accounts.</p>
+  </section>
+
+  <section class="games">
+    <article class="game">
+      <a class="shot" href="chess/"><img src="chess/preview.jpg" alt="Chess Coach mid-game, with the coach panel showing the Italian Game opening"><span class="play"><b>▶ Play now</b></span></a>
+      <div class="body">
+        <div class="head"><img src="chess/icon-192.png" alt=""><h2>Chess Coach<small>Strategy · 1–2 players</small></h2></div>
+        <div class="tags"><span>Strategy</span><span>vs Computer</span><span>2 players, 1 device</span><span class="ok">Works offline</span></div>
+        <p>Classic chess with a coach that rates every move you make and names the opening you're playing.</p>
+        <ul class="feat">
+          <li>8 computer opponents from 400 to 2500 Elo, each with their own style</li>
+          <li>Pass-and-play against a friend, with no internet needed</li>
+          <li>Bullet, Blitz and Rapid clocks, plus a rating that tracks your progress</li>
+        </ul>
+        <div class="actions"><a class="btn gold" href="chess/">Play Chess</a></div>
+      </div>
+    </article>
+
+    <article class="game">
+      <a class="shot" href="/ironclad/play.html"><img src="/ironclad/trailer-poster.jpg" alt="Ironclad Duel trailer poster"><span class="play"><b>▶ Play now</b></span></a>
+      <div class="body">
+        <div class="head"><img src="/ironclad/icon-192.png" alt=""><h2>Ironclad Duel<small>Action · Pixel art</small></h2></div>
+        <div class="tags"><span>Action</span><span>Sword fighting</span><span>Pixel art</span></div>
+        <p>A pixel-art knight fighting game. Swing your sword with the mouse, break armour, and fight your way across medieval Europe.</p>
+        <ul class="feat">
+          <li>Mouse-controlled sword swings</li>
+          <li>Armour that breaks as you fight</li>
+          <li>Battles across medieval Europe</li>
+        </ul>
+        <div class="actions"><a class="btn gold" href="/ironclad/play.html">Play Ironclad</a><a class="btn" href="/ironclad/">Trailer &amp; info</a></div>
+      </div>
+    </article>
+
+    <article class="game soon">
+      <div><b>More games coming</b>New Hammerfall games will show up here.</div>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> Hammerfall Games</span>
+    <span>Chess pieces: “cburnett” by <a href="https://en.wikipedia.org/wiki/User:Cburnett" target="_blank" rel="noopener">Colin M.L. Burnett</a>, <a href="https://www.gnu.org/licenses/gpl-2.0.txt" target="_blank" rel="noopener">GPLv2+</a></span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+// offline support
+const pill=document.getElementById('offline'),pt=pill.querySelector('span');
+function setOffline(ok){pill.classList.toggle('on',ok);pt.textContent=ok?'Chess ready offline':'Online only';}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>
+    caches.match('chess/index.html').then(r=>setOffline(!!r))).catch(()=>setOffline(false));
+  navigator.serviceWorker.addEventListener('message',e=>{if(e.data==='cached')setOffline(true);});
+}else setOffline(false);
+// install prompt
+let deferred=null;const ib=document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;ib.hidden=false;});
+ib.onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice;}catch(e){}deferred=null;ib.hidden=true;};
+</script>
+</body>
+</html>
