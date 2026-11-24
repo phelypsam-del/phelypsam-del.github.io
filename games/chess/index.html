@@ -244,6 +244,12 @@ body.psy-enter #board{animation:psymagic 1.2s ease-out}
 .psn i{position:absolute;right:3%;top:1%;font-style:normal;font-size:calc(var(--bs)/34);filter:drop-shadow(0 0 3px #2bff5a)}
 .sq.poison .pc{filter:drop-shadow(0 0 5px #4dff6a) drop-shadow(0 0 2px #1a8f2c)}
 @keyframes psnPulse{50%{box-shadow:inset 0 0 0 3px rgba(90,255,110,.3);opacity:.75}}
+.sq.pwave .pc{animation:psnWave 2.6s ease-out both;animation-delay:var(--pwd,0s)}
+@keyframes psnWave{0%{filter:none}18%{filter:drop-shadow(0 0 10px #4dff6a) drop-shadow(0 0 4px #1aff3c) sepia(1) hue-rotate(60deg) saturate(4)}55%{filter:drop-shadow(0 0 8px #4dff6a) drop-shadow(0 0 3px #1aff3c) sepia(1) hue-rotate(60deg) saturate(3)}100%{filter:none}}
+.psnmsg{position:fixed;transform:translate(-50%,-50%);z-index:60;pointer-events:none;white-space:nowrap;max-width:92vw;
+  font:700 clamp(15px,4.2vw,22px)/1.2 Georgia,serif;color:#d8ffd9;background:rgba(10,30,14,.82);border:1px solid #3fd65a;border-radius:12px;padding:12px 20px;
+  box-shadow:0 0 30px rgba(70,255,100,.5);text-shadow:0 0 8px #2bff5a;animation:psnMsg 3.1s ease forwards}
+@keyframes psnMsg{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}20%{transform:translate(-50%,-50%) scale(1)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-65%)}}
 .sq.pnew .psn{animation:psnNew 1.3s ease-out}
 @keyframes psnNew{0%{background:radial-gradient(circle,#7dff8c 0%,rgba(60,255,90,.6) 60%,transparent 100%);transform:scale(1.6);opacity:0}30%{opacity:1}100%{transform:none}}
 /* Traitor: medieval world */
@@ -914,7 +920,7 @@ const SPECIALS=[
   lines:{scared:['The crystal ball is… cloudy.','This was not in the vision!','The stars are turning against me…'],confident:['Just as the crystal foretold.','I saw this coming three moves ago.','Your future looks… grim.'],hi:['I already know how this ends. Do you?','Welcome. The crystal ball has been expecting you.'],cap:['Foreseen.','The spirits wanted that piece.'],lost:['…I knew that would happen. Obviously.','A small sacrifice to the stars.'],check:['Check. I saw it in the orb.'],win:['As foretold. Come back when the stars favour you.'],lose:['Impossible… the vision was wrong!'],draw:['The future was… unclear.'],
    reset:['NOT SO FAST! ✨ The stars rewind!','No, no — I refuse this future! Let\'s begin again…'],fog:['Let\'s see you play when you can\'t tell whose pieces are whose! 🟣','Behold — the purple haze! Which pieces are yours now?']}},
  {id:'traitor',name:'Traitor',elo:1200,special:true,traitor:true,col:'#8e2f2a',tag:'Someone in your army is working for him',depth:2,noise:55,rand:0,book:.7,think:[1000,2200],
-  lines:{scared:['This wasn\'t the plan…','My spy has failed me!','The crown slips from my grasp…'],confident:['Your army rots from within.','I can smell the poison from here.','Every kingdom falls from the inside.'],hi:['One of your pieces already serves me. Guess which. …Oh wait, it glows.','Shall we begin? Mind your poisoned friend.'],cap:['One less loyal soldier.','Into the dungeon with you.'],lost:['A pawn in my game. Nothing more.','Hm. I have others.'],check:['Check. Your guards are asleep.'],win:['The poison always finds its mark.','Your kingdom falls. As planned.'],lose:['Betrayed… by my own plan!'],draw:['A truce. For now.'],
+  lines:{scared:['This wasn\'t the plan…','My spy has failed me!','The crown slips from my grasp…'],confident:['Your army rots from within.','I can smell the poison from here.','Every kingdom falls from the inside.'],hi:['One of your pieces already serves me. Guess which.','Shall we begin? Mind your poisoned friend.'],cap:['One less loyal soldier.','Into the dungeon with you.'],lost:['A pawn in my game. Nothing more.','Hm. I have others.'],check:['Check. Your guards are asleep.'],win:['The poison always finds its mark.','Your kingdom falls. As planned.'],lose:['Betrayed… by my own plan!'],draw:['A truce. For now.'],
    spread:['The poison spreads…','You can\'t wash it off that easily.','Ha! It just found a new host.'],poison:['Got it! Your poisoned piece is MINE. 🗡️','The traitor is unmasked — and so is your defeat.']}}
 ];
 const FRIEND={id:'friend',name:'Friend',elo:null,col:'#8a9a5b',tag:'Two players, one device — no internet needed',lines:{hi:[''],cap:[''],lost:[''],check:[''],win:[''],lose:[''],draw:['']}};
@@ -1057,7 +1063,15 @@ function spaceFrame(t){
 function ownPieces(except){const a=[];for(let i=0;i<64;i++){const p=G.b[i];if(p&&isW(p)===humanW()&&up(p)!=='K'&&i!==except)a.push(i);}return a;}
 function traitorStart(){
   const own=ownPieces(-1);S.poison=own[Math.floor(Math.random()*own.length)];S.poisonTaken=false;S.poisonSpread=null;
-  S.card={q:null,title:'☠️ One of your pieces is poisoned!',text:`Your <b>${pieceName(G.b[S.poison])}</b> glowing green is the traitor's spy. If the Traitor captures it, <b>you lose</b>. If it captures something, the poison jumps to another of your pieces. Your king can never be poisoned.`};
+  S.card={q:null,title:'☠️ One of your pieces is poisoned!',text:'The Traitor has secretly poisoned one of your pieces — but you don\'t know which. If he captures it, <b>you lose</b>. If it captures something, the poison secretly jumps to another of your pieces. Your king can never be poisoned.'};
+  const g=S.gid;setTimeout(()=>{if(S.gid===g)poisonWave('☠️ One of your pieces has been poisoned…');},700);
+}
+function poisonWave(msg){
+  S.pwave=performance.now();render();
+  const b=$('board').getBoundingClientRect(),t=document.createElement('div');
+  t.className='psnmsg';t.innerHTML=msg;t.style.left=b.left+b.width/2+'px';t.style.top=b.top+b.height/2+'px';
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
+  const g=S.gid;setTimeout(()=>{if(S.gid===g&&S.mode)render();},2650);
 }
 function poisonAfter(m,side,pb){
   if(side===S.human){
@@ -1213,7 +1227,7 @@ function humanMove(m){
   if(m.castle)extras.push('Castling keeps your king safe.');
   if(m.promo)extras.push(`Promoted to a ${pieceName(m.promo)}!`);
   if(inCheck(G.w))extras.push('Check!');
-  if(S.poisonSpread){const ps=S.poisonSpread;S.poisonSpread=null;extras.push(`☠️ Your poisoned piece captured, so the poison jumped to your <b>${pieceName(G.b[ps.to])}</b> on <b>${'abcdefgh'[ps.to&7]}${8-(ps.to>>3)}</b>!`);S.chat={text:pickLine(S.bot,'spread'),played:S.chat&&S.chat.played};poisonFx(ps.to,'spread');}
+  if(S.poisonSpread){const ps=S.poisonSpread;S.poisonSpread=null;extras.push('☠️ That was your poisoned piece! It captured, so the poison has secretly moved to another of your pieces.');S.chat={text:pickLine(S.bot,'spread'),played:S.chat&&S.chat.played};S.pendingWave='☠️ The poison has spread to another piece!';}
   S.card={q,title:(S.local?sideName(mover)+': ':'')+sanStr,text:text+(extras.length?' '+extras.join(' '):'')};
   if(S.local){
     S.human=G.w?'w':'b';
@@ -1222,7 +1236,8 @@ function humanMove(m){
   }
   if(S.net){netSend({t:'move',u:uciOf(m),ms:S.mode.t?S.clock[mover]:null});if(!checkEnd()){S.busy=true;render();}return;}
   if(capVal>=300&&Math.random()<.6)S.chat={text:pickLine(S.bot,'lost'),played:S.chat&&S.chat.played};
-  if(!checkEnd()){S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},300);}
+  if(S.pendingWave){const w=S.pendingWave;S.pendingWave=null;setTimeout(()=>poisonWave(w),60);}
+  if(!checkEnd()){S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},S.bot.traitor&&S.pwave&&performance.now()-S.pwave<3000?1800:300);}
 }
 function sqCenter(sq){const el=$('board').children[S.flip?63-sq:sq].getBoundingClientRect();return[el.left+el.width/2,el.top+el.height/2];}
 function animateMove(m,dur0,done){
@@ -1469,7 +1484,8 @@ function render(){
     if(S.last&&(S.last.from===sq||S.last.to===sq))cls+=' last';
     if(S.sel===sq)cls+=' sel';
     if(sq===chk)cls+=' check';
-    if(S.poison===sq&&S.bot&&S.bot.traitor)cls+=' poison'+(S.pfx&&S.pfx.sq===sq&&performance.now()<S.pfx.until?' pnew':'');
+    if(S.pwave&&p&&isW(p)===humanW()&&S.bot&&S.bot.traitor&&performance.now()<S.pwave+2600){cls+=' pwave';d.style.setProperty('--pwd',-(performance.now()-S.pwave)/1000+'s');}
+    if(S.poison===sq&&S.bot&&S.bot.traitor&&S.over)cls+=' poison'+(S.pfx&&S.pfx.sq===sq&&performance.now()<S.pfx.until?' pnew':'');
     if(p&&isW(p)===humanW()&&humanTurn()&&!S.over&&S.human&&!(S.psyFog>0))cls+=' mine';
     const t=tg[sq];if(t&&!S.psyFog)cls+=' tgt';
     if(S.hint&&sq===S.hint.from)cls+=' hint';
@@ -2429,7 +2445,7 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24w';
+const GAME_VERSION='2026-11-24x';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
