@@ -187,6 +187,34 @@ body.psy-theme .panel{background:linear-gradient(160deg,rgba(43,29,78,.92),rgba(
 body.psy-theme .panel h1{color:#e6d8ff;text-shadow:0 0 12px rgba(184,140,255,.7)}
 body.psy-theme .ai,body.psy-theme .opening,body.psy-theme .botbox,body.psy-theme .moves{background:#1a1230;border-color:#4b3880}
 body.psy-theme .botbox .say{background:#3a2a66;color:#f0e8ff}
+/* everything else goes purple too */
+body.psy-theme{--text:#f0e8ff;--bg:#0b0618}
+body.psy-theme .moves{background:#2a1c4c;border:1px solid #5a43a0;color:#efe6ff}
+body.psy-theme .mrow:nth-child(odd){background:#33235c}
+body.psy-theme .mrow .n,body.psy-theme .moves>div{color:#b9a6e6}
+body.psy-theme .card .x,body.psy-theme .ai{color:#e2d6ff}
+body.psy-theme .status{background:#2e2052}
+body.psy-theme .status.check{background:#5a1f55;color:#ffd6f4}
+body.psy-theme .btn:hover:not(:disabled){background:#46337a}
+body.psy-theme .btn.pri:hover{background:linear-gradient(135deg,#caa6ff,#8a5fe6)}
+body.psy-theme .tchip{background:#33255a}
+body.psy-theme .evalbar{background:#2a1c4c;box-shadow:0 0 0 1px #6d4fb8,0 0 12px rgba(150,90,255,.4)}
+body.psy-theme .clock{background:#2a1c4c;border-color:#5a43a0;color:#c9b8f0}
+body.psy-theme .clock.run{background:#e6d8ff;color:#1a0f33}
+body.psy-theme .clock.low.run{background:#b0306e;color:#fff}
+body.psy-theme .av.face img{background:#1f1636}
+body.psy-theme .sq.last .hl{background:rgba(255,120,240,.38)}
+body.psy-theme .sq.sel .hl,body.psy-theme .sq.sel.mine:hover .hl{background:rgba(120,230,255,.5)}
+body.psy-theme .dot{background:rgba(30,10,60,.38)}
+body.psy-theme .ring{border-color:rgba(30,10,60,.4)}
+body.psy-theme .credit,body.psy-theme .credit a{color:#9c8cc4}
+body.psy-theme .overlay{background:rgba(10,4,25,.72)}
+body.psy-theme .modal{background:linear-gradient(160deg,#2b1d4e,#1a1130);border-color:#6d4fb8;box-shadow:0 0 40px rgba(150,90,255,.35),0 20px 60px #000a}
+body.psy-theme .seg button{background:#33255a}
+body.psy-theme .seg button.on{background:linear-gradient(135deg,#b88cff,#7a4fd6);color:#fff}
+body.psy-theme .endbot,body.psy-theme .sum>div{background:#2a1c4c}
+body.psy-theme .ai .warn{color:#ffb3e6}
+.mrow,.status,.clock,.evalbar,.modal{transition:background-color .8s,border-color .8s,color .8s}
 .botbox,.moves,.botbox .say{transition:background-color .8s,border-color .8s}
 body.psy-theme .btn{background:#33255a;border-color:#4b3880;color:#eee6ff}
 body.psy-theme .btn.pri{background:linear-gradient(135deg,#b88cff,#7a4fd6);color:#fff}
@@ -853,7 +881,6 @@ const SPECIALS=[
   lines:{scared:['The crystal ball is… cloudy.','This was not in the vision!','The stars are turning against me…'],confident:['Just as the crystal foretold.','I saw this coming three moves ago.','Your future looks… grim.'],hi:['I already know how this ends. Do you?','Welcome. The crystal ball has been expecting you.'],cap:['Foreseen.','The spirits wanted that piece.'],lost:['…I knew that would happen. Obviously.','A small sacrifice to the stars.'],check:['Check. I saw it in the orb.'],win:['As foretold. Come back when the stars favour you.'],lose:['Impossible… the vision was wrong!'],draw:['The future was… unclear.'],
    reset:['NOT SO FAST! ✨ The stars rewind!','No, no — I refuse this future! Let\'s begin again…'],fog:['Let\'s see you play when you can\'t tell whose pieces are whose! 🟣','Behold — the purple haze! Which pieces are yours now?']}}
 ];
-const PSY_FOG_TURNS=5; // how many of your moves the purple haze lasts
 const FRIEND={id:'friend',name:'Friend',elo:null,col:'#8a9a5b',tag:'Two players, one device — no internet needed',lines:{hi:[''],cap:[''],lost:[''],check:[''],win:[''],lose:[''],draw:['']}};
 const botById=id=>id==='remote'?REMOTE:id==='friend'?FRIEND:(BOTS.find(b=>b.id===id)||SPECIALS.find(b=>b.id===id)||BOTS[3]);
 const sideName=c=>c==='w'?'White':'Black';
@@ -1009,9 +1036,8 @@ function psychicFogCheck(botScore){
   // when he's losing, there's a chance each turn he curses the board purple (once per game)
   if(!S.bot||!S.bot.special||S.psyFogUsed||S.over)return null;
   if(botScore<=-200&&Math.random()<.35){
-    S.psyFogUsed=true;S.psyFog=PSY_FOG_TURNS;
-    S.card={q:null,title:'🟣 The purple haze!',text:`The Psychic turned every piece purple! You'll have to remember which pieces are yours. It wears off after ${PSY_FOG_TURNS} of your moves.`};
-    const b=$('board');b.classList.remove('psymagic');void b.offsetWidth;b.classList.add('psymagic');
+    S.psyFogUsed=true;S.psyFog=1; // permanent for the rest of the game
+    S.card={q:null,title:'🟣 The purple haze!',text:'The Psychic pulled you into his world and turned every piece purple — for the rest of the game! You\'ll have to remember which pieces are yours.'};
     return pickLine(S.bot,'fog');
   }
   return null;
@@ -1085,7 +1111,6 @@ function humanMove(m){
   const q=book?'book':classify(loss,k===mkey(C.bm));
   const capVal=m.cap?VAL[up(m.cap)]:0,mover=G.w?'w':'b';
   doMove(m,sanStr,{q,loss});
-  if(S.psyFog>0)S.psyFog--;
   if(!S.local&&!S.net&&(q==='mistake'||q==='blunder'))learnFromMistake(m,C);
   let text='';
   if(q==='book')text=S.opening?`A known opening move — you're playing the <b>${S.opening.name}</b>.`:'A known opening move.';
@@ -1341,7 +1366,7 @@ function fmtEval(e){
   return(e>=0?'+':'')+(e/100).toFixed(1);
 }
 function render(){
-  psyTheme(!!(S.bot&&S.bot.special&&S.human&&!S.tut&&!S.local&&!S.net));
+  psyTheme(!!(S.psyFog&&S.bot&&S.bot.special&&S.human&&!S.tut&&!S.local&&!S.net));
   const el=$('board');el.innerHTML='';
   const chk=inCheck(G.w)?(G.w?G.kw:G.kb):-1;
   const tg={};for(const t of S.targets)tg[t.to]=t;
@@ -2308,7 +2333,7 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24s';
+const GAME_VERSION='2026-11-24u';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
