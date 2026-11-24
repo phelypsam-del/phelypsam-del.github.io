@@ -920,7 +920,7 @@ const SPECIALS=[
   lines:{scared:['The crystal ball is… cloudy.','This was not in the vision!','The stars are turning against me…'],confident:['Just as the crystal foretold.','I saw this coming three moves ago.','Your future looks… grim.'],hi:['I already know how this ends. Do you?','Welcome. The crystal ball has been expecting you.'],cap:['Foreseen.','The spirits wanted that piece.'],lost:['…I knew that would happen. Obviously.','A small sacrifice to the stars.'],check:['Check. I saw it in the orb.'],win:['As foretold. Come back when the stars favour you.'],lose:['Impossible… the vision was wrong!'],draw:['The future was… unclear.'],
    reset:['NOT SO FAST! ✨ The stars rewind!','No, no — I refuse this future! Let\'s begin again…'],fog:['Let\'s see you play when you can\'t tell whose pieces are whose! 🟣','Behold — the purple haze! Which pieces are yours now?']}},
  {id:'traitor',name:'Traitor',elo:1200,special:true,traitor:true,col:'#8e2f2a',tag:'Someone in your army is working for him',depth:2,noise:55,rand:0,book:.7,think:[1000,2200],
-  lines:{scared:['This wasn\'t the plan…','My spy has failed me!','The crown slips from my grasp…'],confident:['Your army rots from within.','I can smell the poison from here.','Every kingdom falls from the inside.'],hi:['One of your pieces already serves me. Guess which.','Shall we begin? Mind your poisoned friend.'],cap:['One less loyal soldier.','Into the dungeon with you.'],lost:['A pawn in my game. Nothing more.','Hm. I have others.'],check:['Check. Your guards are asleep.'],win:['The poison always finds its mark.','Your kingdom falls. As planned.'],lose:['Betrayed… by my own plan!'],draw:['A truce. For now.'],
+  lines:{scared:['This wasn\'t the plan…','My spy has failed me!','The crown slips from my grasp…'],confident:['Your army rots from within.','One of these pieces is mine… if only I knew which.','Every kingdom falls from the inside.'],hi:['One of your pieces is poisoned. Even I don\'t know which.','Shall we begin? Mind your poisoned friend.'],cap:['One less loyal soldier.','Into the dungeon with you.'],lost:['A pawn in my game. Nothing more.','Hm. I have others.'],check:['Check. Your guards are asleep.'],win:['The poison always finds its mark.','Your kingdom falls. As planned.'],lose:['Betrayed… by my own plan!'],draw:['A truce. For now.'],
    spread:['The poison spreads…','You can\'t wash it off that easily.','Ha! It just found a new host.'],poison:['Got it! Your poisoned piece is MINE. 🗡️','The traitor is unmasked — and so is your defeat.']}}
 ];
 const FRIEND={id:'friend',name:'Friend',elo:null,col:'#8a9a5b',tag:'Two players, one device — no internet needed',lines:{hi:[''],cap:[''],lost:[''],check:[''],win:[''],lose:[''],draw:['']}};
@@ -1063,7 +1063,7 @@ function spaceFrame(t){
 function ownPieces(except){const a=[];for(let i=0;i<64;i++){const p=G.b[i];if(p&&isW(p)===humanW()&&up(p)!=='K'&&i!==except)a.push(i);}return a;}
 function traitorStart(){
   const own=ownPieces(-1);S.poison=own[Math.floor(Math.random()*own.length)];S.poisonTaken=false;S.poisonSpread=null;
-  S.card={q:null,title:'☠️ One of your pieces is poisoned!',text:'The Traitor has secretly poisoned one of your pieces — but you don\'t know which. If he captures it, <b>you lose</b>. If it captures something, the poison secretly jumps to another of your pieces. Your king can never be poisoned.'};
+  S.card={q:null,title:'☠️ One of your pieces is poisoned!',text:'One of your pieces is secretly poisoned — and <b>nobody knows which one, not even the Traitor</b>. He plays normally, but if he ever happens to capture it, <b>you lose</b>. If it captures something, the poison secretly jumps to another of your pieces. Your king can never be poisoned.'};
   const g=S.gid;setTimeout(()=>{if(S.gid===g)poisonWave('☠️ One of your pieces has been poisoned…');},700);
 }
 function poisonWave(msg){
@@ -1260,7 +1260,6 @@ function animateMove(m,dur0,done){
 }
 function botSearch(B){
   const ms=order(legal(false));
-  if(B.traitor&&S.poison!=null){const kill=ms.find(m=>(m.ep?m.to+(G.w?8:-8):m.to)===S.poison&&(m.cap||m.ep));if(kill)return{move:kill,score:900};}
   const bm=B.book&&Math.random()<B.book?bookMove(ms):null;
   if(bm){make(bm);const s=-qs(-INF,INF,0);unmake(bm);return{move:bm,score:s,book:true};}
   if(B.rand&&Math.random()<B.rand){const m=ms[Math.floor(Math.random()*ms.length)];make(m);const s=-qs(-INF,INF,0);unmake(m);return{move:m,score:s};}
@@ -2445,14 +2444,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24x';
+const GAME_VERSION='2026-11-24y';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('🗡️ New special game: the Traitor. One of your pieces is poisoned…',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('🗡️ The Traitor no longer knows which of your pieces is poisoned. He only finds out if he takes it…',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
