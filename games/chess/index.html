@@ -324,6 +324,50 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 .lesson .hic{grid-row:1/3;width:38px;height:38px}
 .lesson b{font-size:14px}.lesson small{color:var(--muted);font-size:12px}
 .lesson.done .ln{background:#1d3a2a;border-color:#2f5a43;color:#7de0a6}
+/* academy */
+.acad-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.acad-top>div{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
+.acad-top small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.acad-top b{font-size:26px;font-variant-numeric:tabular-nums}.acad-top b i{font-style:normal;color:#6b6152;font-size:18px}
+.acad-top span{color:var(--muted);font-size:12px}.acad-top .at-r b{color:#f3d892;font-size:32px}
+.recbox{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(90deg,#3a2f1a,#262019);border:1px solid #a37c2c;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.rb-l small{color:var(--accent);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+.rb-l b{display:block;font-size:20px;margin:2px 0}.rb-l p{margin:0;color:#d9cdb9;font-size:14px}
+.recbox .btn{flex:none;padding:11px 16px}
+.lead.small{font-size:13px;color:var(--muted)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.course{display:flex;align-items:center;gap:12px;text-align:left;background:#221d18;border:1px solid #362e25;border-radius:12px;padding:10px 12px;color:var(--text)}
+.course:hover{background:#2b251e;border-color:#55472f}
+.course.weak{border-color:#8a5a2a}
+.course .cn{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.course b{font-size:15px}.course small{color:var(--muted);font-size:12px}
+.course .bar{height:5px;border-radius:5px;background:#15120e;overflow:hidden}.course .bar i{display:block;height:100%;background:linear-gradient(90deg,#b9842a,#f2c75c)}
+.dots{display:flex;gap:4px;margin-bottom:8px}.dots i{width:16px;height:6px;border-radius:4px;background:#3a3127}
+.dots i.ok{background:#3fd18f}.dots i.no{background:#e5463f}.dots i.cur{background:var(--accent)}
+.toplay{color:var(--muted);font-size:13px}
+.prt{margin-top:8px;color:var(--muted);font-size:12px}.prt b{color:var(--text)}
+.tut-fb .up{color:#7de0a6;font-weight:700}.tut-fb .dn{color:#ff9d93;font-weight:700}
+/* nearby play */
+.nm-in{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-bottom:12px}
+.nm-in input{flex:1;max-width:220px;background:#15120e;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--text);font:inherit}
+.netchoice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nc{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.nc h3{margin:0;font-size:17px}.nc p{margin:0;color:var(--muted);font-size:13px}
+.seg.sm button{padding:6px 4px;font-size:13px}
+.scanrow{display:flex;gap:6px;flex-wrap:wrap}.scanrow .btn{flex:1;text-align:center;cursor:pointer}
+#netOv details{margin-top:8px;font-size:13px;color:var(--muted)}#netOv summary{cursor:pointer}
+#netOv textarea{width:100%;height:70px;margin:6px 0;background:#15120e;border:1px solid var(--line);border-radius:8px;color:var(--text);font:12px ui-monospace,monospace;padding:6px;word-break:break-all}
+.qrwrap{display:flex;gap:14px;align-items:flex-start;margin:6px 0 12px}
+.qr{width:min(260px,60vw);flex:none;background:#fff;border-radius:12px;padding:6px;line-height:0}.qr svg{width:100%;height:auto}
+.qrside{flex:1;min-width:0}.qrside b{font-size:16px}.qrside p{color:var(--muted);font-size:13px;margin:4px 0}
+.steps{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 12px;counter-reset:s}
+.steps li{flex:1;font-size:12px;color:var(--muted);background:#1b1713;border:1px solid #332b22;border-radius:8px;padding:6px 8px;counter-increment:s}
+.steps li::before{content:counter(s) ". ";font-weight:800}
+.steps li.cur{border-color:var(--accent);color:var(--text)}.steps li.done{color:#7de0a6}
+.netscan{margin-top:12px;background:#000;border-radius:12px;overflow:hidden;position:relative}
+.netscan video{width:100%;max-height:50vh;display:block;object-fit:cover}
+.netscan .btn{position:absolute;bottom:10px;left:50%;transform:translateX(-50%)}
+.neterr{margin-top:10px;background:#3d1f1c;color:#ffd0ca;border-radius:8px;padding:10px 12px;font-size:14px}
+@media(max-width:760px){.netchoice{grid-template-columns:1fr}.qrwrap{flex-direction:column;align-items:center}.acad-top{grid-template-columns:1fr 1fr}.acad-top .at-r{grid-column:1/-1}.recbox{flex-direction:column;align-items:stretch}}
 </style>
 </head>
 <body>
@@ -365,6 +409,15 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   <div class="hwrap">
     <div class="htop"><a class="hlink" href="../">← All games</a><div id="homeAccount"></div></div>
     <div id="homeView"></div>
+  </div>
+</div>
+
+<div class="overlay" id="netOv">
+  <div class="modal wide">
+    <button class="mback" type="button" data-n="close">← Menu</button>
+    <h2>Nearby play</h2>
+    <div id="netBody"></div>
+    <div class="netscan" id="netScan" hidden><video id="netVideo" playsinline muted></video><button class="btn" type="button" data-n="stopscan">Cancel scan</button></div>
   </div>
 </div>
 
@@ -746,7 +799,7 @@ const BOTS=[
  {id:'elena',name:'Elena Voss',elo:2500,col:'#c9a64a',tag:'Grandmaster',depth:4,noise:0,rand:0,book:1,think:[1600,3200],
   lines:{scared:['Hm. I\'m genuinely worried now.','You\'re making this very difficult.','I\'ll need my best to survive this.'],confident:['The advantage is mine.','You\'re running out of good moves.','Precise play from here.'],hi:['Welcome. Show me what you\'ve been studying.','A pleasure to play you.'],cap:['Thank you.','As planned.'],lost:['A fine move.','You saw that? Good.'],check:['Check.'],win:['Thank you for the game. You played with spirit.'],lose:['Remarkable. You beat a grandmaster today.'],draw:['A draw with me is no small thing. Well played.']}}];
 const FRIEND={id:'friend',name:'Friend',elo:null,col:'#8a9a5b',tag:'Two players, one device — no internet needed',lines:{hi:[''],cap:[''],lost:[''],check:[''],win:[''],lose:[''],draw:['']}};
-const botById=id=>id==='friend'?FRIEND:(BOTS.find(b=>b.id===id)||BOTS[3]);
+const botById=id=>id==='remote'?REMOTE:id==='friend'?FRIEND:(BOTS.find(b=>b.id===id)||BOTS[3]);
 const sideName=c=>c==='w'?'White':'Black';
 const PW={id:'pw',name:'White',col:'#d8d2c4'},PB={id:'pb',name:'Black',col:'#3a3632'};
 /* portraits: scared / normal / confident */
@@ -813,7 +866,7 @@ function endGame(res){
   const B=S.bot;let score=.5;
   if(res.winner)score=res.winner===S.human?1:0;
   if(!S.local)S.chat={text:pickLine(B,score===1?'lose':score===0?'win':'draw')};
-  if(!S.local&&!S.takebacks&&S.hist.length>=2&&!S.rated){
+  if(!S.local&&!S.net&&!S.takebacks&&S.hist.length>=2&&!S.rated){
     S.rated=true;const r0=store.get('rating',800);
     const exp=1/(1+Math.pow(10,(B.elo-r0)/400));
     const r1=Math.max(100,Math.round(r0+32*(score-exp)));store.set('rating',r1);S.ratingChange=[r0,r1];
@@ -900,6 +953,7 @@ function humanMove(m){
   const q=book?'book':classify(loss,k===mkey(C.bm));
   const capVal=m.cap?VAL[up(m.cap)]:0,mover=G.w?'w':'b';
   doMove(m,sanStr,{q,loss});
+  if(!S.local&&!S.net&&(q==='mistake'||q==='blunder'))learnFromMistake(m,C);
   let text='';
   if(q==='book')text=S.opening?`A known opening move — you're playing the <b>${S.opening.name}</b>.`:'A known opening move.';
   else if(C.best>MATE-200&&s<MATE-200)text=`You missed a forced checkmate with <b>${bestSan}</b>!`;
@@ -919,6 +973,7 @@ function humanMove(m){
     if(S.autoFlip)S.flip=S.human==='b';
     beginHumanTurn();return;
   }
+  if(S.net){netSend({t:'move',u:uciOf(m),ms:S.mode.t?S.clock[mover]:null});if(!checkEnd()){S.busy=true;render();}return;}
   if(capVal>=300&&Math.random()<.6)S.chat={text:pickLine(S.bot,'lost'),played:S.chat&&S.chat.played};
   if(!checkEnd()){S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},300);}
 }
@@ -955,6 +1010,7 @@ function botSearch(B){
   return{move:best,score:raw};
 }
 function aiTurn(){
+  if(S.net)return;
   const gid=S.gid,tok=S.aiTok;S.busy=true;S.ponder=null;render();
   setTimeout(()=>{
     if(S.gid!==gid||S.aiTok!==tok||S.over)return;
@@ -1016,6 +1072,7 @@ setInterval(()=>{
     S.clock[side]=0;
     const winner=side==='w'?'b':'w';
     const winnerHasMaterial=G.b.some(p=>p&&up(p)!=='K'&&(isW(p)===(winner==='w')));
+    if(S.net)netSend({t:'flag',side});
     endGame(winnerHasMaterial?{type:'time',winner,loser:side}:{type:'timedraw',loser:side});
   }
   renderClocks();
@@ -1023,9 +1080,10 @@ setInterval(()=>{
 /* ---- undo (takeback) ---- */
 function canUndo(){
   if(!S.human||!S.hist.length)return false;
+  if(S.net)return false;
   return S.local?true:S.hist.some(h=>h.q);
 }
-function undo(){if(S.tut){startLesson(S.tut.i,0);return;}S.hint=null;
+function undo(){if(S.tut){if(S.tut.kind==='puz'){puzzleSetup();puzCard();render();}else startLesson(S.tut.i,0);return;}S.hint=null;
   if(!canUndo())return;
   // stop the bot if it's thinking or mid-move
   S.aiTok=(S.aiTok||0)+1;S.busy=false;S.ponder=null;S.dragFrom=null;
@@ -1046,7 +1104,7 @@ function undo(){if(S.tut){startLesson(S.tut.i,0);return;}S.hint=null;
   beginHumanTurn();
 }
 $('hintBtn').onclick=()=>{
-  if(S.tut){if(humanTurn())tutHint();return;}
+  if(S.tut){if(humanTurn()&&!S.busy)(S.tut.kind==='puz'?puzHint:tutHint)();return;}
   if(!S.human||S.over||S.busy||!humanTurn())return;
   if(!S.coach)analyze();
   const bm=S.coach&&S.coach.bm;if(!bm)return;
@@ -1068,7 +1126,7 @@ $('resignBtn').onclick=()=>{
   if(!S.human||S.over)return;
   const b=$('resignBtn');
   if(!b.classList.contains('warn')){b.textContent='Confirm?';b.classList.add('warn');resignTimer=setTimeout(resetResign,3000);return;}
-  resetResign();endGame(S.local?{type:'resign',winner:G.w?'b':'w',loser:G.w?'w':'b'}:{type:'resign',winner:aiSide()});
+  resetResign();if(S.net)netSend({t:'resign'});endGame(S.local?{type:'resign',winner:G.w?'b':'w',loser:G.w?'w':'b'}:{type:'resign',winner:aiSide()});
 };
 /* ---- input: click-to-move and drag-and-drop ---- */
 let D=null; // active drag
@@ -1186,7 +1244,7 @@ function render(){
   updateMoods();
   const B=S.bot||BOTS[3],rating=store.get('rating',800);
   const who=side=>S.local?`${avatar(side==='w'?PW:PB,S.moods&&S.moods[side])}<span>${sideName(side)}${(G.w?'w':'b')===side&&!S.over?' <span class="elo">to move</span>':''}</span>`
-    :side===(S.human||'w')?`${meAvatar()}<span>${meName()} <span class="elo">${rating}</span></span>`:`${avatar(B,botMood())}<span>${B.name} <span class="elo">${B.show||B.elo}</span></span>`;
+    :side===(S.human||'w')?`${meAvatar()}<span>${meName()} <span class="elo">${rating}</span></span>`:`${avatar(B,botMood())}<span>${B.name} <span class="elo">${B.show||B.elo||''}</span></span>`;
   $('oppWho').innerHTML=who(topSide());$('meWho').innerHTML=who(bottomSide());
   // captured
   const capW=[],capB=[];for(const h of S.hist)if(h.m.cap)(isW(h.m.cap)?capW:capB).push(up(h.m.cap));
@@ -1196,16 +1254,17 @@ function render(){
   const bw=bottomSide()==='w',hc=bw?capB:capW,ac=bw?capW:capB,adv=bw?mat:-mat;
   $('capBot').innerHTML=capStr(hc,bw?'b':'w',adv);
   $('capTop').innerHTML=capStr(ac,bw?'w':'b',-adv);
-  $('sideTxt').textContent=S.local?'2 players · offline':S.human?'You: '+(humanW()?'White':'Black'):'';
+  $('sideTxt').textContent=S.tut?(S.tut.kind==='puz'?'Puzzle':'Lesson'):S.net?'Nearby':S.local?'2 players · offline':S.human?'You: '+(humanW()?'White':'Black'):'';
   $('modeTxt').innerHTML=esc(S.mode?S.mode.name+(S.mode.t?' '+S.mode.sub:''):'')+(S.human&&!S.local&&!S.over?` · <span title="Crowns for winning this game (each hint or takeback costs one)">${crownsHTML(crownsAtStake(),'sm')}</span>`:'');
   // opening
   const op=$('opening');
-  $('openTxt').innerHTML=S.tut?`🎓 Lesson ${S.tut.i+1}: <b>${LESSONS[S.tut.i].title}</b>`:S.opening?`<span class="eco">${S.opening.eco}</span>${S.opening.name}`:'Starting position';
+  $('openTxt').innerHTML=S.tut?(S.tut.kind==='puz'?`🧩 Academy: <b>${THEMES[PUZ[S.tut.idx].theme].name}</b>`:`🎓 Lesson ${S.tut.i+1}: <b>${LESSONS[S.tut.i].title}</b>`):S.opening?`<span class="eco">${S.opening.eco}</span>${S.opening.name}`:'Starting position';
   if(S.openFlash){S.openFlash=false;op.classList.remove('flash');void op.offsetWidth;op.classList.add('flash');}
   // status
   const st=$('status');st.className='status';let txt;
   const pip=st.querySelector('.pip');pip.style.background=G.w?'#f3efe6':'#2b2925';
-  if(S.over)txt=endText().title;
+  if(S.tut)txt=S.tut.done?'✅ Solved!':S.busy?'Opponent is replying…':humanTurn()?(S.tut.kind==='puz'?`Your move (${S.human==='w'?'White':'Black'})`:'Your move'):'…';
+  else if(S.over)txt=endText().title;
   else if(S.busy){txt=null;st.classList.add('think');}
   else if(humanTurn()){
     if(chk>=0){txt=(S.local?sideName(G.w?'w':'b')+' is in check!':'Check! Protect your king.');st.classList.add('check');}
@@ -1218,7 +1277,7 @@ function render(){
   const ai=$('ai');ai.hidden=!S.chat||!S.human||S.local;
   if(S.chat&&S.human&&!S.local){
     const c=S.chat;
-    ai.innerHTML=`${avatar(B,botMood())}<div style="min-width:0;flex:1"><div class="bn">${B.name}<small>${B.show||B.elo} · ${B.tag}</small></div>`+
+    ai.innerHTML=`${avatar(B,botMood())}<div style="min-width:0;flex:1"><div class="bn">${B.name}<small>${B.show||B.elo||''} · ${B.tag}</small></div>`+
       (c.text?`<div class="say">${c.text}</div>`:'')+
       (c.played?`<div class="pl">Played <b>${c.played}</b>${c.extra?' — '+c.extra:''}${!S.over&&inCheck(G.w)&&humanTurn()?' <span class="warn">· check!</span>':''}</div>`:'')+`</div>`;
   }
@@ -1234,7 +1293,7 @@ function render(){
   mv.innerHTML=mh||'<div style="padding:6px 12px;color:var(--muted)">No moves yet</div>';mv.scrollTop=mv.scrollHeight;
   $('resignBtn').disabled=!S.human||!!S.over||!!S.tut;
   $('undoBtn').disabled=!canUndo();
-  $('hintBtn').disabled=!S.human||!!S.over||!!S.busy||!humanTurn();
+  $('hintBtn').disabled=!S.human||!!S.over||!!S.busy||!humanTurn()||!!S.net;
   renderClocks();
 }
 function cell(h){return(h.q?`<i class="qd" style="background:${Q[h.q].col}" title="${Q[h.q].label}"></i>`:'')+h.san;}
@@ -1247,7 +1306,8 @@ function endText(){
     if(o.type==='time')return{title:`${L} ran out of time`,sub:`${W} wins on the clock.`};
   }
   if(o.type==='mate')return o.winner===S.human?{title:`Checkmate — you beat ${n}! 🎉`,sub:'Nicely done.'}:{title:`Checkmate — ${n} wins`,sub:'Shake it off and try again.'};
-  if(o.type==='resign')return{title:'You resigned',sub:`${n} wins this one.`};
+  if(o.type==='abandon')return{title:'Game ended',sub:'The connection was lost.'};
+  if(o.type==='resign')return o.them?{title:`${n} resigned — you win! 🎉`,sub:'Well played.'}:{title:'You resigned',sub:`${n} wins this one.`};
   if(o.type==='time')return o.winner===S.human?{title:`${n} ran out of time — you win! ⏱`,sub:'Won on the clock.'}:{title:'You ran out of time',sub:`${n} wins on the clock.`};
   if(o.type==='timedraw')return{title:'Draw',sub:'Time ran out, but the other side can\'t checkmate with what\'s left.'};
   const why={stalemate:'Stalemate — the side to move has no legal moves but isn\'t in check.',fifty:'50 moves without a capture or pawn move.',rep:'The same position happened three times.',material:'Neither side has enough material to checkmate.'}[o.type];
@@ -1258,11 +1318,12 @@ function showEnd(gid){
   const e=endText();$('endTitle').textContent=e.title;$('endSub').textContent=e.sub;
   const B=S.bot;
   $('endBot').hidden=!!S.local;
+  $('endUndoBtn').hidden=!!S.net;$('rematchBtn').textContent=S.net&&NET.theirRematch?'Accept rematch':'Rematch';
   const ec=$('endCrowns');
-  if(S.local||S.over.winner!==S.human){ec.innerHTML=S.local?'':`<small>Win with no hints or takebacks to earn all 3 ${CROWN(true)}</small>`;}
+  if(S.local||S.net||S.over.winner!==S.human){ec.innerHTML=S.local||S.net?'':`<small>Win with no hints or takebacks to earn all 3 ${CROWN(true)}</small>`;}
   else{const n=S.crownsEarned||0,a=assists();
     ec.innerHTML=`${crownsHTML(n,'big pop')}<b>${n===3?'Flawless — 3 crowns!':n+' crown'+(n>1?'s':'')}</b><small>${a?`${S.hints||0} hint${S.hints===1?'':'s'} and ${S.takebacks||0} takeback${S.takebacks===1?'':'s'} used`:'No hints, no takebacks.'}${S.crownNew?' · New best vs '+esc(S.bot.name)+'!':''}</small>`;}
-  $('endBot').innerHTML=`${avatar(B,botMood())}<div><b>${B.name}</b> <span style="color:var(--muted)">${B.show||B.elo}</span><div style="margin-top:2px">“${S.chat?S.chat.text:''}”</div></div>`;
+  $('endBot').innerHTML=`${avatar(B,botMood())}<div><b>${B.name}</b> <span style="color:var(--muted)">${B.show||B.elo||''}</span><div style="margin-top:2px">“${S.chat?S.chat.text:''}”</div></div>`;
   const accOf=arr=>arr.length?Math.round(100*arr.reduce((a,h)=>a+Math.max(0,1-Math.min(h.loss,400)/400),0)/arr.length)+'%':'—';
   if(S.local){
     const wm=S.hist.filter((h,i)=>h.q&&i%2===0),bm=S.hist.filter((h,i)=>h.q&&i%2===1),bl=a=>a.filter(h=>h.q==='blunder'||h.q==='mistake').length;
@@ -1276,7 +1337,7 @@ function showEnd(gid){
   $('endSum').innerHTML=`<div><b>${hm.length?acc+'%':'—'}</b>accuracy</div><div><b style="color:${Q.best.col}">${cnt('best')+cnt('excellent')+cnt('book')}</b>book / best</div><div><b style="color:${Q.good.col}">${cnt('good')}</b>good</div>
   <div><b style="color:${Q.inacc.col}">${cnt('inacc')}</b>inaccuracies</div><div><b style="color:${Q.mistake.col}">${cnt('mistake')}</b>mistakes</div><div><b style="color:${Q.blunder.col}">${cnt('blunder')}</b>blunders</div>`;
   const rc=S.ratingChange;
-  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.takebacks?'Takebacks were used, so this game isn\'t rated.':'Game too short to be rated.'}</span>`;
+  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?'Nearby games aren\'t rated.':S.takebacks?'Takebacks were used, so this game isn\'t rated.':'Game too short to be rated.'}</span>`;
   $('endOv').classList.add('on');
 }
 /* ---- new-game menu ---- */
@@ -1285,7 +1346,7 @@ if(pref.bot!=='friend'&&!BOTS.some(b=>b.id===pref.bot))pref.bot='mira'; // e.g. 
 function buildMenu(){
   $('modeSeg').innerHTML=MODES.map(m=>`<button data-v="${m.id}" class="${m.id===pref.mode?'on':''}">${m.name}<small>${m.sub}</small></button>`).join('');
   $('botGrid').innerHTML=`<button class="botcard friend${pref.bot==='friend'?' on':''}" data-v="friend">${avatar(FRIEND)}<span><b>Play a friend <span class="e">2P</span></b><small>${FRIEND.tag}</small></span></button>`+
-    BOTS.map(B=>`<button class="botcard${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.show||B.elo}</span></b><small>${B.tag}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('');
+    BOTS.map(B=>`<button class="botcard${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.show||B.elo||''}</span></b><small>${B.tag}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('');
   $('autoFlip').checked=pref.autoFlip!==false;syncMenu();
   [...$('sideSeg').children].forEach(x=>x.classList.toggle('on',x.dataset.v===pref.side));
   $('myRating').textContent='Your rating: '+store.get('rating',800);
@@ -1304,7 +1365,10 @@ $('startBtn').onclick=()=>{
 $('newBtn').onclick=()=>openHome();
 $('setupBack').onclick=()=>openHome();
 $('againBtn').onclick=openMenu;
-$('rematchBtn').onclick=()=>startGame(pref.side,pref.bot,pref.mode);
+$('rematchBtn').onclick=()=>{
+  if(S.net){if(!NET.open){openNet();return;}NET.myRematch=true;netSend({t:'rematch'});$('rematchBtn').textContent='Waiting…';
+    if(NET.theirRematch&&NET.role==='host')netStartFromHost();return;}
+  startGame(pref.side,pref.bot,pref.mode);};
 $('reviewBtn').onclick=()=>$('endOv').classList.remove('on');
 $('flipBtn').onclick=()=>{S.flip=!S.flip;render();};
 $('setup').onclick=e=>{if(e.target.id!=='setup')return;if(S.human)$('setup').classList.remove('on');else openHome();};
@@ -1328,7 +1392,7 @@ function recordGame(res,score){
   if(S.hist.length<2)return;
   try{
     const H=gameHistory();
-    const rec={t:S.recordedAt||Date.now(),local:!!S.local,bot:S.bot.id,score:S.local?null:score,winner:res.winner||null,type:res.type,
+    const rec={t:S.recordedAt||Date.now(),local:!!(S.local||S.net),net:S.net?S.bot.name:null,bot:S.bot.id,score:S.local?null:score,winner:res.winner||null,type:res.type,
       mode:S.mode.id,rated:!!S.ratingChange,r0:S.ratingChange?S.ratingChange[0]:null,r1:S.ratingChange?S.ratingChange[1]:null,
       acc:S.local?null:accPct(S.hist.filter(h=>h.q)),opening:S.opening?S.opening.name:null,moves:Math.ceil(S.hist.length/2),
       side:S.local?null:S.human,crowns:S.crownsEarned||0,hints:S.hints||0,takebacks:S.takebacks||0};
@@ -1341,7 +1405,7 @@ function recordGame(res,score){
 }
 function awardCrowns(res){
   S.crownsEarned=0;S.crownNew=false;
-  if(S.local||!res.winner||res.winner!==S.human)return;
+  if(S.local||S.net||!res.winner||res.winner!==S.human)return;
   const n=crownsAtStake(),all=store.get('crowns',{})||{};
   S.crownsEarned=n;S.crownNew=n>(all[S.bot.id]||0);
   if(S.crownNew){all[S.bot.id]=n;store.set('crowns',all);}
@@ -1405,9 +1469,10 @@ function renderHome(){
       <nav class="hmenu">
         ${gameInProgress()?`<button class="hbtn primary" data-a="resume">${icon('K')}<span><b>Resume game</b><small>vs ${esc(S.local?'a friend':S.bot.name)} · move ${Math.ceil((S.hist.length+1)/2)}</small></span></button>`:''}
         <button class="hbtn${gameInProgress()?'':' primary'}" data-a="quick">${icon('N')}<span><b>Quick play</b><small>${M.name}${M.t?' '+M.sub:''} · ${QB.id==='friend'?'vs a friend':'vs '+esc(QB.name)}</small></span></button>
-        <button class="hbtn${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Learn chess</b><small>${tutDone().length?`${tutDone().length} of ${LESSONS.length} lessons done`:`${LESSONS.length} quick lessons with the coach`}</small></span></button>
+        <button class="hbtn${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Academy</b><small>${(()=>{const A=acad(),n=Object.keys(A.solved).length+tutDone().length;return n?`${n} lessons done · puzzle rating ${A.pr}`:'Hundreds of lessons and puzzles, picked for you';})()}</small></span></button>
         <button class="hbtn" data-a="new">${icon('Q')}<span><b>New game</b><small>Pick a time control and opponent</small></span></button>
         <button class="hbtn" data-a="friend">${icon('P')}<span><b>Play a friend</b><small>2 players, 1 device, no internet needed</small></span></button>
+        <button class="hbtn" data-a="nearby"><span class="hic lt">${pieceHTML('q')}</span><span><b>Nearby play</b><small>${NET.open?`Connected to ${esc(NET.peer)}`:'Phone to phone, no internet needed'}</small></span></button>
         <button class="hbtn" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Climb the ladder, collect crowns</small></span></button>
         <button class="hbtn" data-a="stats">${icon('B')}<span><b>Stats &amp; history</b><small>${st.all?`${st.all} game${st.all>1?'s':''} played`:'Your games will show up here'}</small></span></button>
         <button class="hbtn" data-a="how"><span class="hic lt">${pieceHTML('p')}</span><span><b>How to play</b><small>The coach, crowns, ranks and modes</small></span></button>
@@ -1448,17 +1513,39 @@ function renderHome(){
       ${st.foe?`<div><small>Most played opponent</small><b>${esc(botById(st.foe[0]).name)}</b><span>${st.foe[1]}×</span></div>`:''}</div>
     <h3>Recent games</h3>
     ${H.length?`<ul class="games">${H.slice(0,30).map(g=>{
-      const B=g.local?null:botById(g.bot),res=g.local?(g.winner?sideName(g.winner)+' won':'Draw'):g.score===1?'Win':g.score===0?'Loss':'Draw';
+      const B=g.local?null:botById(g.bot),res=g.net?(g.winner?(g.winner===g.side?'Win':'Loss'):'Draw'):g.local?(g.winner?sideName(g.winner)+' won':'Draw'):g.score===1?'Win':g.score===0?'Loss':'Draw';
       const cls=g.local?'d':g.score===1?'w':g.score===0?'l':'d';
-      return`<li><span class="res ${cls}">${res}</span><span class="g-main"><b>${g.local?'2-player game':'vs '+esc(B.name)+' <span class="e">'+B.elo+'</span>'}</b>
+      return`<li><span class="res ${cls}">${res}</span><span class="g-main"><b>${g.net?'Nearby game vs '+esc(g.net):g.local?'2-player game':'vs '+esc(B.name)+' <span class="e">'+B.elo+'</span>'}</b>
         <small>${esc(modeById(g.mode).name)} · ${g.moves} moves${g.opening?' · '+esc(g.opening):''}</small></span>
         <span class="g-side">${g.crowns?crownsHTML(g.crowns,'sm'):''}${g.acc!=null?`<small>${g.acc}% acc</small>`:''}
         ${g.rated?`<small class="${g.r1>=g.r0?'up':'dn'}">${g.r1>=g.r0?'+':''}${g.r1-g.r0}</small>`:g.local?'':'<small>unrated</small>'}<small>${ago(g.t)}</small></span></li>`;}).join('')}</ul>`
     :`<div class="empty">No games yet. Finish a game and it'll show up here.</div>`}
     ${H.length?`<button class="btn sm ghost" data-a="clear">Clear history</button>`:''}`;
   }else if(HOME.view==='learn'){
+    if(!PUZ){v.innerHTML=vhead('Academy')+'<div class="empty">Loading lessons…</div>';
+      loadPuzzles().then(()=>{if(homeOpen()&&HOME.view==='learn')renderHome();}).catch(()=>{v.innerHTML=vhead('Academy')+'<div class="empty">Couldn\'t load the puzzles. Open Knightfall once while online so they\'re saved for offline use.</div>';});return;}
+    const A=acad(),rec=recommendation(A),d=tutDone(),total=PUZ.length+LESSONS.length,done=Object.keys(A.solved).length+d.length;
+    const basics=d.length<6;
+    v.innerHTML=`${vhead('Academy')}
+    <div class="acad-top">
+      <div class="at-r"><small>Puzzle rating</small><b>${A.pr}</b>${rankBadge(A.pr)}</div>
+      <div><small>Completed</small><b>${done}<i>/</i>${total}</b><span>lessons &amp; puzzles</span></div>
+      <div><small>Streak</small><b>${A.streak}</b><span>best ${A.best}</span></div>
+    </div>
+    <div class="recbox">
+      <div class="rb-l"><small>🎯 Recommended for you</small><b>${basics?'The Basics':THEMES[rec.theme].name}</b>
+        <p>${basics?'Start with how the pieces move and the special rules. Then the puzzles will match your level.':esc(rec.why)}</p></div>
+      <button class="btn pri" data-a="${basics?'basics-next':'train'}">${basics?'Continue the basics':'Start training · 10 puzzles'}</button>
+    </div>
+    <p class="lead small">Every puzzle adapts to your <b>puzzle rating</b>, and themes you struggle with, or slip up on in your games, come up more often.</p>
+    <h3>Courses</h3>
+    <div class="courses">
+      <button class="course" data-a="basics"><span class="hic">${pieceHTML('K')}</span><span class="cn"><b>The Basics</b><small>${d.length}/${LESSONS.length} lessons</small><span class="bar"><i style="width:${d.length/LESSONS.length*100}%"></i></span></span></button>
+      ${THEME_ORDER.filter(t=>themeStats(A,t).total>=5).map(t=>{const st=themeStats(A,t);return`<button class="course${(A.weak[t]||0)>=1?' weak':''}" data-course="${t}"><span class="hic">${pieceHTML(THEMES[t].icon)}</span><span class="cn"><b>${THEMES[t].name}</b><small>${st.solved}/${st.total} puzzles${st.rate!=null&&st.a>=3?` · ${Math.round(st.rate*100)}% clean`:''}${(A.weak[t]||0)>=1?' · needs practice':''}</small><span class="bar"><i style="width:${st.total?st.solved/st.total*100:0}%"></i></span></span></button>`;}).join('')}
+    </div>`;
+  }else if(HOME.view==='basics'){
     const d=tutDone(),nextI=LESSONS.findIndex((L,i)=>!d.includes(i));
-    v.innerHTML=`${vhead('Learn chess')}
+    v.innerHTML=`${vhead('The Basics','learn')}
     <p class="lead">Short lessons where the coach shows you how each piece moves, plus the special rules and your first checkmates. <span class="crtot">✓ ${d.length} / ${LESSONS.length}</span></p>
     ${nextI>=0?`<button class="hbtn primary tut-start" data-lesson="${nextI}"><span class="hic">${pieceHTML(LESSONS[nextI].icon)}</span><span><b>${d.length?'Continue':'Start'}: ${LESSONS[nextI].title}</b><small>Lesson ${nextI+1} of ${LESSONS.length}</small></span></button>`:''}
     <ol class="lessons">${LESSONS.map((L,i)=>`<li><button class="lesson${d.includes(i)?' done':''}" data-lesson="${i}"><span class="ln">${d.includes(i)?'✓':i+1}</span><span class="hic">${pieceHTML(L.icon)}</span><b>${L.title}</b><small>${d.includes(i)?'Done · replay':'Start'}</small></button></li>`).join('')}</ol>`;
@@ -1479,7 +1566,7 @@ function renderHome(){
     </div>`;
   }
 }
-function vhead(t){return`<div class="vhead"><button class="back" data-a="home">← Back</button><h2>${t}</h2></div>`;}
+function vhead(t,back){return`<div class="vhead"><button class="back" data-a="${back||'home'}">← Back</button><h2>${t}</h2></div>`;}
 function ratingChart(H){
   const R=H.filter(g=>g.rated&&g.r1).slice(0,60).reverse();
   if(R.length<2)return`<div class="chart empty">Your rating graph appears after a couple of rated games.</div>`;
@@ -1509,8 +1596,9 @@ async function loadWorld(){
   }catch(e){el.innerHTML='<div class="empty">Couldn\'t load the worldwide leaderboard right now.</div>';}
 }
 $('home').addEventListener('click',e=>{
-  const t=e.target.closest('[data-a],[data-tab],[data-lesson]');if(!t)return;
+  const t=e.target.closest('[data-a],[data-tab],[data-lesson],[data-course]');if(!t)return;
   if(t.dataset.lesson!=null){startLesson(+t.dataset.lesson,0);return;}
+  if(t.dataset.course){startSession(t.dataset.course);return;}
   if(t.dataset.tab){HOME.tab=t.dataset.tab;renderHome();return;}
   const a=t.dataset.a;
   if(a==='home')openHome('main');
@@ -1519,11 +1607,386 @@ $('home').addEventListener('click',e=>{
   else if(a==='new')openSetup();
   else if(a==='friend')openSetup('friend');
   else if(a==='challenge')openSetup(t.dataset.bot);
-  else if(a==='board'||a==='stats'||a==='how'||a==='learn')openHome(a);
+  else if(a==='board'||a==='stats'||a==='how'||a==='learn'||a==='basics')openHome(a);
+  else if(a==='train')startSession(null);
+  else if(a==='basics-next'){const d=tutDone();const i=LESSONS.findIndex((L,k)=>!d.includes(k));startLesson(i<0?0:i,0);}
+  else if(a==='nearby')openNet();
   else if(a==='clear'){if(t.dataset.sure){store.set('history',[]);renderHome();}else{t.dataset.sure='1';t.textContent='Tap again to clear all history';}}
 });
 window.ChessCoach.refreshHome=()=>{if(homeOpen())renderHome();};
 window.ChessCoach.totalCrowns=totalCrowns;
+/* ================= ACADEMY: personalised puzzles with the coach ================= */
+const THEMES={
+  mate1:{name:'Mate in 1',icon:'Q',intro:'Find the <b>checkmate in one move</b>.',tip:'Try every check you can give. One of them leaves the king with nowhere to go.'},
+  hanging:{name:'Free pieces',icon:'N',intro:'Something is up for grabs. <b>Win material!</b>',tip:'Look for an enemy piece that nobody defends, or one worth more than the piece attacking it.'},
+  defense:{name:'Save your pieces',icon:'B',intro:'<b>Danger!</b> One of your pieces is under attack. Find the best move.',tip:'Which of your pieces is attacked? Move it, defend it, or find something even stronger.'},
+  endgame:{name:'Endgame mates',icon:'K',intro:'Finish the game: <b>checkmate in one</b>.',tip:'The enemy king is stuck near the edge. Your king helps by guarding his escape squares.'},
+  promo:{name:'Promotion',icon:'P',intro:'Can you <b>get a new queen</b>?',tip:'Look for a pawn that can reach the last row, or clear the way for one.'},
+  fork:{name:'Forks',icon:'N',intro:'Find a move that <b>attacks two things at once</b>.',tip:'Knights and queens are fork experts. Look for a square that hits two targets, especially the king.'},
+  tactic:{name:'Win material',icon:'R',intro:'There\'s a <b>tactic</b> here that wins material.',tip:'Check every check, capture and threat, in that order.'},
+  mate2:{name:'Mate in 2',icon:'R',intro:'Force <b>checkmate in two moves</b>.',tip:'Start with a forcing move, a check or a capture, so your opponent has only one answer.'}
+};
+const THEME_ORDER=['mate1','hanging','defense','endgame','promo','fork','tactic','mate2'];
+let PUZ=null; // loaded from puzzles.js
+function loadPuzzles(){
+  if(PUZ)return Promise.resolve(PUZ);
+  if(window.KF_PUZZLES){PUZ=window.KF_PUZZLES.map(a=>({fen:a[0],theme:a[1],r:a[2],line:a[3].split(' '),alt:a[4]?a[4].split(','):[],alt2:a[5]?a[5].split(','):[]}));return Promise.resolve(PUZ);}
+  return new Promise((res,rej)=>{const s=document.createElement('script');s.src='puzzles.js';s.onload=()=>{PUZ=null;res(loadPuzzles());};s.onerror=rej;document.head.appendChild(s);});
+}
+const acad=()=>Object.assign({pr:Math.min(900,store.get('rating',800)-100),solved:{},att:{},weak:{},notes:{},streak:0,best:0,n:0},store.get('acad',{})||{});
+const saveAcad=A=>store.set('acad',A);
+const uciOf=m=>'abcdefgh'[m.from&7]+(8-(m.from>>3))+'abcdefgh'[m.to&7]+(8-(m.to>>3))+(m.promo?m.promo.toLowerCase():'');
+const findUci=u=>legal(false).find(m=>uciOf(m)===u);
+function themeStats(A,t){const a=A.att[t]||{a:0,s:0};return{a:a.a,s:a.s,rate:a.a?a.s/a.a:null,solved:PUZ?PUZ.filter((p,i)=>p.theme===t&&A.solved[i]).length:0,total:PUZ?PUZ.filter(p=>p.theme===t).length:0};}
+// how much each theme needs practice for this player
+function themeWeights(A){
+  const w={};
+  for(const t of THEME_ORDER){
+    const st=themeStats(A,t),weak=A.weak[t]||0;
+    if(st.total<5){w[t]=0;continue;}
+    let x=1+weak*1.5;
+    if(st.rate!=null&&st.a>=3)x+=(1-st.rate)*2.5;      // struggling here
+    if(!st.a)x+=.8;                                   // never tried
+    if(st.total&&st.solved>=st.total)x*=.2;           // finished
+    const avgR=PUZ.filter(p=>p.theme===t).reduce((a,p)=>a+p.r,0)/Math.max(1,st.total);
+    if(avgR>A.pr+450)x*=.35;                          // too hard for now
+    w[t]=x;
+  }
+  return w;
+}
+function recommendation(A){
+  const w=themeWeights(A),t=Object.keys(w).sort((a,b)=>w[b]-w[a])[0],st=themeStats(A,t);
+  let why=A.notes[t]&&A.weak[t]>=1?A.notes[t]:
+    st.rate!=null&&st.a>=3&&st.rate<.6?`You've solved ${Math.round(st.rate*100)}% of your ${THEMES[t].name.toLowerCase()} puzzles. Let's sharpen that.`:
+    !st.a?`A new skill to learn: ${THEMES[t].name.toLowerCase()}.`:`Keep building on ${THEMES[t].name.toLowerCase()}.`;
+  return{theme:t,why};
+}
+function pickPuzzle(A,theme,avoid){
+  const pr=A.pr;let best=null,bw=-1;
+  const w=theme?null:themeWeights(A);
+  PUZ.forEach((p,i)=>{
+    if(theme&&p.theme!==theme)return;if(avoid&&avoid.includes(i))return;
+    let x=Math.exp(-Math.pow((p.r-pr-40)/220,2))*(A.solved[i]?.08:1)*(w?w[p.theme]:1)*(.6+Math.random()*.8);
+    if(x>bw){bw=x;best=i;}
+  });
+  return best;
+}
+function noteWeakness(t,text){
+  const A=acad();A.weak[t]=(A.weak[t]||0)*.85+1;A.notes[t]=text;saveAcad(A);
+}
+// called after a mistake or blunder in a real game: figure out what kind of mistake it was
+function learnFromMistake(m,C){
+  try{
+    const opp=S.bot?S.bot.name:'your opponent';
+    if(C.best>MATE-200){noteWeakness(C.best>MATE-30?'mate1':'mate2',`You missed a checkmate in your game vs ${opp}.`);return;}
+    const bm=C.bm;
+    if(bm&&bm.cap&&VAL[up(bm.cap)]>=300){noteWeakness('hanging',`You missed a free ${pieceName(bm.cap)} in your game vs ${opp}.`);return;}
+    // what did the move allow?
+    const r=searchRoot(2,0).move;
+    if(r){make(r);const mate=inCheck(G.w)&&legal(false).length===0;unmake(r);
+      if(mate){noteWeakness('mate1',`You walked into a checkmate vs ${opp}. Practising mates helps you spot them coming.`);return;}
+      if(r.cap&&VAL[up(r.cap)]>=300){noteWeakness('defense',`You left your ${pieceName(r.cap)} undefended in your game vs ${opp}.`);return;}}
+    noteWeakness('tactic',`You missed a stronger move in your game vs ${opp}.`);
+  }catch(e){}
+}
+// ---- puzzle player (shares the board with lessons) ----
+function puzzleSetup(){
+  const T=S.tut,P=PUZ[T.idx];
+  loadFEN(P.fen);
+  for(let k=0;k<T.ply;k++){const m=findUci(P.line[k]);if(!m)break;make(m);}
+  G.st=[];S.hist=[];S.keys=[posKey()];S.last=null;S.opening=null;S.hint=null;S.sel=null;S.targets=[];S.coach=null;S.busy=false;
+  S.human=G.w?'w':'b';S.flip=S.human==='b';S.legal=legal(false);
+}
+function startPuzzle(idx,session){
+  startGame('w','friend','casual');
+  S.tut={kind:'puz',idx,ply:0,fails:0,hints:0,done:false,session:session||null};
+  puzzleSetup();puzCard();render();
+}
+function puzCard(fb,mood){
+  const T=S.tut,P=PUZ[T.idx],TH=THEMES[P.theme],A=acad();
+  const ses=T.session?`<span class="dots">${T.session.list.map((x,k)=>`<i class="${k<T.session.pos?(T.session.res[k]?'ok':'no'):k===T.session.pos?'cur':''}"></i>`).join('')}</span>`:'';
+  const ctrl=T.done?(T.session&&T.session.pos+1>=T.session.list.length?
+      `<div class="tut-ctrl"><button class="go" data-tut="acad">Finish training ✓</button></div>`:
+      `<div class="tut-ctrl"><button class="go" data-tut="pnext">Next puzzle →</button><button data-tut="acad">☰ Academy</button></div>`)
+    :`<div class="tut-ctrl"><button data-tut="phint">💡 Hint</button><button data-tut="pskip">Skip</button><button data-tut="acad">☰ Academy</button></div>`;
+  S.card={q:null,title:`🧩 ${TH.name} <small>· puzzle #${T.idx+1} · ${P.r}</small>`,
+    text:`${ses}<div class="tut-txt">${T.ply===0?TH.intro:'Good! Now <b>finish it</b>.'} <span class="toplay">${S.human==='w'?'White':'Black'} to play.</span></div>${fb?`<div class="tut-fb ${mood||''}">${fb}</div>`:''}${ctrl}<div class="prt">Puzzle rating <b>${A.pr}</b>${A.streak>1?` · 🔥 ${A.streak} in a row`:''}</div>`};
+}
+function moveScore(m){make(m);const s=-negamax(2,-INF,INF,1);unmake(m);return s;}
+function puzMove(m){
+  const T=S.tut,P=PUZ[T.idx],u=uciOf(m),exp=P.line[T.ply];
+  let ok=u===exp||(T.ply===0&&P.alt.includes(u))||(T.ply===2&&P.alt2.includes(u));
+  const last=T.ply+1>=P.line.length;
+  if(!ok){ // accept any move that is just as good
+    make(m);const mates=inCheck(G.w)&&legal(false).length===0;unmake(m);
+    if(last&&mates)ok=true;
+    else if(!P.theme.startsWith('mate')&&P.theme!=='endgame'){const em=findUci(exp);if(em&&moveScore(m)>=moveScore(em)-40)ok=true;}
+  }
+  const sanStr=san(m,S.legal);doMove(m,sanStr,{});S.opening=null;S.hint=null;
+  if(ok&&!last){
+    const reply=findUci(P.line[T.ply+1]);
+    if(!reply){return puzSolved();}
+    S.busy=true;puzCard('✅ Nice move!','good');render();
+    const g=S.gid;
+    setTimeout(()=>{if(S.gid!==g||!S.tut)return;
+      animateMove(reply,500,()=>{if(S.gid!==g||!S.tut)return;doMove(reply,san(reply,legal(false)),{});S.opening=null;
+        T.ply+=2;S.busy=false;S.legal=legal(false);puzCard();render();});},450);
+    return;
+  }
+  if(ok)return puzSolved();
+  // wrong: explain what goes wrong
+  T.fails++;
+  let why='';
+  try{
+    if(P.theme.startsWith('mate')||P.theme==='endgame'){
+      if(inCheck(G.w))why='Check, but the king can escape. Find a check that leaves no way out.';
+    }
+    if(!why){const r=searchRoot(2,0).move;
+      if(r){make(r);const mate=inCheck(G.w)&&legal(false).length===0;unmake(r);
+        const rs=san(r,legal(false));
+        if(mate)why=`That lets your opponent checkmate with <b>${rs}</b>!`;
+        else if(r.cap&&VAL[up(r.cap)]>=300)why=`Then your opponent plays <b>${rs}</b> and wins your ${pieceName(r.cap)}.`;}}
+    if(!why)why=`That doesn't win anything. ${THEMES[P.theme].tip}`;
+  }catch(e){why='Not quite. Try again.';}
+  puzCard(`❌ ${why}`,'bad');render();
+  const g=S.gid;setTimeout(()=>{if(S.gid!==g||!S.tut)return;puzzleSetup();puzCard(`❌ ${why}`,'bad');render();},1700);
+}
+function puzSolved(){
+  const T=S.tut,P=PUZ[T.idx],A=acad();T.done=true;
+  const clean=!T.fails&&!T.hints,score=clean?1:0,expct=1/(1+Math.pow(10,(P.r-A.pr)/400));
+  const firstTry=!A.solved[T.idx];
+  const d=firstTry?Math.round(24*(score-expct)):0;
+  A.pr=Math.max(100,A.pr+d);A.n++;
+  const at=A.att[P.theme]||{a:0,s:0};at.a++;if(clean)at.s++;A.att[P.theme]=at;
+  A.solved[T.idx]=true;
+  if(clean){A.streak++;A.best=Math.max(A.best,A.streak);if(A.weak[P.theme])A.weak[P.theme]=Math.max(0,A.weak[P.theme]-.5);}else A.streak=0;
+  saveAcad(A);
+  if(T.session){T.session.res[T.session.pos]=clean;}
+  const msg=clean?['Brilliant!','Excellent!','Spot on!','Great eye!','Nailed it!'][Math.floor(Math.random()*5)]:'Solved, with a little help.';
+  puzCard(`✅ <b>${msg}</b> ${d?`Puzzle rating ${A.pr} <span class="${d>0?'up':'dn'}">(${d>0?'+':''}${d})</span>`:''}${!clean?' Puzzles solved without hints or mistakes raise your rating.':''}`,'good');
+  render();
+}
+function startSession(theme){
+  loadPuzzles().then(()=>{
+    const A=acad(),list=[];
+    for(let k=0;k<10;k++){const i=pickPuzzle(A,theme||null,list);if(i!=null)list.push(i);}
+    if(!list.length)return;
+    startPuzzle(list[0],{list,pos:0,res:[],theme:theme||null});
+  }).catch(()=>{});
+}
+function puzNext(){
+  const T=S.tut;
+  if(T.session&&T.session.pos+1<T.session.list.length){const s=T.session;s.pos++;startPuzzle(s.list[s.pos],s);}
+  else openHome('learn');
+}
+function puzHint(){
+  const T=S.tut,P=PUZ[T.idx];T.hints++;
+  const m=findUci(P.line[T.ply]);
+  if(T.hints===1){puzCard(`💡 ${THEMES[P.theme].tip}`,'tip');}
+  else if(m&&(!S.hint||S.hint.from!==m.from)){S.hint={from:m.from,to:m.to,stage:1};puzCard(`💡 Use the highlighted <b>${pieceName(m.p)}</b>.`,'tip');}
+  else if(m){S.hint.stage=2;puzCard('💡 Move it to the highlighted square.','tip');}
+  render();
+}
+
+/* ================= NEARBY PLAY: device to device, no internet (WebRTC + QR pairing) ================= */
+const REMOTE={id:'remote',name:'Friend',elo:null,col:'#5b8fd0',tag:'Nearby player',
+  lines:{hi:['Connected! Good luck, have fun.'],cap:[''],lost:[''],check:[''],win:['Good game!'],lose:['Good game!'],draw:['Good game!']}};
+const NET={pc:null,dc:null,role:null,peer:'Friend',open:false,myRematch:false,theirRematch:false,step:'idle',err:null};
+const loadScript=src=>new Promise((res,rej)=>{if(document.querySelector(`script[data-src="${src}"]`))return res();const s=document.createElement('script');s.src=src;s.dataset.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});
+const b64=u8=>{let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+const unb64=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;};
+async function packDesc(desc){
+  const sdp=desc.sdp.split('\r\n').filter(l=>l&&!/^a=candidate:\S+ \d+ tcp /i.test(l)&&!/^a=extmap/.test(l)).join('\r\n')+'\r\n';
+  const raw=new TextEncoder().encode(JSON.stringify({t:desc.type,s:sdp,n:myNetName()}));
+  if('CompressionStream' in window){
+    const z=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+    return 'KF1.'+b64(z);
+  }
+  return 'KF0.'+b64(raw);
+}
+async function unpackDesc(code){
+  code=String(code||'').trim();const m=code.match(/KF([01])\.([A-Za-z0-9_-]+)/);if(!m)throw new Error('That isn\'t a Knightfall code.');
+  let u=unb64(m[2]);
+  if(m[1]==='1')u=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+  return JSON.parse(new TextDecoder().decode(u));
+}
+const myNetName=()=>(PROFILE&&PROFILE.name?PROFILE.name.split(' ')[0]:store.get('netName',''))||'Player';
+function waitIce(pc){return new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const t=setTimeout(res,3000);pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);res();}});});}
+function netReset(){try{NET.dc&&NET.dc.close();}catch(e){}try{NET.pc&&NET.pc.close();}catch(e){}Object.assign(NET,{pc:null,dc:null,role:null,open:false,myRematch:false,theirRematch:false,step:'idle',err:null});stopScan();}
+function newPC(){
+  const pc=new RTCPeerConnection({iceServers:[]});
+  pc.onconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.connectionState))netLost();};
+  return pc;
+}
+function wireDC(dc){
+  NET.dc=dc;
+  dc.onopen=()=>{NET.open=true;NET.step='connected';netSend({t:'hi',name:myNetName(),v:1});if(NET.role==='host')netStartFromHost();renderNet();};
+  dc.onmessage=e=>{let msg;try{msg=JSON.parse(e.data);}catch(err){return;}netRecv(msg);};
+  dc.onclose=()=>netLost();
+}
+const netSend=o=>{try{if(NET.dc&&NET.dc.readyState==='open')NET.dc.send(JSON.stringify(o));}catch(e){}};
+async function netHost(){
+  netReset();NET.role='host';NET.step='making';renderNet();
+  try{
+    const pc=NET.pc=newPC();wireDC(pc.createDataChannel('knightfall',{ordered:true}));
+    await pc.setLocalDescription(await pc.createOffer());await waitIce(pc);
+    NET.code=await packDesc(pc.localDescription);NET.step='offer';renderNet();
+  }catch(e){NET.err='Couldn\'t start a connection on this device. ('+e.message+')';NET.step='error';renderNet();}
+}
+async function netJoinWith(code){
+  try{
+    const d=await unpackDesc(code);
+    if(NET.role==='host'){ // host receiving the answer
+      if(d.t!=='answer')throw new Error('That\'s a host code. Scan the code shown on the joining device.');
+      NET.peer=d.n||'Friend';NET.step='linking';renderNet();
+      await NET.pc.setRemoteDescription({type:'answer',sdp:d.s});
+      setTimeout(()=>{if(!NET.open&&NET.step==='linking'){NET.err='The devices couldn\'t reach each other. Make sure both are on the same Wi-Fi (or one is using the other\'s hotspot), then try again.';NET.step='error';renderNet();}},15000);
+      return;
+    }
+    if(d.t!=='offer')throw new Error('That\'s a reply code. Scan the code on the hosting device.');
+    netReset();NET.role='guest';NET.peer=d.n||'Friend';NET.step='making';renderNet();
+    const pc=NET.pc=newPC();pc.ondatachannel=e=>wireDC(e.channel);
+    await pc.setRemoteDescription({type:'offer',sdp:d.s});
+    await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
+    NET.code=await packDesc(pc.localDescription);NET.step='answer';renderNet();
+  }catch(e){NET.err=e.message||'That code didn\'t work.';NET.step='error';renderNet();}
+}
+// host decides colours and clock
+let netOpts={color:'w',mode:'casual'};
+function netStartFromHost(){
+  NET.myRematch=NET.theirRematch=false;
+  let hc=netOpts.color==='r'?(Math.random()<.5?'w':'b'):netOpts.color;
+  if(NET.lastHostColor)hc=NET.lastHostColor==='w'?'b':'w'; // rematch: swap colours
+  NET.lastHostColor=hc;
+  netSend({t:'start',color:hc==='w'?'b':'w',mode:netOpts.mode});
+  startNetGame(hc,netOpts.mode);
+}
+function startNetGame(color,mode){
+  REMOTE.name=NET.peer||'Friend';
+  $('netOv').classList.remove('on');
+  startGame(color,'remote',mode);
+  S.net=true;S.chat={text:`Connected to ${esc(REMOTE.name)}. Good luck!`};
+  if(!humanTurn())S.busy=true;
+  S.card={q:null,title:'Nearby game',text:`You're playing <b>${esc(REMOTE.name)}</b> on another device, with no internet needed. You have ${color==='w'?'White, so you move first':'Black'}.`};
+  render();
+}
+function netRecv(msg){
+  if(msg.t==='hi'){NET.peer=msg.name||NET.peer;REMOTE.name=NET.peer;renderNet();if(S.net)render();}
+  else if(msg.t==='start'){startNetGame(msg.color,msg.mode);}
+  else if(msg.t==='move'){
+    if(!S.net||S.over)return;
+    const m=legal(false).find(x=>uciOf(x)===msg.u);if(!m)return;
+    const opp=G.w?'w':'b',sanStr=san(m,legal(false));
+    const go=()=>{doMove(m,sanStr,{ai:true});if(S.mode.t&&msg.ms!=null)S.clock[opp]=msg.ms;
+      S.chat={text:null,played:sanStr,extra:m.cap?`took your ${pieceName(m.cap)}`:m.castle?'castled':null};
+      S.busy=false;beginHumanTurn();};
+    if(typeof animateMove==='function'&&!homeOpen())animateMove(m,420,go);else go();
+  }
+  else if(msg.t==='resign'){if(S.net&&!S.over)endGame({type:'resign',winner:S.human,them:true});}
+  else if(msg.t==='flag'){if(S.net&&!S.over){S.clock[msg.side]=0;endGame({type:'time',winner:msg.side==='w'?'b':'w',loser:msg.side});}}
+  else if(msg.t==='rematch'){NET.theirRematch=true;
+    if(NET.myRematch){if(NET.role==='host')netStartFromHost();}
+    else{S.chat={text:`${esc(NET.peer)} wants a rematch! Press Rematch to play again.`};render();}
+    if($('endOv').classList.contains('on'))$('rematchBtn').textContent='Accept rematch';}
+  else if(msg.t==='bye'){netLost(true);}
+}
+function netLost(bye){
+  if(!NET.open&&!bye)return;
+  NET.open=false;
+  if(S.net&&!S.over){S.card={q:null,title:'Connection lost',text:`The connection to ${esc(NET.peer)} dropped${bye?' (they left the game)':''}. You can reconnect from the menu: Nearby play.`};S.busy=false;S.over={type:'abandon'};render();}
+  renderNet();
+}
+// ---- QR codes ----
+function qrSVG(text){
+  if(typeof qrcode!=='function')return'';
+  const q=qrcode(0,'L');q.addData(text);q.make();
+  return q.createSvgTag({cellSize:4,margin:3,scalable:true});
+}
+let SCAN=null;
+async function startScan(onText){
+  stopScan();
+  const box=$('netScan');box.hidden=false;
+  const video=$('netVideo');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    video.srcObject=stream;await video.play();
+    let detector=null;
+    if('BarcodeDetector' in window){try{const f=await BarcodeDetector.getSupportedFormats();if(f.includes('qr_code'))detector=new BarcodeDetector({formats:['qr_code']});}catch(e){}}
+    if(!detector)await loadScript('../lib/jsQR.js');
+    const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
+    SCAN={stream,on:true};
+    const tick=async()=>{
+      if(!SCAN||!SCAN.on)return;
+      let text=null;
+      try{
+        if(detector){const r=await detector.detect(video);if(r[0])text=r[0].rawValue;}
+        else if(video.videoWidth){cv.width=video.videoWidth;cv.height=video.videoHeight;cx.drawImage(video,0,0);const img=cx.getImageData(0,0,cv.width,cv.height);const r=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});if(r)text=r.data;}
+      }catch(e){}
+      if(text&&/KF[01]\./.test(text)){stopScan();onText(text);return;}
+      setTimeout(tick,detector?150:250);
+    };
+    tick();
+  }catch(e){box.hidden=true;NET.err='Couldn\'t open the camera. You can paste the code instead, or upload a photo of the QR code.';renderNet();}
+}
+function stopScan(){if(SCAN){SCAN.on=false;try{SCAN.stream.getTracks().forEach(t=>t.stop());}catch(e){}SCAN=null;}const b=$('netScan');if(b)b.hidden=true;}
+async function scanImageFile(file,onText){
+  try{
+    const bmp=await createImageBitmap(file);let text=null;
+    if('BarcodeDetector' in window){try{const r=await new BarcodeDetector({formats:['qr_code']}).detect(bmp);if(r[0])text=r[0].rawValue;}catch(e){}}
+    if(!text){await loadScript('../lib/jsQR.js');const cv=document.createElement('canvas');cv.width=bmp.width;cv.height=bmp.height;const cx=cv.getContext('2d');cx.drawImage(bmp,0,0);const img=cx.getImageData(0,0,cv.width,cv.height);const r=jsQR(img.data,img.width,img.height);if(r)text=r.data;}
+    if(text)onText(text);else{NET.err='No QR code found in that picture.';renderNet();}
+  }catch(e){NET.err='Couldn\'t read that picture.';renderNet();}
+}
+// ---- pairing screen ----
+function openNet(){
+  loadScript('../lib/qrcode.js').catch(()=>{});
+  $('home').classList.remove('on');$('netOv').classList.add('on');renderNet();
+}
+function renderNet(){
+  const v=$('netBody');if(!v)return;
+  const st=NET.step,code=NET.code||'';
+  const codeBox=(title,sub)=>`<div class="qrwrap"><div class="qr" id="netQR">${qrSVG(code)||'<small>Loading QR…</small>'}</div>
+    <div class="qrside"><b>${title}</b><p>${sub}</p>
+    <details><summary>No camera? Use a text code</summary><textarea readonly id="netCodeOut">${code}</textarea><button class="btn sm" data-n="copy">Copy code</button></details></div></div>`;
+  const scanBox=(label)=>`<div class="scanrow"><button class="btn pri" data-n="scan">📷 ${label}</button>
+    <label class="btn"><input type="file" accept="image/*" id="netFile" hidden>🖼 Photo of the code</label></div>
+    <details><summary>Paste a text code instead</summary><textarea id="netCodeIn" placeholder="KF1.…"></textarea><button class="btn sm" data-n="paste">Connect</button></details>`;
+  let h='';
+  if(st==='idle'||st==='error'){
+    h=`<p class="lead">Play a friend on <b>another phone, tablet or computer</b> with no internet. Both devices need to be on the <b>same Wi-Fi</b>, or one can connect to the other's phone hotspot.</p>
+    <label class="nm-in">Your name <input id="netName" maxlength="16" value="${esc(myNetName()==='Player'?'':myNetName())}" placeholder="Player"></label>
+    <div class="netchoice">
+      <div class="nc"><h3>Host a game</h3><p>Pick colours and a clock, then show your friend a QR code.</p>
+        <div class="seg sm" id="netColor">${[['w','White'],['b','Black'],['r','Random']].map(([k,l])=>`<button data-v="${k}" class="${netOpts.color===k?'on':''}">${l}</button>`).join('')}</div>
+        <div class="seg sm wrap" id="netMode">${MODES.map(m=>`<button data-v="${m.id}" class="${netOpts.mode===m.id?'on':''}">${m.name}<small>${m.sub}</small></button>`).join('')}</div>
+        <button class="btn pri full" data-n="host">Host game</button></div>
+      <div class="nc"><h3>Join a game</h3><p>Scan the QR code on your friend's screen.</p>${scanBox('Scan host\'s code')}</div>
+    </div>${NET.err?`<div class="neterr">⚠ ${esc(NET.err)}</div>`:''}`;
+  }else if(st==='making'){h='<div class="empty">Getting ready…</div>';}
+  else if(st==='offer'){h=`<ol class="steps"><li class="cur">Your friend scans this code</li><li>You scan the code they show</li><li>Play!</li></ol>
+    ${codeBox('Step 1: let your friend scan this','On their device: Knightfall → Nearby play → Join a game.')}
+    <h3>Step 2: scan their reply</h3>${scanBox('Scan friend\'s reply')}${NET.err?`<div class="neterr">⚠ ${esc(NET.err)}</div>`:''}`;}
+  else if(st==='answer'){h=`<ol class="steps"><li class="done">Scanned the host's code</li><li class="cur">The host scans this code</li><li>Play!</li></ol>
+    ${codeBox(`Show this to ${esc(NET.peer)}`,'They scan it with their device, then the game starts automatically.')}<div class="empty">Waiting for ${esc(NET.peer)} to connect…</div>`;}
+  else if(st==='linking'){h=`<div class="empty">Connecting to ${esc(NET.peer)}…</div>`;}
+  else if(st==='connected'){h=`<div class="empty"><b>✅ Connected to ${esc(NET.peer)}!</b><br>${NET.role==='host'?'Starting the game…':'Waiting for the host to start…'}</div>`;}
+  v.innerHTML=h;
+  const f=$('netFile');if(f)f.onchange=()=>{if(f.files[0])scanImageFile(f.files[0],netJoinWith);};
+  const nm=$('netName');if(nm)nm.oninput=()=>store.set('netName',nm.value.trim());
+  ['netColor','netMode'].forEach(id=>{const el=$(id);if(el)el.onclick=e=>{const b=e.target.closest('button');if(!b)return;[...el.children].forEach(x=>x.classList.toggle('on',x===b));if(id==='netColor')netOpts.color=b.dataset.v;else netOpts.mode=b.dataset.v;};});
+  if(code&&!qrSVG(code))loadScript('../lib/qrcode.js').then(()=>{const q=$('netQR');if(q)q.innerHTML=qrSVG(code);}).catch(()=>{});
+}
+$('netOv').addEventListener('click',e=>{
+  const b=e.target.closest('[data-n]');if(!b)return;const a=b.dataset.n;
+  if(a==='host')netHost();
+  else if(a==='scan'){NET.err=null;startScan(netJoinWith);}
+  else if(a==='paste'){netJoinWith($('netCodeIn').value);}
+  else if(a==='copy'){try{navigator.clipboard.writeText(NET.code);b.textContent='Copied!';}catch(err){$('netCodeOut').select();}}
+  else if(a==='stopscan')stopScan();
+  else if(a==='close'){stopScan();$('netOv').classList.remove('on');if(!S.net||S.over)openHome('main');}
+  else if(a==='restart'){netSend({t:'bye'});netReset();renderNet();}
+});
+
 /* ================= LEARN: tutorial lessons with the coach ================= */
 const isMateNow=()=>inCheck(G.w)&&legal(false).length===0;
 const LESSONS=[
@@ -1619,6 +2082,7 @@ function startLesson(i,step){
   tutCard();render();
 }
 function tutMove(m){
+  if(S.tut.kind==='puz')return puzMove(m);
   const T=S.tut,L=LESSONS[T.i],st=L.steps[T.step];
   const sanStr=san(m,S.legal);
   doMove(m,sanStr,{});S.opening=null;S.hint=null;
@@ -1656,7 +2120,11 @@ $('card').addEventListener('click',e=>{
   if(a==='hint')tutHint();
   else if(a==='retry')startLesson(T.i,0);
   else if(a==='next')startLesson(Math.min(T.i+1,LESSONS.length-1),0);
-  else if(a==='list')openHome('learn');
+  else if(a==='list')openHome('basics');
+  else if(a==='phint'){if(humanTurn()&&!S.busy)puzHint();}
+  else if(a==='pskip'){if(T.session)T.session.res[T.session.pos]=false;const A=acad();A.streak=0;saveAcad(A);puzNext();}
+  else if(a==='pnext')puzNext();
+  else if(a==='acad')openHome('learn');
   else if(a==='pip'){pref.bot='pip';pref.mode='casual';pref.side='w';startGame('w','pip','casual');}
 });
 
@@ -1699,14 +2167,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24j';
+const GAME_VERSION='2026-11-24k';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('✨ New: Learn chess lessons with the coach. Castling onto the rook works too.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('✨ New: the Academy (hundreds of puzzles picked for you) and Nearby play, phone to phone with no internet.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
