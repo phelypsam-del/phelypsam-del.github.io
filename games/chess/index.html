@@ -175,6 +175,11 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 #board.psymagic{animation:psymagic 1.1s ease-out}
 @keyframes psymagic{0%{filter:none;box-shadow:0 0 0 0 #b36bff}35%{filter:brightness(1.6) saturate(.3) hue-rotate(250deg) blur(2px);box-shadow:0 0 60px 20px #b36bffaa}100%{filter:none;box-shadow:0 0 0 0 #b36bff00}}
 .lbsec{margin:18px 0 6px;font-size:15px;color:#c9aef5}
+/* Psychic: space theme */
+body.psy-theme{--light:#cdb9f0;--dark:#6f4aa8;background:radial-gradient(ellipse at top,#1a1033,#05030d 65%)}
+body.psy-theme #board{box-shadow:0 0 0 2px #8f6ad8,0 0 40px 6px rgba(150,90,255,.45),0 14px 40px rgba(0,0,0,.6)}
+#psySpace{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;display:none}
+body.psy-theme #psySpace{display:block}
 .opt[hidden]{display:none}
 .tog{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}.tog input{width:18px;height:18px;accent-color:var(--accent)}
 .endbot[hidden]{display:none}
@@ -431,6 +436,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   </div>
 </div>
 
+<canvas id="psySpace" aria-hidden="true"></canvas>
 <div class="overlay" id="setup">
   <div class="modal wide">
     <button class="mback" id="setupBack" type="button">← Menu</button>
@@ -904,6 +910,47 @@ function checkEnd(){
   if(res){endGame(res);return true;}
   return false;
 }
+/* ---- Psychic: space background with drifting stars and shooting stars ---- */
+const SPACE={on:false,raf:0,stars:[],shoot:[],w:0,h:0};
+function psyTheme(on){
+  if(on===SPACE.on)return;SPACE.on=on;document.body.classList.toggle('psy-theme',on);
+  if(on){spaceSize();cancelAnimationFrame(SPACE.raf);SPACE.last=performance.now();SPACE.raf=requestAnimationFrame(spaceFrame);}
+  else cancelAnimationFrame(SPACE.raf);
+}
+function spaceSize(){
+  const c=$('psySpace'),d=Math.min(2,window.devicePixelRatio||1);
+  SPACE.w=innerWidth;SPACE.h=innerHeight;c.width=SPACE.w*d;c.height=SPACE.h*d;c.getContext('2d').setTransform(d,0,0,d,0,0);
+  const n=Math.round(SPACE.w*SPACE.h/2600);
+  SPACE.stars=Array.from({length:n},()=>({x:Math.random()*SPACE.w,y:Math.random()*SPACE.h,z:Math.random(),tw:Math.random()*6.28}));
+}
+addEventListener('resize',()=>{if(SPACE.on)spaceSize();});
+function spaceFrame(t){
+  if(!SPACE.on)return;
+  const dt=Math.min(50,t-SPACE.last)/1000;SPACE.last=t;
+  const ctx=$('psySpace').getContext('2d'),W=SPACE.w,H=SPACE.h;
+  ctx.clearRect(0,0,W,H);
+  for(const st of SPACE.stars){
+    st.x-=(4+st.z*22)*dt;st.y+=(1+st.z*5)*dt;st.tw+=dt*(1+st.z*3);
+    if(st.x<-2){st.x=W+2;st.y=Math.random()*H;}if(st.y>H+2)st.y=-2;
+    const a=.35+.65*st.z*(.6+.4*Math.sin(st.tw)),r=.4+st.z*1.4;
+    ctx.fillStyle=st.z>.85?`rgba(215,190,255,${a})`:`rgba(255,255,255,${a})`;
+    ctx.beginPath();ctx.arc(st.x,st.y,r,0,6.283);ctx.fill();
+  }
+  if(Math.random()<dt*.6&&SPACE.shoot.length<3){
+    const ang=Math.PI*(.15+Math.random()*.2),sp=600+Math.random()*500;
+    SPACE.shoot.push({x:Math.random()*W*1.1,y:-20+Math.random()*H*.4,vx:-Math.cos(ang)*sp,vy:Math.sin(ang)*sp,life:0,max:.7+Math.random()*.6});
+  }
+  SPACE.shoot=SPACE.shoot.filter(sh=>{
+    sh.life+=dt;sh.x+=sh.vx*dt;sh.y+=sh.vy*dt;
+    const k=1-sh.life/sh.max;if(k<=0)return false;
+    const tx=sh.x-sh.vx*.14,ty=sh.y-sh.vy*.14,g=ctx.createLinearGradient(sh.x,sh.y,tx,ty);
+    g.addColorStop(0,`rgba(255,255,255,${k})`);g.addColorStop(.3,`rgba(200,160,255,${k*.6})`);g.addColorStop(1,'rgba(160,100,255,0)');
+    ctx.strokeStyle=g;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(sh.x,sh.y);ctx.lineTo(tx,ty);ctx.stroke();
+    ctx.fillStyle=`rgba(255,255,255,${k})`;ctx.beginPath();ctx.arc(sh.x,sh.y,1.8,0,6.283);ctx.fill();
+    return true;
+  });
+  SPACE.raf=requestAnimationFrame(spaceFrame);
+}
 /* ---- Psychic powers ---- */
 function psychicReset(){
   S.psyReset=true;S.busy=true;S.aiTok=(S.aiTok||0)+1;
@@ -1256,6 +1303,7 @@ function fmtEval(e){
   return(e>=0?'+':'')+(e/100).toFixed(1);
 }
 function render(){
+  psyTheme(!!(S.bot&&S.bot.special&&S.human&&!S.tut&&!S.local&&!S.net));
   const el=$('board');el.innerHTML='';
   const chk=inCheck(G.w)?(G.w?G.kw:G.kb):-1;
   const tg={};for(const t of S.targets)tg[t.to]=t;
@@ -2222,7 +2270,7 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24q';
+const GAME_VERSION='2026-11-24r';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
