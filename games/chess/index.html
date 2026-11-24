@@ -1340,7 +1340,7 @@ window.addEventListener('pointerup',e=>endDrag(e,false));
 window.addEventListener('pointercancel',e=>endDrag(e,true));
 function markOver(){
   document.querySelectorAll('#board .sq.over').forEach(x=>x.classList.remove('over'));
-  if(S.dragOver>=0&&S.targets.some(t=>t.to===S.dragOver)){
+  if(!S.psyFog&&S.dragOver>=0&&S.targets.some(t=>t.to===S.dragOver)){
     const i=S.flip?63-S.dragOver:S.dragOver;const el=$('board').children[i];if(el)el.classList.add('over');
   }
 }
@@ -1378,7 +1378,7 @@ function render(){
     if(S.sel===sq)cls+=' sel';
     if(sq===chk)cls+=' check';
     if(p&&isW(p)===humanW()&&humanTurn()&&!S.over&&S.human&&!(S.psyFog>0))cls+=' mine';
-    const t=tg[sq];if(t)cls+=' tgt';
+    const t=tg[sq];if(t&&!S.psyFog)cls+=' tgt';
     if(S.hint&&sq===S.hint.from)cls+=' hint';
     if(S.hint&&S.hint.stage>1&&sq===S.hint.to)cls+=' hint-to'+(p?' has':'');
     if(S.ponder&&sq===S.ponder.from)cls+=' ponder';
@@ -1388,7 +1388,7 @@ function render(){
     if(i%8===0)h+=`<span class="coord rk">${8-r}</span>`;
     if(i>=56)h+=`<span class="coord fl">${'abcdefgh'[c]}</span>`;
     if(p)h+=`<span class="pc${S.dragFrom===sq?' lifted':''}">${boardPieceHTML(p)}</span>`;
-    if(t)h+=t.cap||p?'<div class="ring"></div>':'<div class="dot"></div>';
+    if(t&&!S.psyFog)h+=t.cap||p?'<div class="ring"></div>':'<div class="dot"></div>'; // hidden during the Psychic's haze
     d.innerHTML=h;d.onpointerdown=e=>onPointerDown(e,sq);el.appendChild(d);
   }
   // eval bar
@@ -2333,7 +2333,7 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24u';
+const GAME_VERSION='2026-11-24v';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
