@@ -180,6 +180,38 @@ body.psy-theme{--light:#cdb9f0;--dark:#6f4aa8;background:radial-gradient(ellipse
 body.psy-theme #board{box-shadow:0 0 0 2px #8f6ad8,0 0 40px 6px rgba(150,90,255,.45),0 14px 40px rgba(0,0,0,.6)}
 #psySpace{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;display:none}
 body.psy-theme #psySpace{display:block}
+/* Psychic: purple side menu */
+.panel,.status,.ai,.opening,.btn,.card,#moves,.panel h1{transition:background-color .8s,border-color .8s,color .8s,box-shadow .8s}
+body.psy-theme{--panel:#1f1636;--panel2:#2a1e48;--line:#4b3880;--muted:#b3a3d6;--accent:#b88cff}
+body.psy-theme .panel{background:linear-gradient(160deg,rgba(43,29,78,.92),rgba(22,14,42,.92));border-color:#6d4fb8;box-shadow:0 0 30px rgba(150,90,255,.3),inset 0 0 30px rgba(120,70,220,.15);backdrop-filter:blur(3px)}
+body.psy-theme .panel h1{color:#e6d8ff;text-shadow:0 0 12px rgba(184,140,255,.7)}
+body.psy-theme .ai,body.psy-theme .opening,body.psy-theme .botbox,body.psy-theme .moves{background:#1a1230;border-color:#4b3880}
+body.psy-theme .botbox .say{background:#3a2a66;color:#f0e8ff}
+.botbox,.moves,.botbox .say{transition:background-color .8s,border-color .8s}
+body.psy-theme .btn{background:#33255a;border-color:#4b3880;color:#eee6ff}
+body.psy-theme .btn.pri{background:linear-gradient(135deg,#b88cff,#7a4fd6);color:#fff}
+body.psy-theme .btn:disabled{opacity:.45}
+/* the moment the theme switches on */
+.panel{position:relative}
+body.psy-enter #psySpace{animation:psySpaceIn 1.6s ease-out}
+@keyframes psySpaceIn{from{opacity:0;transform:scale(1.15)}to{opacity:1;transform:none}}
+body.psy-enter .panel{animation:psyPanel 1.5s cubic-bezier(.2,.8,.2,1)}
+@keyframes psyPanel{0%{transform:perspective(900px) rotateY(-14deg) scale(.94);filter:brightness(2) saturate(.2) blur(3px);box-shadow:0 0 0 0 rgba(184,140,255,0)}
+  40%{filter:brightness(1.4) saturate(1.4);box-shadow:0 0 70px 18px rgba(184,140,255,.7)}100%{transform:none;filter:none}}
+body.psy-enter .panel>*{animation:psyIn .7s cubic-bezier(.2,.8,.2,1) backwards}
+body.psy-enter .panel>*:nth-child(2){animation-delay:.08s}body.psy-enter .panel>*:nth-child(3){animation-delay:.16s}
+body.psy-enter .panel>*:nth-child(4){animation-delay:.24s}body.psy-enter .panel>*:nth-child(5){animation-delay:.32s}
+body.psy-enter .panel>*:nth-child(6){animation-delay:.4s}body.psy-enter .panel>*:nth-child(7){animation-delay:.48s}
+body.psy-enter .panel>*:nth-child(n+8){animation-delay:.56s}
+@keyframes psyIn{from{opacity:0;transform:translateY(14px) scale(.96);filter:blur(4px)}}
+body.psy-enter .panel::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(110deg,transparent 30%,rgba(230,210,255,.55) 48%,rgba(184,140,255,.25) 52%,transparent 70%);background-size:250% 100%;animation:psyShine 1.3s ease-out .2s both}
+@keyframes psyShine{from{background-position:120% 0}to{background-position:-60% 0}}
+body.psy-enter #board{animation:psymagic 1.2s ease-out}
+.psyburst{position:fixed;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;pointer-events:none;z-index:50;
+  border:3px solid #c9a6ff;box-shadow:0 0 40px 10px rgba(184,140,255,.8),inset 0 0 20px rgba(184,140,255,.8);animation:psyBurst 1.1s ease-out forwards}
+@keyframes psyBurst{to{transform:scale(90);opacity:0;border-width:.2px}}
+@media(prefers-reduced-motion:reduce){body.psy-enter .panel,body.psy-enter .panel>*,body.psy-enter .panel::after,body.psy-enter #psySpace,.psyburst{animation:none}}
 .opt[hidden]{display:none}
 .tog{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}.tog input{width:18px;height:18px;accent-color:var(--accent)}
 .endbot[hidden]{display:none}
@@ -914,7 +946,13 @@ function checkEnd(){
 const SPACE={on:false,raf:0,stars:[],shoot:[],w:0,h:0};
 function psyTheme(on){
   if(on===SPACE.on)return;SPACE.on=on;document.body.classList.toggle('psy-theme',on);
-  if(on){spaceSize();cancelAnimationFrame(SPACE.raf);SPACE.last=performance.now();SPACE.raf=requestAnimationFrame(spaceFrame);}
+  if(on){
+    document.body.classList.remove('psy-enter');void document.body.offsetWidth;document.body.classList.add('psy-enter');
+    clearTimeout(SPACE.enterT);SPACE.enterT=setTimeout(()=>document.body.classList.remove('psy-enter'),1900);
+    const bz=document.createElement('div');bz.className='psyburst';const r=$('board').getBoundingClientRect();
+    if(r.width){bz.style.left=r.left+r.width/2+'px';bz.style.top=r.top+r.height/2+'px';}
+    document.body.appendChild(bz);setTimeout(()=>bz.remove(),1200);
+    spaceSize();cancelAnimationFrame(SPACE.raf);SPACE.last=performance.now();SPACE.raf=requestAnimationFrame(spaceFrame);}
   else cancelAnimationFrame(SPACE.raf);
 }
 function spaceSize(){
@@ -2270,7 +2308,7 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24r';
+const GAME_VERSION='2026-11-24s';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
