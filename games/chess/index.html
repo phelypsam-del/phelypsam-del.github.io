@@ -303,6 +303,27 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   .lbrow{grid-template-columns:26px 34px 1fr auto 50px;gap:8px;padding:8px}.lbrow .act{display:none}.lbrow>.av{width:34px;height:34px}
   .lbrow .rt{font-size:15px}.chal{flex-direction:column;align-items:stretch}.favs{grid-template-columns:1fr}
 }
+
+/* tutorial */
+.tut-txt{font-size:15px;line-height:1.55;color:#e9e1d3}
+.tut-fb{margin-top:10px;border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.5;animation:pop .25s ease}
+.tut-fb.good{background:#1d3a2a;color:#bff0d2}.tut-fb.bad{background:#3d1f1c;color:#ffd0ca}.tut-fb.tip{background:#1d2c45;color:#cfe0ff}
+.tut-fb i{opacity:.8}
+.tut-next{margin-top:8px}
+.tut-ctrl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tut-ctrl button{flex:1;min-width:84px;background:#35302a;border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;color:var(--text)}
+.tut-ctrl button:hover{background:#433c34}
+.tut-ctrl button.go{background:var(--accent);color:#1d1a15;border-color:transparent}
+.card .t small{color:var(--muted);font-weight:500}
+.hbtn.learnhi{border-color:#a37c2c;box-shadow:0 0 0 1px rgba(240,195,90,.35)}
+.tut-start{width:100%;margin-bottom:12px}
+.lessons{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.lesson{width:100%;display:grid;grid-template-columns:28px 38px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;text-align:left;background:#221d18;border:1px solid #362e25;border-radius:12px;padding:10px 12px;color:var(--text)}
+.lesson:hover{background:#2b251e;border-color:#55472f}
+.lesson .ln{grid-row:1/3;width:28px;height:28px;border-radius:50%;background:#15120e;border:1px solid #3a3127;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--muted)}
+.lesson .hic{grid-row:1/3;width:38px;height:38px}
+.lesson b{font-size:14px}.lesson small{color:var(--muted);font-size:12px}
+.lesson.done .ln{background:#1d3a2a;border-color:#2f5a43;color:#7de0a6}
 </style>
 </head>
 <body>
@@ -870,6 +891,7 @@ function doMove(m,sanStr,rec){
 }
 function humanMove(m){
   if(S.over)return;
+  if(S.tut){tutMove(m);return;}
   if(!S.coach)analyze();
   const C=S.coach,k=mkey(m),s=C.map[k];
   const sanStr=san(m,S.legal),bestSan=san(C.bm,S.legal);
@@ -1003,7 +1025,7 @@ function canUndo(){
   if(!S.human||!S.hist.length)return false;
   return S.local?true:S.hist.some(h=>h.q);
 }
-function undo(){S.hint=null;
+function undo(){if(S.tut){startLesson(S.tut.i,0);return;}S.hint=null;
   if(!canUndo())return;
   // stop the bot if it's thinking or mid-move
   S.aiTok=(S.aiTok||0)+1;S.busy=false;S.ponder=null;S.dragFrom=null;
@@ -1024,6 +1046,7 @@ function undo(){S.hint=null;
   beginHumanTurn();
 }
 $('hintBtn').onclick=()=>{
+  if(S.tut){if(humanTurn())tutHint();return;}
   if(!S.human||S.over||S.busy||!humanTurn())return;
   if(!S.coach)analyze();
   const bm=S.coach&&S.coach.bm;if(!bm)return;
@@ -1049,8 +1072,10 @@ $('resignBtn').onclick=()=>{
 };
 /* ---- input: click-to-move and drag-and-drop ---- */
 let D=null; // active drag
+const ROOK_TO_CASTLE={63:62,56:58,7:6,0:2}; // dropping the king on its rook = castle that side
 function tryMove(from,to){
-  const c=S.legal.filter(m=>m.from===from&&m.to===to);
+  let c=S.legal.filter(m=>m.from===from&&m.to===to);
+  if(!c.length&&G.b[from]&&up(G.b[from])==='K'&&ROOK_TO_CASTLE[to]!=null)c=S.legal.filter(m=>m.castle&&m.from===from&&m.to===ROOK_TO_CASTLE[to]);
   if(!c.length)return false;
   if(c.length>1)askPromo(c);else humanMove(c[0]);
   return true;
@@ -1108,6 +1133,7 @@ function selectPiece(sq){
   S.sel=sq;const t=S.legal.filter(m=>m.from===sq);
   const seen={};S.targets=[];
   for(const m of t){if(seen[m.to])continue;seen[m.to]=1;S.targets.push({to:m.to,cap:!!m.cap});}
+  for(const m of t)if(m.castle){const r=+Object.keys(ROOK_TO_CASTLE).find(k=>ROOK_TO_CASTLE[k]===m.to);if(!seen[r]){seen[r]=1;S.targets.push({to:r,cap:false});}}
   const nm=pieceName(p);
   if(!t.length)S.note=inCheck(G.w)?`Your ${nm} can't help — you're in check. Deal with the check first.`:`Your ${nm} has no legal moves right now (it's blocked or pinned).`;
   else S.note=`${nm[0].toUpperCase()+nm.slice(1)}: ${S.targets.length} move${S.targets.length>1?'s':''}.`;
@@ -1155,7 +1181,7 @@ function render(){
   const wc='#f3efe6',bc='#2b2925';
   if(S.flip){top.style.background=wc;bot.style.background=bc;top.style.flexBasis=wp+'%';}
   else{top.style.background=bc;bot.style.background=wc;top.style.flexBasis=(100-wp)+'%';}
-  $('evalTxt').textContent='Eval '+fmtEval(S.evalW||0);
+  $('evalTxt').textContent=S.tut?'':'Eval '+fmtEval(S.evalW||0);
   // player rows
   updateMoods();
   const B=S.bot||BOTS[3],rating=store.get('rating',800);
@@ -1174,7 +1200,7 @@ function render(){
   $('modeTxt').innerHTML=esc(S.mode?S.mode.name+(S.mode.t?' '+S.mode.sub:''):'')+(S.human&&!S.local&&!S.over?` · <span title="Crowns for winning this game (each hint or takeback costs one)">${crownsHTML(crownsAtStake(),'sm')}</span>`:'');
   // opening
   const op=$('opening');
-  $('openTxt').innerHTML=S.opening?`<span class="eco">${S.opening.eco}</span>${S.opening.name}`:'Starting position';
+  $('openTxt').innerHTML=S.tut?`🎓 Lesson ${S.tut.i+1}: <b>${LESSONS[S.tut.i].title}</b>`:S.opening?`<span class="eco">${S.opening.eco}</span>${S.opening.name}`:'Starting position';
   if(S.openFlash){S.openFlash=false;op.classList.remove('flash');void op.offsetWidth;op.classList.add('flash');}
   // status
   const st=$('status');st.className='status';let txt;
@@ -1206,7 +1232,7 @@ function render(){
     mh+=`<div class="mrow"><span class="n">${i/2+1}.</span><span class="mv">${cell(S.hist[i])}</span><span class="mv">${S.hist[i+1]?cell(S.hist[i+1]):''}</span></div>`;
   }
   mv.innerHTML=mh||'<div style="padding:6px 12px;color:var(--muted)">No moves yet</div>';mv.scrollTop=mv.scrollHeight;
-  $('resignBtn').disabled=!S.human||!!S.over;
+  $('resignBtn').disabled=!S.human||!!S.over||!!S.tut;
   $('undoBtn').disabled=!canUndo();
   $('hintBtn').disabled=!S.human||!!S.over||!!S.busy||!humanTurn();
   renderClocks();
@@ -1339,7 +1365,7 @@ function nextChallenge(){
 const ago=t=>{const s=(Date.now()-t)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';const d=Math.floor(s/86400);return d<7?d+'d ago':new Date(t).toLocaleDateString();};
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const homeOpen=()=>$('home').classList.contains('on');
-const gameInProgress=()=>!!(S.human&&!S.over&&S.hist.length);
+const gameInProgress=()=>!!(S.human&&!S.over&&S.hist.length&&!S.tut);
 let HOME={view:'main',tab:'ladder'};
 function openHome(view){
   HOME.view=view||'main';
@@ -1379,6 +1405,7 @@ function renderHome(){
       <nav class="hmenu">
         ${gameInProgress()?`<button class="hbtn primary" data-a="resume">${icon('K')}<span><b>Resume game</b><small>vs ${esc(S.local?'a friend':S.bot.name)} · move ${Math.ceil((S.hist.length+1)/2)}</small></span></button>`:''}
         <button class="hbtn${gameInProgress()?'':' primary'}" data-a="quick">${icon('N')}<span><b>Quick play</b><small>${M.name}${M.t?' '+M.sub:''} · ${QB.id==='friend'?'vs a friend':'vs '+esc(QB.name)}</small></span></button>
+        <button class="hbtn${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Learn chess</b><small>${tutDone().length?`${tutDone().length} of ${LESSONS.length} lessons done`:`${LESSONS.length} quick lessons with the coach`}</small></span></button>
         <button class="hbtn" data-a="new">${icon('Q')}<span><b>New game</b><small>Pick a time control and opponent</small></span></button>
         <button class="hbtn" data-a="friend">${icon('P')}<span><b>Play a friend</b><small>2 players, 1 device, no internet needed</small></span></button>
         <button class="hbtn" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Climb the ladder, collect crowns</small></span></button>
@@ -1429,6 +1456,12 @@ function renderHome(){
         ${g.rated?`<small class="${g.r1>=g.r0?'up':'dn'}">${g.r1>=g.r0?'+':''}${g.r1-g.r0}</small>`:g.local?'':'<small>unrated</small>'}<small>${ago(g.t)}</small></span></li>`;}).join('')}</ul>`
     :`<div class="empty">No games yet. Finish a game and it'll show up here.</div>`}
     ${H.length?`<button class="btn sm ghost" data-a="clear">Clear history</button>`:''}`;
+  }else if(HOME.view==='learn'){
+    const d=tutDone(),nextI=LESSONS.findIndex((L,i)=>!d.includes(i));
+    v.innerHTML=`${vhead('Learn chess')}
+    <p class="lead">Short lessons where the coach shows you how each piece moves, plus the special rules and your first checkmates. <span class="crtot">✓ ${d.length} / ${LESSONS.length}</span></p>
+    ${nextI>=0?`<button class="hbtn primary tut-start" data-lesson="${nextI}"><span class="hic">${pieceHTML(LESSONS[nextI].icon)}</span><span><b>${d.length?'Continue':'Start'}: ${LESSONS[nextI].title}</b><small>Lesson ${nextI+1} of ${LESSONS.length}</small></span></button>`:''}
+    <ol class="lessons">${LESSONS.map((L,i)=>`<li><button class="lesson${d.includes(i)?' done':''}" data-lesson="${i}"><span class="ln">${d.includes(i)?'✓':i+1}</span><span class="hic">${pieceHTML(L.icon)}</span><b>${L.title}</b><small>${d.includes(i)?'Done · replay':'Start'}</small></button></li>`).join('')}</ol>`;
   }else if(HOME.view==='how'){
     const qb=k=>`<span class="badge" style="background:${Q[k].col}">${Q[k].label}</span>`;
     v.innerHTML=`${vhead('How to play')}
@@ -1476,7 +1509,8 @@ async function loadWorld(){
   }catch(e){el.innerHTML='<div class="empty">Couldn\'t load the worldwide leaderboard right now.</div>';}
 }
 $('home').addEventListener('click',e=>{
-  const t=e.target.closest('[data-a],[data-tab]');if(!t)return;
+  const t=e.target.closest('[data-a],[data-tab],[data-lesson]');if(!t)return;
+  if(t.dataset.lesson!=null){startLesson(+t.dataset.lesson,0);return;}
   if(t.dataset.tab){HOME.tab=t.dataset.tab;renderHome();return;}
   const a=t.dataset.a;
   if(a==='home')openHome('main');
@@ -1485,11 +1519,147 @@ $('home').addEventListener('click',e=>{
   else if(a==='new')openSetup();
   else if(a==='friend')openSetup('friend');
   else if(a==='challenge')openSetup(t.dataset.bot);
-  else if(a==='board'||a==='stats'||a==='how')openHome(a);
+  else if(a==='board'||a==='stats'||a==='how'||a==='learn')openHome(a);
   else if(a==='clear'){if(t.dataset.sure){store.set('history',[]);renderHome();}else{t.dataset.sure='1';t.textContent='Tap again to clear all history';}}
 });
 window.ChessCoach.refreshHome=()=>{if(homeOpen())renderHome();};
 window.ChessCoach.totalCrowns=totalCrowns;
+/* ================= LEARN: tutorial lessons with the coach ================= */
+const isMateNow=()=>inCheck(G.w)&&legal(false).length===0;
+const LESSONS=[
+ {title:'The pawn',icon:'P',steps:[
+   {fen:'4k3/8/8/8/8/8/4P3/4K3 w - - 0 1',
+    text:'Pawns move <b>straight forward</b>. On its <b>very first move</b>, a pawn may jump <b>two squares</b>.<br><br>👉 Move your pawn <b>two squares</b> forward.',
+    goal:m=>m.p==='P'&&!!m.dbl,wrong:m=>m.p==='P'?'One square is legal too, but this time try the two-square jump!':null,
+    yes:'Nice! That two-square jump only works on a pawn\'s first move.'},
+   {fen:'4k3/8/8/3p4/4P3/8/8/4K3 w - - 0 1',
+    text:'Pawns <b>capture diagonally</b>, one square forward to the side. They can\'t capture straight ahead.<br><br>👉 Capture the black pawn.',
+    goal:m=>m.p==='P'&&!!m.cap,wrong:()=>'Pawns capture diagonally, not straight ahead. Look one square forward and to the left.',
+    yes:'Captured! Pawns are the only piece that moves one way and captures another way.'}]},
+ {title:'The knight',icon:'N',steps:[
+   {fen:'4k3/8/8/3p4/8/3PNP2/4P3/4K3 w - - 0 1',
+    text:'The knight moves in an <b>L-shape</b>: two squares one way, then one square to the side. It\'s the only piece that can <b>jump over</b> other pieces.<br><br>👉 Jump your knight onto the black pawn and capture it.',
+    goal:m=>m.p==='N'&&!!m.cap,yes:'Great jump! Knights are tricky because they can leap over everything.'}]},
+ {title:'The bishop',icon:'B',steps:[
+   {fen:'4k3/8/6p1/8/8/8/2B5/4K3 w - - 0 1',
+    text:'The bishop slides <b>diagonally</b> as far as it likes, as long as nothing is in the way. A bishop stays on its own colour of square all game.<br><br>👉 Capture the pawn with your bishop.',
+    goal:m=>m.p==='B'&&!!m.cap,yes:'Spot on! Long diagonals are a bishop\'s favourite place.'}]},
+ {title:'The rook',icon:'R',steps:[
+   {fen:'4k3/8/8/8/1p6/8/8/1R2K3 w - - 0 1',
+    text:'The rook slides in <b>straight lines</b>: up, down, left or right, as far as it likes.<br><br>👉 Capture the pawn with your rook.',
+    goal:m=>m.p==='R'&&!!m.cap,yes:'Rooks love open lines. They get stronger as the board clears.'}]},
+ {title:'The queen',icon:'Q',steps:[
+   {fen:'4k3/8/8/8/8/2p5/8/Q3K3 w - - 0 1',
+    text:'The queen is your <b>strongest piece</b>. She moves like a rook <b>and</b> a bishop: straight lines and diagonals.<br><br>👉 Capture the pawn with your queen.',
+    goal:m=>m.p==='Q'&&!!m.cap,yes:'Powerful! Keep your queen safe. Losing her early usually loses the game.'}]},
+ {title:'The king',icon:'K',steps:[
+   {fen:'4k3/8/8/8/8/8/4p3/4K3 w - - 0 1',
+    text:'The king moves <b>one square</b> in any direction. He can never move onto a square where he could be captured.<br><br>👉 Use your king to capture the pawn next to him.',
+    goal:m=>m.p==='K'&&!!m.cap,yes:'Well done! In the endgame the king becomes a fighter too.'}]},
+ {title:'Check',icon:'R',steps:[
+   {fen:'4k3/8/8/8/8/8/8/R3K3 w - - 0 1',
+    text:'When a king is attacked, it\'s in <b>check</b>. The other player <b>must</b> get out of check on their next move.<br><br>👉 Put the black king in check.',
+    goal:()=>inCheck(G.w),wrong:()=>'That doesn\'t attack the king. Which line leads straight to the black king?',
+    yes:'Check! Black has to deal with that threat right away.'}]},
+ {title:'Escaping check',icon:'N',steps:[
+   {fen:'4k3/8/8/8/8/1N6/8/r3K3 w - - 0 1',
+    text:'Now <b>you</b> are in check from the black rook! There are three ways out: <b>move</b> the king, <b>block</b> the attack, or <b>capture</b> the attacker.<br><br>👉 Get out of check. Capturing the rook is best!',
+    goal:m=>!!m.cap,wrong:()=>'That escapes the check, but you can do better. Can a piece <b>capture</b> the rook?',
+    yes:'The best escape: you captured the attacker and won a rook!'}]},
+ {title:'Castling',icon:'K',steps:[
+   {fen:'4k3/8/8/8/8/8/5PPP/4K2R w K - 0 1',
+    text:'<b>Castling</b> tucks your king into safety and brings a rook into the game, all in one move. Move the king <b>two squares toward the rook</b> (or drag it onto the rook) and the rook jumps over.<br><br>You can only castle if neither piece has moved yet, nothing stands between them, and the king isn\'t in check or passing through an attacked square.<br><br>👉 Castle!',
+    goal:m=>!!m.castle,wrong:()=>'Try moving your king two squares to the right, or straight onto the rook.',
+    yes:'Castled! Doing this early is one of the best habits in chess.'}]},
+ {title:'En passant',icon:'P',steps:[
+   {fen:'4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1',
+    text:'A special pawn capture! Black\'s pawn just jumped two squares and landed <b>right beside</b> your pawn. You may capture it <b>as if it had moved only one square</b>, by moving diagonally behind it. This is called <b>en passant</b> ("in passing"), and you can only do it straight away.<br><br>👉 Capture en passant.',
+    goal:m=>!!m.ep,wrong:()=>'Move your pawn diagonally onto the empty square <b>behind</b> the black pawn.',
+    yes:'Magnifique! The captured pawn vanishes even though you didn\'t land on it.'}]},
+ {title:'Promotion',icon:'Q',steps:[
+   {fen:'4k3/1P6/8/8/8/8/8/4K3 w - - 0 1',
+    text:'When a pawn reaches the <b>far end</b> of the board, it <b>promotes</b>: it becomes a queen, rook, bishop or knight. Almost everyone picks a queen.<br><br>👉 Push your pawn to the end and promote it.',
+    goal:m=>!!m.promo,yes:'A brand-new piece! Promoting is how many endgames are won.'}]},
+ {title:'Checkmate',icon:'R',steps:[
+   {fen:'6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+    text:'<b>Checkmate</b> means the king is in check and has <b>no way out</b>. That wins the game!<br><br>Black\'s own pawns are trapping his king. 👉 Find the checkmate.',
+    goal:()=>isMateNow(),wrong:()=>inCheck(G.w)?'Check, but the king can escape. Try attacking along the back row.':'Not mate yet. Which row is the black king stuck on?',
+    yes:'Checkmate! This is called a <b>back-rank mate</b>. Watch out for it in your own games too.'}]},
+ {title:'Scholar\'s mate',icon:'Q',steps:[
+   {fen:'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4',
+    text:'Your queen and bishop are both aiming at the same weak square, <b>f7</b>, which only the king defends.<br><br>👉 Deliver checkmate in one move.',
+    goal:()=>isMateNow(),wrong:()=>'Look at f7. Both your queen and bishop are pointing at it.',
+    yes:'Checkmate in 4 moves! Now you know the trap, so don\'t fall for it yourself.'}]}
+];
+const tutDone=()=>store.get('tutDone',[])||[];
+function loadFEN(fen){
+  const [pl,turn,cas,ep]=fen.split(' ');const b=[];
+  for(const ch of pl.replace(/\//g,''))if(/\d/.test(ch))for(let i=0;i<+ch;i++)b.push('');else b.push(ch);
+  G={b,w:turn==='w',cr:(cas.includes('K')?1:0)|(cas.includes('Q')?2:0)|(cas.includes('k')?4:0)|(cas.includes('q')?8:0),
+     ep:!ep||ep==='-'?-1:('abcdefgh'.indexOf(ep[0])+(8-+ep[1])*8),hm:0,st:[],kw:b.indexOf('K'),kb:b.indexOf('k')};
+}
+function tutSolution(){
+  const st=LESSONS[S.tut.i].steps[S.tut.step];
+  for(const m of S.legal){make(m);let ok=false;try{ok=st.goal(m);}catch(e){}unmake(m);if(ok)return m;}
+  return null;
+}
+function tutCard(extra,mood){
+  const T=S.tut,L=LESSONS[T.i],st=L.steps[T.step];
+  const ctrl=`<div class="tut-ctrl"><button data-tut="hint">💡 Hint</button><button data-tut="retry">↺ Restart</button><button data-tut="list">☰ Lessons</button></div>`;
+  S.card={q:null,title:`🎓 Lesson ${T.i+1} of ${LESSONS.length}: ${L.title}${L.steps.length>1?` <small>(part ${T.step+1}/${L.steps.length})</small>`:''}`,
+    text:`<div class="tut-txt">${st.text}</div>${extra?`<div class="tut-fb ${mood||''}">${extra}</div>`:''}${T.done?'':ctrl}`};
+}
+function startLesson(i,step){
+  startGame('w','friend','casual');
+  S.tut={i,step:step||0,fails:0,done:false};
+  const st=LESSONS[i].steps[S.tut.step];
+  loadFEN(st.fen);
+  S.hist=[];S.keys=[posKey()];S.last=null;S.opening=null;S.coach=null;S.hint=null;S.sel=null;S.targets=[];S.evalW=0;S.chat=null;
+  S.legal=legal(false);
+  tutCard();render();
+}
+function tutMove(m){
+  const T=S.tut,L=LESSONS[T.i],st=L.steps[T.step];
+  const sanStr=san(m,S.legal);
+  doMove(m,sanStr,{});S.opening=null;S.hint=null;
+  let ok=false;try{ok=st.goal(m);}catch(e){}
+  if(ok){
+    T.fails=0;
+    if(T.step+1<L.steps.length){
+      tutCard(`✅ ${st.yes}`,'good');render();
+      const g=S.gid;setTimeout(()=>{if(S.gid===g&&S.tut){startLesson(T.i,T.step+1);}},1600);
+    }else{
+      T.done=true;const d=tutDone();if(!d.includes(T.i)){d.push(T.i);store.set('tutDone',d);}
+      const last=T.i===LESSONS.length-1;
+      tutCard(`✅ ${st.yes}<div class="tut-next">${last?
+        `<b>🎉 You finished every lesson!</b> Ready for a real game? Pip is a friendly first opponent.</div><div class="tut-ctrl"><button class="go" data-tut="pip">Play Pip</button><button data-tut="list">☰ Lessons</button></div>`:
+        `</div><div class="tut-ctrl"><button class="go" data-tut="next">Next lesson →</button><button data-tut="retry">↺ Again</button><button data-tut="list">☰ Lessons</button></div>`}`,'good');
+      render();
+    }
+  }else{
+    T.fails++;
+    const why=(st.wrong&&st.wrong(m))||'Not quite. Read the coach\'s tip and try again.';
+    tutCard(`❌ ${why}${T.fails>=2?' <i>(Stuck? Press 💡 Hint.)</i>':''}`,'bad');render();
+    const g=S.gid,i=T.i,sp=T.step,f=T.fails;
+    setTimeout(()=>{if(S.gid===g&&S.tut){startLesson(i,sp);S.tut.fails=f;tutCard(`❌ ${why}`,'bad');render();}},1300);
+  }
+}
+function tutHint(){
+  const m=tutSolution();if(!m)return;
+  if(!S.hint||S.hint.from!==m.from){S.hint={from:m.from,to:m.to,stage:1};tutCard(`💡 Try the highlighted <b>${pieceName(m.p)}</b>. Press Hint again to see where it goes.`,'tip');}
+  else{S.hint.stage=2;tutCard(`💡 Move it to the highlighted square.`,'tip');}
+  render();
+}
+$('card').addEventListener('click',e=>{
+  const b=e.target.closest('[data-tut]');if(!b||!S.tut)return;
+  const a=b.dataset.tut,T=S.tut;
+  if(a==='hint')tutHint();
+  else if(a==='retry')startLesson(T.i,0);
+  else if(a==='next')startLesson(Math.min(T.i+1,LESSONS.length-1),0);
+  else if(a==='list')openHome('learn');
+  else if(a==='pip'){pref.bot='pip';pref.mode='casual';pref.side='w';startGame('w','pip','casual');}
+});
+
 
 // boot: show a board behind the title screen
 resetPos();S={gid:0,human:null,bot:botById(pref.bot),mode:modeById('casual'),hist:[],keys:[posKey()],over:null,busy:false,flip:false,sel:null,targets:[],evalW:0,legal:[],clock:{w:0,b:0},
@@ -1529,14 +1699,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24i';
+const GAME_VERSION='2026-11-24j';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('✨ Knightfall is here! New menu, leaderboard and crowns.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('✨ New: Learn chess lessons with the coach. Castling onto the rook works too.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
