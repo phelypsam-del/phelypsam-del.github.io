@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chess Coach · Hammerfall Games</title>
+<title>Knightfall · Chess · Hammerfall Games</title>
 <meta name="description" content="Play chess against eight computer opponents from 400 to 2500 Elo, or a friend on the same device. A coach rates every move. Works offline.">
 <meta name="theme-color" content="#1c1a17">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -174,6 +176,133 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 .upd button{background:var(--accent);color:#1d1b18;border:0;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer;min-height:40px}
 .upd .x{background:none;color:var(--muted);padding:6px 8px;font-size:18px;min-height:0}
 @media(prefers-reduced-motion:reduce){.upd{transition:none}}
+/* ===== Knightfall title screen ===== */
+.home{position:fixed;inset:0;z-index:60;overflow:auto;display:none;background:radial-gradient(1000px 520px at 50% -160px,#3b2d1b 0%,transparent 70%),#16130f}
+.home.on{display:block;animation:hfade .25s ease}
+@keyframes hfade{from{opacity:0}}
+.hbg{position:fixed;inset:0;pointer-events:none;overflow:hidden;
+  background:repeating-conic-gradient(rgba(255,240,210,.025) 0 25%,transparent 0 50%) 0 0/120px 120px;
+  -webkit-mask:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 75%);mask:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 75%)}
+.hknight{position:absolute;right:-6vw;bottom:-8vh;width:min(62vw,640px);opacity:.07;filter:blur(.5px);transform:rotate(-8deg)}
+.hknight svg{width:100%;height:auto;display:block}
+.hwrap{position:relative;max-width:980px;margin:0 auto;padding:16px 18px 40px}
+.htop{display:flex;justify-content:space-between;align-items:center;min-height:40px}
+.hlink{color:var(--muted);text-decoration:none;font-size:14px}.hlink:hover{color:var(--text)}
+.hero{text-align:center;padding:18px 0 26px}
+.crest{width:92px;height:92px;margin:0 auto 6px;border-radius:24px;background:linear-gradient(160deg,#3a2f22,#1c1712);border:1px solid #4a3d2c;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06);padding:10px;animation:float 5s ease-in-out infinite}
+.crest svg{width:100%;height:100%}
+@keyframes float{50%{transform:translateY(-5px)}}
+.ktitle{display:block;text-align:center;font-family:Cinzel,Georgia,"Times New Roman",serif;font-weight:900;font-size:clamp(44px,9vw,86px);letter-spacing:.06em;line-height:1;margin:6px 0 8px;
+  background:linear-gradient(180deg,#fff6dc 0%,#f0c85e 55%,#a8741f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 14px rgba(240,190,80,.18))}
+.hero .tag{margin:0;color:var(--muted);font-size:16px;letter-spacing:.3px}
+.hgrid{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:start}
+.pcard{background:linear-gradient(180deg,#2a241d,#221e19);border:1px solid #3d3428;border-radius:18px;padding:18px;box-shadow:0 18px 44px rgba(0,0,0,.35)}
+.pc-top{display:flex;align-items:center;gap:12px}
+.pc-top>.av{width:58px;height:58px;flex:none}
+.pc-id{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.pc-id b{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-rt{text-align:right}.pc-rt span{display:block;font-size:34px;font-weight:800;line-height:1;color:#f3d892;font-variant-numeric:tabular-nums}
+.pc-rt small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+.prog{margin:16px 0 14px}.prog .bar{height:8px;border-radius:8px;background:#15120e;overflow:hidden;border:1px solid #3a3127}
+.prog .bar i{display:block;height:100%;background:linear-gradient(90deg,#b9842a,#f2c75c);border-radius:8px}
+.prog small{display:block;margin-top:6px;color:var(--muted);font-size:13px}.prog small b{color:var(--text)}
+.pc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pc-stats div{background:#1b1713;border:1px solid #332b22;border-radius:10px;padding:9px 6px;text-align:center}
+.pc-stats b{display:block;font-size:18px;font-variant-numeric:tabular-nums}.pc-stats b i{font-style:normal;color:#6b6152;margin:0 2px}
+.pc-stats small{color:var(--muted);font-size:11px;display:inline-flex;align-items:center;gap:3px}
+.pc-stats .cr b{color:#f3d892}.pc-stats .crown{width:13px;height:13px}
+.rank{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#e9dcc4;background:#332a20;border:1px solid #4a3d2c;border-radius:20px;padding:2px 9px 2px 3px;width:max-content}
+.rank .rp{width:18px;height:18px;display:inline-block}.rank .rp svg{width:100%;height:100%;display:block}
+.rank small{color:var(--muted);font-weight:500;margin-left:3px}
+.rank.gm{background:linear-gradient(180deg,#5a4413,#3a2c10);border-color:#c9a64a;color:#ffe7a3}
+.hmenu{display:flex;flex-direction:column;gap:8px}
+.hbtn{display:flex;align-items:center;gap:14px;text-align:left;background:#26211b;border:1px solid #3a3127;border-radius:14px;padding:11px 14px;color:var(--text);transition:transform .12s,background .15s,border-color .15s}
+.hbtn:hover{background:#30291f;border-color:#55472f;transform:translateX(3px)}
+.hbtn b{display:block;font-size:16px}.hbtn small{display:block;color:var(--muted);font-size:13px;font-weight:500}
+.hbtn.primary{background:linear-gradient(180deg,#f0c35a,#c48d2c);border-color:transparent;color:#1d1408;box-shadow:0 10px 26px rgba(200,140,40,.25)}
+.hbtn.primary small{color:#4a3510}.hbtn.primary .hic{background:rgba(255,255,255,.35);border-color:transparent}
+.hic.lt{background:#e9dcc2;border-color:#c9b48c}
+.hic{width:40px;height:40px;flex:none;border-radius:10px;background:#1b1713;border:1px solid #3a3127;padding:4px}.hic svg{width:100%;height:100%;display:block}
+.chal{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#201b16;border:1px dashed #4a3d2c;border-radius:14px;padding:12px 14px}
+.chal-l{display:flex;align-items:center;gap:12px;min-width:0}.chal-l>.av{width:46px;height:46px;flex:none}
+.chal-l small{display:block;color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+.chal-l b{font-size:16px}.chal-l .e{color:var(--muted);font-weight:600;font-size:13px}
+.chal-sub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.chal .btn{padding:10px 18px;font-size:14px;flex:none}
+/* crowns */
+.crowns{display:inline-flex;gap:1px;vertical-align:middle}
+.crown{width:16px;height:16px;fill:#f2c14e;stroke:#7a5410;stroke-width:1.1;stroke-linejoin:round}
+.crown.off{fill:#3a342c;stroke:#2a251f}
+.crowns.sm .crown{width:13px;height:13px}
+.crowns.big .crown{width:38px;height:38px}
+.crowns.pop .crown:not(.off){animation:cpop .5s cubic-bezier(.3,1.6,.5,1) both}
+.crowns.pop .crown:nth-child(2){animation-delay:.18s}.crowns.pop .crown:nth-child(3){animation-delay:.36s}
+@keyframes cpop{from{transform:scale(0) rotate(-30deg);opacity:0}}
+.botcard .crowns{margin-top:3px;display:flex}
+.endcrowns{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 10px;text-align:center}
+.endcrowns b{font-size:16px}.endcrowns small{color:var(--muted);font-size:13px;display:inline-flex;align-items:center;gap:4px}
+.endcrowns:empty{display:none}
+.meta .crowns{margin-left:2px}
+/* sub views */
+.vhead{display:flex;align-items:center;gap:12px;margin:6px 0 14px}
+.vhead h2{margin:0;font-family:Cinzel,Georgia,serif;font-size:28px;letter-spacing:.04em;color:#f3d892}
+.back,.mback{background:#26211b;border:1px solid #3a3127;color:var(--text);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px}
+.back:hover,.mback:hover{background:#30291f}
+.mback{float:right;padding:6px 10px;font-size:13px}
+.tabs{display:inline-flex;background:#1b1713;border:1px solid #3a3127;border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.tabs button{border:0;background:transparent;color:var(--muted);font-weight:700;padding:8px 16px;border-radius:9px;font-size:14px}
+.tabs button.on{background:#3a3126;color:var(--text)}
+.lead{color:#cfc4b2;margin:0 0 12px;font-size:14px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.crtot{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:#f3d892;background:#2a2318;border:1px solid #4a3d2c;border-radius:20px;padding:3px 10px}
+.lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lbrow{display:grid;grid-template-columns:34px 40px 1fr auto 64px 70px;align-items:center;gap:10px;background:#221d18;border:1px solid #362e25;border-radius:12px;padding:8px 12px}
+.lbrow>.av{width:40px;height:40px}.lbrow>.av img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover}
+.lbrow .pos{font-weight:800;font-size:18px;color:#8b7f6c;text-align:center;font-variant-numeric:tabular-nums}
+.lbrow:nth-child(1) .pos{color:#f2c75c}.lbrow:nth-child(2) .pos{color:#cfd4d8}.lbrow:nth-child(3) .pos{color:#d08a4e}
+.lbrow .nm{min-width:0;display:flex;flex-direction:column;gap:3px}.lbrow .nm b{font-size:15px}
+.lbrow .nm small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbrow .rec{display:flex;flex-direction:column;align-items:flex-end;gap:3px}.lbrow .rec small{color:var(--muted);font-size:12px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
+.lbrow .rec small .crown{width:12px;height:12px}
+.lbrow .rt{font-weight:800;font-size:18px;text-align:right;font-variant-numeric:tabular-nums}
+.lbrow .act{text-align:right}
+.lbrow.me{background:linear-gradient(90deg,#3a2f1a,#2a2318);border-color:#a37c2c;box-shadow:0 0 0 1px rgba(240,195,90,.25)}
+.lbrow.done .nm b::after{content:" ✓";color:#4fd18b}
+.btn.sm{padding:6px 12px;font-size:13px}.btn.ghost{background:transparent;margin-top:14px}
+.empty{background:#1e1a15;border:1px dashed #3a3127;border-radius:12px;padding:18px;text-align:center;color:var(--muted);line-height:1.5}
+.empty b{color:var(--text)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.tiles div{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:12px;text-align:center}
+.tiles b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.tiles b i{font-style:normal;color:#6b6152;font-size:16px}
+.tiles small{color:var(--muted);font-size:12px}
+.chart{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:12px;margin-bottom:12px}
+.chart.empty{border-style:dashed;color:var(--muted);font-size:14px}
+.ch-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}.ch-h small{color:var(--muted)}
+.chart svg{width:100%;height:140px;display:block}
+.favs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.favs div{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;align-items:center}
+.favs small{grid-column:1/-1;color:var(--muted);font-size:12px}.favs span{color:var(--muted);font-weight:700}
+.home h3{font-size:15px;margin:16px 0 8px;color:#e9dcc4}
+.games{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.games li{display:flex;align-items:center;gap:12px;background:#221d18;border:1px solid #362e25;border-radius:12px;padding:9px 12px}
+.games .res{flex:none;width:62px;text-align:center;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-radius:8px;padding:5px 0}
+.games .res.w{background:#1d3a2a;color:#7de0a6}.games .res.l{background:#3d1f1c;color:#ff9d93}.games .res.d{background:#332d24;color:#d8cbb4}
+.g-main{flex:1;min-width:0}.g-main b{font-size:14px}.g-main .e{color:var(--muted);font-weight:600;font-size:12px}
+.g-main small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-side{display:flex;flex-direction:column;align-items:flex-end;gap:1px}.g-side small{color:var(--muted);font-size:11.5px}
+.g-side .up{color:#4fd18b}.g-side .dn{color:#ff8a80}
+.how{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.how section{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:12px 14px}
+.how h3{margin:0 0 6px;display:flex;align-items:center;gap:8px}
+.how p{margin:0 0 6px;color:#cfc4b2;font-size:14px;line-height:1.5}
+.how .qbs{display:flex;flex-wrap:wrap;gap:5px}
+.how .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:20px;color:#16130f}
+.ranks{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+@media(max-width:760px){
+  .hgrid{grid-template-columns:1fr}.how{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}
+  .lbrow{grid-template-columns:26px 34px 1fr auto 50px;gap:8px;padding:8px}.lbrow .act{display:none}.lbrow>.av{width:34px;height:34px}
+  .lbrow .rt{font-size:15px}.chal{flex-direction:column;align-items:stretch}.favs{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -192,7 +321,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   </div>
   <aside class="panel">
     <div class="toprow"><a class="home" href="../">← All games</a><div id="account"></div></div>
-    <h1>Chess Coach <span id="sideTxt"></span></h1>
+    <h1>Knightfall <span id="sideTxt"></span></h1>
     <div class="opening" id="opening"><span class="olab">Opening</span><span id="openTxt">Starting position</span></div>
     <div class="status" id="status"><span class="pip"></span><span id="statusTxt">Your move</span></div>
     <div class="botbox" id="ai" hidden></div>
@@ -202,7 +331,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
       <button class="btn" id="hintBtn" title="Get a hint (press again for more)">💡 Hint</button>
       <button class="btn" id="undoBtn" title="Take back your last move">Undo</button>
       <button class="btn" id="resignBtn" title="Resign this game">Resign</button>
-      <button class="btn pri" id="newBtn">New game</button>
+      <button class="btn pri" id="newBtn">☰ Menu</button>
     </div>
     <div class="moves" id="moves"></div>
     <div class="meta"><span id="modeTxt"></span><span id="evalTxt"></span></div>
@@ -210,8 +339,17 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
   </aside>
 </div>
 
+<div class="home" id="home" aria-label="Knightfall main menu">
+  <div class="hbg" aria-hidden="true"><div class="hknight"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="color-scheme:light only" viewBox="0 0 45 45"><g fill="none" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path fill="#000" d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21"/><path fill="#000" d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.04-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-1-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-2 2.5-3c1 0 1 3 1 3"/><path fill="#ececec" stroke="#ececec" d="M9.5 25.5a.5.5 0 1 1-1 0 .5.5 0 1 1 1 0m5.43-9.75a.5 1.5 30 1 1-.86-.5.5 1.5 30 1 1 .86.5"/><path fill="#ececec" stroke="none" d="m24.55 10.4-.45 1.45.5.15c3.15 1 5.65 2.49 7.9 6.75S35.75 29.06 35.25 39l-.05.5h2.25l.05-.5c.5-10.06-.88-16.85-3.25-21.34s-5.79-6.64-9.19-7.16z"/></g></svg></div></div>
+  <div class="hwrap">
+    <div class="htop"><a class="hlink" href="../">← All games</a><div id="homeAccount"></div></div>
+    <div id="homeView"></div>
+  </div>
+</div>
+
 <div class="overlay" id="setup">
   <div class="modal wide">
+    <button class="mback" id="setupBack" type="button">← Menu</button>
     <h2>New game</h2>
     <p>Pick a time control and an opponent. The coach rates every move you make.</p>
     <div class="msign"><span>Sign in to keep your rating and record on every device.</span><div id="menuAccount"></div></div>
@@ -233,6 +371,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
     <h2 id="endTitle"></h2>
     <p id="endSub"></p>
     <div class="endbot" id="endBot"></div>
+    <div class="endcrowns" id="endCrowns"></div>
     <div class="sum" id="endSum"></div>
     <div class="rating" id="endRating"></div>
     <div class="btns" style="grid-template-columns:repeat(4,1fr)">
@@ -659,6 +798,7 @@ function endGame(res){
     const r1=Math.max(100,Math.round(r0+32*(score-exp)));store.set('rating',r1);S.ratingChange=[r0,r1];
     try{document.dispatchEvent(new CustomEvent('cc:rated',{detail:{rating:r1,before:r0,score,bot:B.id,botElo:B.elo,mode:S.mode.id}}));}catch(e){}
   }else S.ratingChange=null;
+  awardCrowns(res);recordGame(res,score);
   render();setTimeout(()=>showEnd(S.gid),700);
 }
 function checkEnd(){
@@ -681,7 +821,7 @@ function startGame(side,botId,modeId){
      clock:{w:M.t*1000,b:M.t*1000},clockOn:false,tickLast:performance.now(),
      card:{q:null,title:'Good luck!',text:local?'Two-player game on this device. White moves first — pass the device after each move. The coach rates both players.':side==='w'?'You have White — drag a piece to move it, or click it to see where it can go.':`You have Black. ${B.name} moves first.`},
      chat:local?null:{text:pickLine(B,'hi')}};
-  $('setup').classList.remove('on');$('endOv').classList.remove('on');$('promoOv').classList.remove('on');
+  $('setup').classList.remove('on');$('endOv').classList.remove('on');$('promoOv').classList.remove('on');$('home').classList.remove('on');
   resetResign();
   if(humanTurn())beginHumanTurn();else{S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},500);}
 }
@@ -847,7 +987,7 @@ function renderClocks(){
   }
 }
 setInterval(()=>{
-  if(!S.mode||!S.mode.t||S.over||!S.clockOn){if(S)S.tickLast=performance.now();return;}
+  if(!S.mode||!S.mode.t||S.over||!S.clockOn||$('home').classList.contains('on')){if(S)S.tickLast=performance.now();return;}
   chargeClock();
   const side=G.w?'w':'b';
   if(S.clock[side]<=0){
@@ -1031,7 +1171,7 @@ function render(){
   $('capBot').innerHTML=capStr(hc,bw?'b':'w',adv);
   $('capTop').innerHTML=capStr(ac,bw?'w':'b',-adv);
   $('sideTxt').textContent=S.local?'2 players · offline':S.human?'You: '+(humanW()?'White':'Black'):'';
-  $('modeTxt').textContent=S.mode?S.mode.name+(S.mode.t?' '+S.mode.sub:''):'';
+  $('modeTxt').innerHTML=esc(S.mode?S.mode.name+(S.mode.t?' '+S.mode.sub:''):'')+(S.human&&!S.local&&!S.over?` · <span title="Crowns for winning this game (each hint or takeback costs one)">${crownsHTML(crownsAtStake(),'sm')}</span>`:'');
   // opening
   const op=$('opening');
   $('openTxt').innerHTML=S.opening?`<span class="eco">${S.opening.eco}</span>${S.opening.name}`:'Starting position';
@@ -1092,6 +1232,10 @@ function showEnd(gid){
   const e=endText();$('endTitle').textContent=e.title;$('endSub').textContent=e.sub;
   const B=S.bot;
   $('endBot').hidden=!!S.local;
+  const ec=$('endCrowns');
+  if(S.local||S.over.winner!==S.human){ec.innerHTML=S.local?'':`<small>Win with no hints or takebacks to earn all 3 ${CROWN(true)}</small>`;}
+  else{const n=S.crownsEarned||0,a=assists();
+    ec.innerHTML=`${crownsHTML(n,'big pop')}<b>${n===3?'Flawless — 3 crowns!':n+' crown'+(n>1?'s':'')}</b><small>${a?`${S.hints||0} hint${S.hints===1?'':'s'} and ${S.takebacks||0} takeback${S.takebacks===1?'':'s'} used`:'No hints, no takebacks.'}${S.crownNew?' · New best vs '+esc(S.bot.name)+'!':''}</small>`;}
   $('endBot').innerHTML=`${avatar(B,botMood())}<div><b>${B.name}</b> <span style="color:var(--muted)">${B.show||B.elo}</span><div style="margin-top:2px">“${S.chat?S.chat.text:''}”</div></div>`;
   const accOf=arr=>arr.length?Math.round(100*arr.reduce((a,h)=>a+Math.max(0,1-Math.min(h.loss,400)/400),0)/arr.length)+'%':'—';
   if(S.local){
@@ -1115,7 +1259,7 @@ if(pref.bot!=='friend'&&!BOTS.some(b=>b.id===pref.bot))pref.bot='mira'; // e.g. 
 function buildMenu(){
   $('modeSeg').innerHTML=MODES.map(m=>`<button data-v="${m.id}" class="${m.id===pref.mode?'on':''}">${m.name}<small>${m.sub}</small></button>`).join('');
   $('botGrid').innerHTML=`<button class="botcard friend${pref.bot==='friend'?' on':''}" data-v="friend">${avatar(FRIEND)}<span><b>Play a friend <span class="e">2P</span></b><small>${FRIEND.tag}</small></span></button>`+
-    BOTS.map(B=>`<button class="botcard${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.show||B.elo}</span></b><small>${B.tag}</small></span></button>`).join('');
+    BOTS.map(B=>`<button class="botcard${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.show||B.elo}</span></b><small>${B.tag}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('');
   $('autoFlip').checked=pref.autoFlip!==false;syncMenu();
   [...$('sideSeg').children].forEach(x=>x.classList.toggle('on',x.dataset.v===pref.side));
   $('myRating').textContent='Your rating: '+store.get('rating',800);
@@ -1131,33 +1275,246 @@ $('startBtn').onclick=()=>{
   store.set('side',pref.side);store.set('bot',pref.bot);store.set('mode',pref.mode);
   startGame(pref.side,pref.bot,pref.mode);
 };
-$('newBtn').onclick=openMenu;
+$('newBtn').onclick=()=>openHome();
+$('setupBack').onclick=()=>openHome();
 $('againBtn').onclick=openMenu;
 $('rematchBtn').onclick=()=>startGame(pref.side,pref.bot,pref.mode);
 $('reviewBtn').onclick=()=>$('endOv').classList.remove('on');
 $('flipBtn').onclick=()=>{S.flip=!S.flip;render();};
-$('setup').onclick=e=>{if(e.target.id==='setup'&&S.human)$('setup').classList.remove('on');};
-// boot: show a board behind the menu
+$('setup').onclick=e=>{if(e.target.id!=='setup')return;if(S.human)$('setup').classList.remove('on');else openHome();};
+/* ================= KNIGHTFALL: crowns, ranks, history, title screen ================= */
+const CROWN=on=>`<svg class="crown${on?'':' off'}" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l4.6 3.8L12 5.5l4.4 7.3L21 9l-2 10H5z"/><circle cx="3" cy="8.3" r="1.7"/><circle cx="12" cy="4.6" r="1.7"/><circle cx="21" cy="8.3" r="1.7"/></svg>`;
+const crownsHTML=(n,cls='')=>`<span class="crowns ${cls}" title="${n} of 3 crowns">${[0,1,2].map(i=>CROWN(i<n)).join('')}</span>`;
+const bestCrowns=id=>(store.get('crowns',{})||{})[id]||0;
+const totalCrowns=()=>BOTS.reduce((a,B)=>a+bestCrowns(B.id),0);
+const assists=()=>(S.takebacks||0)+(S.hints||0);
+const crownsAtStake=()=>Math.max(1,3-assists());
+const RANKS=[[0,'Pawn','P'],[700,'Knight','N'],[1000,'Bishop','B'],[1300,'Rook','R'],[1600,'Queen','Q'],[1900,'King','K'],[2200,'Grandmaster','K']];
+function rankOf(r){
+  let i=0;for(let k=0;k<RANKS.length;k++)if(r>=RANKS[k][0])i=k;
+  const c=RANKS[i],n=RANKS[i+1];
+  return{i,name:c[1],piece:c[2],gm:i===RANKS.length-1,next:n?{name:n[1],at:n[0]}:null,pct:n?Math.max(3,Math.min(100,(r-c[0])/(n[0]-c[0])*100)):100};
+}
+const rankBadge=(r,big)=>{const k=rankOf(r);return`<span class="rank${k.gm?' gm':''}${big?' big':''}"><span class="rp">${pieceHTML(k.piece)}</span>${k.name}</span>`;};
+const gameHistory=()=>store.get('history',[])||[];
+function accPct(list){return list.length?Math.round(100*list.reduce((a,h)=>a+Math.max(0,1-Math.min(h.loss||0,400)/400),0)/list.length):null;}
+function recordGame(res,score){
+  if(S.hist.length<2)return;
+  try{
+    const H=gameHistory();
+    const rec={t:S.recordedAt||Date.now(),local:!!S.local,bot:S.bot.id,score:S.local?null:score,winner:res.winner||null,type:res.type,
+      mode:S.mode.id,rated:!!S.ratingChange,r0:S.ratingChange?S.ratingChange[0]:null,r1:S.ratingChange?S.ratingChange[1]:null,
+      acc:S.local?null:accPct(S.hist.filter(h=>h.q)),opening:S.opening?S.opening.name:null,moves:Math.ceil(S.hist.length/2),
+      side:S.local?null:S.human,crowns:S.crownsEarned||0,hints:S.hints||0,takebacks:S.takebacks||0};
+    const i=S.recordedAt?H.findIndex(g=>g.t===S.recordedAt):-1;
+    if(i>=0)H[i]=rec;else H.unshift(rec);
+    S.recordedAt=rec.t;
+    store.set('history',H.slice(0,200));
+    if(rec.r1)store.set('peak',Math.max(store.get('peak',800),rec.r1));
+  }catch(e){}
+}
+function awardCrowns(res){
+  S.crownsEarned=0;S.crownNew=false;
+  if(S.local||!res.winner||res.winner!==S.human)return;
+  const n=crownsAtStake(),all=store.get('crowns',{})||{};
+  S.crownsEarned=n;S.crownNew=n>(all[S.bot.id]||0);
+  if(S.crownNew){all[S.bot.id]=n;store.set('crowns',all);}
+}
+function stats(){
+  const H=gameHistory(),B=H.filter(g=>!g.local);
+  const w=B.filter(g=>g.score===1).length,l=B.filter(g=>g.score===0).length,d=B.filter(g=>g.score===.5).length;
+  let streak=0;for(const g of B){if(g.score===1)streak++;else break;}
+  let best=0,run=0;for(const g of B.slice().reverse()){if(g.score===1){run++;best=Math.max(best,run);}else run=0;}
+  const accs=B.map(g=>g.acc).filter(a=>a!=null);
+  const count=(arr,key)=>{const m={};for(const g of arr)if(g[key])m[g[key]]=(m[g[key]]||0)+1;return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]||null;};
+  return{all:H.length,games:B.length,w,l,d,local:H.length-B.length,winPct:B.length?Math.round(100*(w+d/2)/B.length):null,streak,bestStreak:best,
+    acc:accs.length?Math.round(accs.reduce((a,b)=>a+b,0)/accs.length):null,peak:store.get('peak',store.get('rating',800)),
+    opening:count(H,'opening'),foe:count(B,'bot')};
+}
+function vsRecord(id){const B=gameHistory().filter(g=>!g.local&&g.bot===id);return{w:B.filter(g=>g.score===1).length,l:B.filter(g=>g.score===0).length,d:B.filter(g=>g.score===.5).length};}
+function nextChallenge(){
+  const r=store.get('rating',800);
+  return BOTS.find(B=>B.elo>r&&bestCrowns(B.id)<3)||BOTS.find(B=>bestCrowns(B.id)<3)||BOTS[BOTS.length-1];
+}
+const ago=t=>{const s=(Date.now()-t)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';const d=Math.floor(s/86400);return d<7?d+'d ago':new Date(t).toLocaleDateString();};
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const homeOpen=()=>$('home').classList.contains('on');
+const gameInProgress=()=>!!(S.human&&!S.over&&S.hist.length);
+let HOME={view:'main',tab:'ladder'};
+function openHome(view){
+  HOME.view=view||'main';
+  $('setup').classList.remove('on');$('endOv').classList.remove('on');
+  $('home').classList.add('on');renderHome();$('home').scrollTop=0;
+}
+function closeHome(){$('home').classList.remove('on');S.tickLast=performance.now();if(S.mode)render();}
+function openSetup(botId){
+  if(botId)pref.bot=botId;
+  $('home').classList.remove('on');openMenu();
+}
+const icon=p=>`<span class="hic">${pieceHTML(p)}</span>`;
+function renderHome(){
+  const v=$('homeView');
+  const r=store.get('rating',800),k=rankOf(r),st=stats();
+  if(HOME.view==='main'){
+    const M=modeById(pref.mode),QB=botById(pref.bot),nc=nextChallenge(),rec=vsRecord(nc.id);
+    v.innerHTML=`
+    <header class="hero">
+      <div class="crest">${pieceHTML('N')}</div>
+      <h1 class="ktitle">Knightfall</h1>
+      <p class="tag">Chess with a coach in your corner</p>
+    </header>
+    <div class="hgrid">
+      <section class="pcard">
+        <div class="pc-top">${meAvatar()}<div class="pc-id"><b>${esc(PROFILE&&PROFILE.name?PROFILE.name:'You')}</b>${rankBadge(r)}</div>
+          <div class="pc-rt"><span>${r}</span><small>rating</small></div></div>
+        <div class="prog"><div class="bar"><i style="width:${k.pct}%"></i></div>
+          <small>${k.next?`${k.next.at-r} points to <b>${k.next.name}</b>`:'Top rank reached. Long live the Grandmaster!'}</small></div>
+        <div class="pc-stats">
+          <div><b>${st.games}</b><small>games</small></div>
+          <div><b>${st.w}<i>·</i>${st.l}<i>·</i>${st.d}</b><small>W · L · D</small></div>
+          <div><b>${st.streak}</b><small>win streak</small></div>
+          <div class="cr"><b>${totalCrowns()}<i>/</i>${BOTS.length*3}</b><small>${CROWN(true)} crowns</small></div>
+        </div>
+      </section>
+      <nav class="hmenu">
+        ${gameInProgress()?`<button class="hbtn primary" data-a="resume">${icon('K')}<span><b>Resume game</b><small>vs ${esc(S.local?'a friend':S.bot.name)} · move ${Math.ceil((S.hist.length+1)/2)}</small></span></button>`:''}
+        <button class="hbtn${gameInProgress()?'':' primary'}" data-a="quick">${icon('N')}<span><b>Quick play</b><small>${M.name}${M.t?' '+M.sub:''} · ${QB.id==='friend'?'vs a friend':'vs '+esc(QB.name)}</small></span></button>
+        <button class="hbtn" data-a="new">${icon('Q')}<span><b>New game</b><small>Pick a time control and opponent</small></span></button>
+        <button class="hbtn" data-a="friend">${icon('P')}<span><b>Play a friend</b><small>2 players, 1 device, no internet needed</small></span></button>
+        <button class="hbtn" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Climb the ladder, collect crowns</small></span></button>
+        <button class="hbtn" data-a="stats">${icon('B')}<span><b>Stats &amp; history</b><small>${st.all?`${st.all} game${st.all>1?'s':''} played`:'Your games will show up here'}</small></span></button>
+        <button class="hbtn" data-a="how"><span class="hic lt">${pieceHTML('p')}</span><span><b>How to play</b><small>The coach, crowns, ranks and modes</small></span></button>
+      </nav>
+    </div>
+    <section class="chal">
+      <div class="chal-l">${avatar(nc)}<div><small>Next challenge</small><b>${esc(nc.name)} <span class="e">${nc.elo}</span></b>
+        <span class="chal-sub">${esc(nc.tag)} · ${crownsHTML(bestCrowns(nc.id))}${rec.w+rec.l+rec.d?` · you're ${rec.w}–${rec.l}${rec.d?'–'+rec.d:''}`:''}</span></div></div>
+      <button class="btn pri" data-a="challenge" data-bot="${nc.id}">Challenge</button>
+    </section>`;
+  }else if(HOME.view==='board'){
+    const rows=BOTS.map(B=>({bot:B,rating:B.elo})).concat([{me:true,rating:r}]).sort((a,b)=>b.rating-a.rating);
+    const myPos=rows.findIndex(x=>x.me)+1;
+    v.innerHTML=`${vhead('Leaderboard')}
+    <div class="tabs"><button class="${HOME.tab==='ladder'?'on':''}" data-tab="ladder">The Ladder</button><button class="${HOME.tab==='world'?'on':''}" data-tab="world">Worldwide</button></div>
+    ${HOME.tab==='ladder'?`
+      <p class="lead">You're <b>#${myPos}</b> of ${rows.length}. Beat the opponents above you to climb, and win cleanly (no hints or takebacks) for all 3 crowns.
+        <span class="crtot">${CROWN(true)} ${totalCrowns()} / ${BOTS.length*3}</span></p>
+      <ol class="lb">${rows.map((x,i)=>{
+        if(x.me)return`<li class="lbrow me"><span class="pos">${i+1}</span>${meAvatar()}<span class="nm"><b>${esc(meName())}</b>${rankBadge(r)}</span><span class="rec"></span><span class="rt">${r}</span><span class="act"></span></li>`;
+        const B=x.bot,rc=vsRecord(B.id),c=bestCrowns(B.id);
+        return`<li class="lbrow${c===3?' done':''}"><span class="pos">${i+1}</span>${avatar(B)}<span class="nm"><b>${esc(B.name)}</b><small>${esc(B.tag)}</small></span>
+          <span class="rec">${crownsHTML(c)}<small>${rc.w+rc.l+rc.d?`W ${rc.w} · L ${rc.l} · D ${rc.d}`:'Not played yet'}</small></span><span class="rt">${B.elo}</span>
+          <span class="act"><button class="btn sm" data-a="challenge" data-bot="${B.id}">Play</button></span></li>`;}).join('')}</ol>`
+    :`<div id="worldList" class="lbworld"><div class="empty">Loading…</div></div>`}`;
+    if(HOME.tab==='world')loadWorld();
+  }else if(HOME.view==='stats'){
+    const H=gameHistory();
+    v.innerHTML=`${vhead('Stats & history')}
+    <div class="tiles">
+      <div><b>${r}</b><small>Rating</small></div><div><b>${st.peak}</b><small>Best rating</small></div>
+      <div><b>${st.games}</b><small>Games vs computer</small></div><div><b>${st.winPct==null?'—':st.winPct+'%'}</b><small>Score</small></div>
+      <div><b>${st.acc==null?'—':st.acc+'%'}</b><small>Avg accuracy</small></div><div><b>${st.bestStreak}</b><small>Best win streak</small></div>
+      <div><b>${totalCrowns()}<i>/</i>${BOTS.length*3}</b><small>Crowns</small></div><div><b>${st.local}</b><small>2-player games</small></div>
+    </div>
+    ${ratingChart(H)}
+    <div class="favs">${st.opening?`<div><small>Most played opening</small><b>${esc(st.opening[0])}</b><span>${st.opening[1]}×</span></div>`:''}
+      ${st.foe?`<div><small>Most played opponent</small><b>${esc(botById(st.foe[0]).name)}</b><span>${st.foe[1]}×</span></div>`:''}</div>
+    <h3>Recent games</h3>
+    ${H.length?`<ul class="games">${H.slice(0,30).map(g=>{
+      const B=g.local?null:botById(g.bot),res=g.local?(g.winner?sideName(g.winner)+' won':'Draw'):g.score===1?'Win':g.score===0?'Loss':'Draw';
+      const cls=g.local?'d':g.score===1?'w':g.score===0?'l':'d';
+      return`<li><span class="res ${cls}">${res}</span><span class="g-main"><b>${g.local?'2-player game':'vs '+esc(B.name)+' <span class="e">'+B.elo+'</span>'}</b>
+        <small>${esc(modeById(g.mode).name)} · ${g.moves} moves${g.opening?' · '+esc(g.opening):''}</small></span>
+        <span class="g-side">${g.crowns?crownsHTML(g.crowns,'sm'):''}${g.acc!=null?`<small>${g.acc}% acc</small>`:''}
+        ${g.rated?`<small class="${g.r1>=g.r0?'up':'dn'}">${g.r1>=g.r0?'+':''}${g.r1-g.r0}</small>`:g.local?'':'<small>unrated</small>'}<small>${ago(g.t)}</small></span></li>`;}).join('')}</ul>`
+    :`<div class="empty">No games yet. Finish a game and it'll show up here.</div>`}
+    ${H.length?`<button class="btn sm ghost" data-a="clear">Clear history</button>`:''}`;
+  }else if(HOME.view==='how'){
+    const qb=k=>`<span class="badge" style="background:${Q[k].col}">${Q[k].label}</span>`;
+    v.innerHTML=`${vhead('How to play')}
+    <div class="how">
+      <section><h3>Moving</h3><p>Drag a piece to move it, or click it and then click a square. The dots show where it can go. Checkmate the enemy king to win.</p></section>
+      <section><h3>The coach</h3><p>Every move you make gets a rating, and the coach tells you a better move when there was one.</p>
+        <p class="qbs">${['book','best','excellent','good','inacc','mistake','blunder'].map(qb).join(' ')}</p>
+        <p><b>Book</b> means a known opening move. The opening's name shows at the top of the panel.</p></section>
+      <section><h3>Crowns ${crownsHTML(3)}</h3><p>Beat a computer opponent to earn crowns. A clean win, with no hints and no takebacks, earns all <b>3 crowns</b>. Each hint or takeback costs one crown, but any win earns at least one. Each opponent keeps your best result, so there are ${BOTS.length*3} crowns to collect.</p></section>
+      <section><h3>Rating and ranks</h3><p>Everyone starts at 800. Win against stronger opponents to climb faster. Games where you used Undo aren't rated.</p>
+        <div class="ranks">${RANKS.map(x=>`<span class="rank${x[1]==='Grandmaster'?' gm':''}"><span class="rp">${pieceHTML(x[2])}</span>${x[1]}<small>${x[0]}+</small></span>`).join('')}</div></section>
+      <section><h3>Modes</h3><p><b>Casual</b> has no clock. <b>Bullet</b> (1 min), <b>Blitz</b> (3+2 or 5 min) and <b>Rapid</b> (10 min) use a clock, so run out of time and you lose. "+2" means 2 seconds are added after each move.</p></section>
+      <section><h3>Play a friend</h3><p>Two players take turns on one device, with no internet needed. The board turns around after each move, and the coach rates both players.</p></section>
+      <section><h3>Hints and Undo</h3><p>💡 <b>Hint</b> shows the piece to move, and pressing it again shows where it goes. <b>Undo</b> takes back your last move. Both cost a crown.</p></section>
+    </div>`;
+  }
+}
+function vhead(t){return`<div class="vhead"><button class="back" data-a="home">← Back</button><h2>${t}</h2></div>`;}
+function ratingChart(H){
+  const R=H.filter(g=>g.rated&&g.r1).slice(0,60).reverse();
+  if(R.length<2)return`<div class="chart empty">Your rating graph appears after a couple of rated games.</div>`;
+  const pts=[R[0].r0].concat(R.map(g=>g.r1)),W=600,Hh=140,p=10;
+  const lo=Math.min(...pts)-15,hi=Math.max(...pts)+15;
+  const x=i=>p+i*(W-2*p)/(pts.length-1),y=v=>Hh-p-(v-lo)*(Hh-2*p)/(hi-lo);
+  const d=pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  return`<div class="chart"><div class="ch-h"><small>Rating over your last ${R.length} rated games</small><b>${pts[0]} → ${pts[pts.length-1]}</b></div>
+    <svg viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4b54e" stop-opacity=".35"/><stop offset="1" stop-color="#e4b54e" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L${x(pts.length-1)} ${Hh} L${x(0)} ${Hh}Z" fill="url(#rg)"/><path d="${d}" fill="none" stroke="#e4b54e" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+    <circle cx="${x(pts.length-1)}" cy="${y(pts[pts.length-1])}" r="4" fill="#e4b54e"/></svg></div>`;
+}
+async function loadWorld(){
+  const el=$('worldList');if(!el)return;
+  const CCx=window.ChessCoach,A=CCx.authInfo?CCx.authInfo():null;
+  if(!A||!A.configured){el.innerHTML=`<div class="empty"><b>Worldwide leaderboard: coming soon</b><br>It switches on once Google sign-in is set up for this site. Then every signed-in player's rating shows up here.</div>`;return;}
+  if(!navigator.onLine){el.innerHTML='<div class="empty">You\'re offline. The worldwide leaderboard needs internet.</div>';return;}
+  el.innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const rows=await CCx.fetchLeaderboard(50);
+    if(!homeOpen()||HOME.tab!=='world')return;
+    el.innerHTML=(A.user?'':'<p class="lead">Sign in with Google to put your name on the board.</p>')+
+      (rows.length?`<ol class="lb">${rows.map((x,i)=>`<li class="lbrow${A.user&&x.uid===A.user.uid?' me':''}"><span class="pos">${i+1}</span>
+        ${x.photo?`<span class="av"><img src="${esc(x.photo)}" alt="" referrerpolicy="no-referrer"></span>`:avatar({id:'u'+i,name:x.name||'?',col:'#6b5a3e'})}
+        <span class="nm"><b>${esc(x.name||'Player')}</b>${rankBadge(x.rating||800)}</span><span class="rec"><small>${x.games||0} games</small>${x.crowns?`<small>${CROWN(true)} ${x.crowns}</small>`:''}</span><span class="rt">${x.rating||800}</span><span class="act"></span></li>`).join('')}</ol>`
+      :'<div class="empty">No one is on the board yet. Play a rated game while signed in to be first!</div>');
+  }catch(e){el.innerHTML='<div class="empty">Couldn\'t load the worldwide leaderboard right now.</div>';}
+}
+$('home').addEventListener('click',e=>{
+  const t=e.target.closest('[data-a],[data-tab]');if(!t)return;
+  if(t.dataset.tab){HOME.tab=t.dataset.tab;renderHome();return;}
+  const a=t.dataset.a;
+  if(a==='home')openHome('main');
+  else if(a==='resume')closeHome();
+  else if(a==='quick'){closeHome();startGame(pref.side,pref.bot,pref.mode);}
+  else if(a==='new')openSetup();
+  else if(a==='friend')openSetup('friend');
+  else if(a==='challenge')openSetup(t.dataset.bot);
+  else if(a==='board'||a==='stats'||a==='how')openHome(a);
+  else if(a==='clear'){if(t.dataset.sure){store.set('history',[]);renderHome();}else{t.dataset.sure='1';t.textContent='Tap again to clear all history';}}
+});
+window.ChessCoach.refreshHome=()=>{if(homeOpen())renderHome();};
+window.ChessCoach.totalCrowns=totalCrowns;
+
+// boot: show a board behind the title screen
 resetPos();S={gid:0,human:null,bot:botById(pref.bot),mode:modeById('casual'),hist:[],keys:[posKey()],over:null,busy:false,flip:false,sel:null,targets:[],evalW:0,legal:[],clock:{w:0,b:0},
   card:{q:null,title:'Welcome',text:'Pick a mode and an opponent to begin.'},chat:null};
-render();openMenu();
+render();openHome();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(()=>{}));
 </script>
 <script type="module">
 // Google sign-in: your rating and game record follow your Google account across devices.
-import {mountAccount,onAuth,loadPlayer,savePlayer,recordChessGame,state} from '../auth.js';
+import {mountAccount,onAuth,loadPlayer,savePlayer,recordChessGame,publishLeaderboard,fetchLeaderboard,state} from '../auth.js';
 const CC=window.ChessCoach;let chess=null;
+CC.authInfo=()=>({configured:state.configured,user:state.user});
+CC.fetchLeaderboard=fetchLeaderboard;
+const publish=()=>publishLeaderboard({rating:CC.getRating(),games:chess&&chess.games||0,crowns:CC.totalCrowns?CC.totalCrowns():0}).catch(e=>console.warn('leaderboard',e));
 const rows=()=>[['Chess rating',String(CC.getRating())],['Rated games',String(chess&&chess.games||0)],['Wins · Losses · Draws',chess?`${chess.wins||0} · ${chess.losses||0} · ${chess.draws||0}`:'0 · 0 · 0']];
-const accts=[mountAccount(document.getElementById('account'),rows),mountAccount(document.getElementById('menuAccount'),rows)];
+const accts=[mountAccount(document.getElementById('account'),rows),mountAccount(document.getElementById('menuAccount'),rows),mountAccount(document.getElementById('homeAccount'),rows)];
 const acct={redraw:()=>accts.forEach(a=>a.redraw())};
 onAuth(async st=>{
-  if(!st.user){CC.setProfile(null);chess=null;return;}
+  if(!st.user){CC.setProfile(null);chess=null;CC.refreshHome&&CC.refreshHome();return;}
   CC.setProfile({name:st.user.name,photo:st.user.photo});
   try{
     const d=await loadPlayer();chess=d&&d.chess||null;
     if(chess&&typeof chess.rating==='number')CC.setRating(chess.rating);
     else{chess={rating:CC.getRating(),games:0,wins:0,losses:0,draws:0};await savePlayer({chess});}
-    acct.redraw();
+    acct.redraw();publish();CC.refreshHome&&CC.refreshHome();
   }catch(e){console.warn('Could not load saved chess data',e);}
 });
 document.addEventListener('cc:rated',async e=>{
@@ -1165,20 +1522,21 @@ document.addEventListener('cc:rated',async e=>{
   const{rating,score}=e.detail;
   if(chess){chess.rating=rating;chess.games=(chess.games||0)+1;if(score===1)chess.wins=(chess.wins||0)+1;else if(score===0)chess.losses=(chess.losses||0)+1;else chess.draws=(chess.draws||0)+1;}
   try{await recordChessGame({rating,score});}catch(err){console.warn('Could not save game',err);}
+  publish();
   acct.redraw();
 });
 </script>
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24h';
+const GAME_VERSION='2026-11-24i';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('✨ Updated! Stuck? Press 💡 Hint.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('✨ Knightfall is here! New menu, leaderboard and crowns.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){

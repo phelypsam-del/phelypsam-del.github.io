@@ -1,6 +1,6 @@
 {
-  "name": "Chess Coach",
-  "short_name": "Chess",
+  "name": "Knightfall",
+  "short_name": "Knightfall",
   "description": "Chess against computer opponents or a friend on the same device, with a coach that rates every move. Works offline.",
   "start_url": "./",
   "scope": "./",

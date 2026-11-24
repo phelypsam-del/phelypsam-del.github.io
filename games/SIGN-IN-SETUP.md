@@ -15,7 +15,7 @@ Sign-in uses **Firebase** (free, by Google). It saves each player's chess rating
 1. Left menu: **Build → Firestore Database → Create database**.
 2. Pick a location near you and start in **production mode**.
 3. Open the **Rules** tab, replace everything with the rules below, and click **Publish**.
-   They let each signed-in player read and write **only their own** save data.
+   They let each signed-in player read and write **only their own** save data. The worldwide leaderboard in Knightfall can be read by anyone, but each player can only change their own entry: a short name (first name + last initial), photo, rating, games played and crowns.
 
 ```
 rules_version = '2';
@@ -23,6 +23,13 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /players/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Public leaderboard: anyone can read it, but players can only write their own entry
+    match /leaderboard/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'photo', 'rating', 'games', 'crowns', 'updatedAt'])
+        && request.resource.data.rating is int && request.resource.data.rating >= 100 && request.resource.data.rating <= 3500;
     }
   }
 }
