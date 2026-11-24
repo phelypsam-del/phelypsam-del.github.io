@@ -812,7 +812,6 @@ const BOTS=[
 /* ---- special games: unrated opponents with powers ---- */
 const SPECIALS=[
  {id:'psychic',name:'Psychic',elo:1200,special:true,col:'#8a5fc7',tag:'Sees your moves coming… and has tricks up his sleeve',depth:2,noise:55,rand:0,book:.7,think:[1000,2200],
-  powers:'🔮 Rewinds the board once if checkmated · 🟣 may turn every piece purple when losing',
   lines:{scared:['The crystal ball is… cloudy.','This was not in the vision!','The stars are turning against me…'],confident:['Just as the crystal foretold.','I saw this coming three moves ago.','Your future looks… grim.'],hi:['I already know how this ends. Do you?','Welcome. The crystal ball has been expecting you.'],cap:['Foreseen.','The spirits wanted that piece.'],lost:['…I knew that would happen. Obviously.','A small sacrifice to the stars.'],check:['Check. I saw it in the orb.'],win:['As foretold. Come back when the stars favour you.'],lose:['Impossible… the vision was wrong!'],draw:['The future was… unclear.'],
    reset:['NOT SO FAST! ✨ The stars rewind!','No, no — I refuse this future! Let\'s begin again…'],fog:['Let\'s see you play when you can\'t tell whose pieces are whose! 🟣','Behold — the purple haze! Which pieces are yours now?']}}
 ];
@@ -1396,8 +1395,8 @@ function buildMenu(){
   $('modeSeg').innerHTML=MODES.map(m=>`<button data-v="${m.id}" class="${m.id===pref.mode?'on':''}">${m.name}<small>${m.sub}</small></button>`).join('');
   $('botGrid').innerHTML=`<button class="botcard friend${pref.bot==='friend'?' on':''}" data-v="friend">${avatar(FRIEND)}<span><b>Play a friend <span class="e">2P</span></b><small>${FRIEND.tag}</small></span></button>`+
     BOTS.map(B=>`<button class="botcard${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.show||B.elo||''}</span></b><small>${B.tag}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('')+
-    `<div class="bgsec">✨ Special games<small>Opponents with magic powers. These games don't change your rating.</small></div>`+
-    SPECIALS.map(B=>`<button class="botcard special${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.elo}</span></b><small>${B.tag}</small><small class="pw">${B.powers}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('');
+    `<div class="bgsec">✨ Special games<small>Unusual opponents. Expect the unexpected. These games don't change your rating.</small></div>`+
+    SPECIALS.map(B=>`<button class="botcard special${B.id===pref.bot?' on':''}" data-v="${B.id}">${avatar(B)}<span><b>${B.name} <span class="e">${B.elo}</span></b><small>${B.tag}</small>${crownsHTML(bestCrowns(B.id),'sm')}</span></button>`).join('');
   $('autoFlip').checked=pref.autoFlip!==false;syncMenu();
   [...$('sideSeg').children].forEach(x=>x.classList.toggle('on',x.dataset.v===pref.side));
   $('myRating').textContent='Your rating: '+store.get('rating',800);
@@ -1550,7 +1549,7 @@ function renderHome(){
           <span class="act"><button class="btn sm" data-a="challenge" data-bot="${B.id}">Play</button></span></li>`;}).join('')}</ol>
       <h3 class="lbsec">✨ Special games <small style="color:var(--muted);font-weight:500">· unrated</small></h3>
       <ol class="lb">${SPECIALS.map(B=>{const rc=vsRecord(B.id),c=bestCrowns(B.id);
-        return`<li class="lbrow${c===3?' done':''}"><span class="pos">🔮</span>${avatar(B)}<span class="nm"><b>${esc(B.name)}</b><small>${esc(B.powers)}</small></span>
+        return`<li class="lbrow${c===3?' done':''}"><span class="pos">🔮</span>${avatar(B)}<span class="nm"><b>${esc(B.name)}</b><small>${esc(B.tag)}</small></span>
           <span class="rec">${crownsHTML(c)}<small>${rc.w+rc.l+rc.d?`W ${rc.w} · L ${rc.l} · D ${rc.d}`:'Not played yet'}</small></span><span class="rt">${B.elo}</span>
           <span class="act"><button class="btn sm" data-a="challenge" data-bot="${B.id}">Play</button></span></li>`;}).join('')}</ol>`
     :`<div id="worldList" class="lbworld"><div class="empty">Loading…</div></div>`}`;
@@ -2223,14 +2222,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24p';
+const GAME_VERSION='2026-11-24q';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('🔮 New: Special games! Face the Psychic, who can rewind the board and turn every piece purple.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('🔮 New: Special games! Face the Psychic… if you dare.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
