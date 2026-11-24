@@ -28,6 +28,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sq.sel .hl{background:rgba(70,160,90,.6)}
 .sq.check .hl{background:radial-gradient(circle,rgba(255,30,30,.95) 0%,rgba(255,30,30,.55) 45%,transparent 75%)}
 .sq.hint{box-shadow:inset 0 0 0 4px #4b93ff}
+.sq.hint .hl{background:rgba(75,147,255,.28);animation:pond 1.2s ease-in-out infinite}
+.sq.hint-to .hl{background:radial-gradient(circle,rgba(75,147,255,.75) 0 24%,transparent 26%)}
+.sq.hint-to.has .hl{background:none;box-shadow:inset 0 0 0 4px rgba(75,147,255,.8)}
 .sq.mine:hover .hl{background:rgba(255,255,255,.18)}
 .sq.sel.mine:hover .hl{background:rgba(70,160,90,.6)}
 .dot{position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(25,25,25,.3);z-index:2;pointer-events:none}
@@ -77,7 +80,8 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
 .ai{font-size:14px;color:#d9d0c2;background:#221f1b;border-radius:8px;padding:10px 12px;border:1px dashed var(--line)}
 .ai b{color:var(--text)}
 .ai .warn{color:#ffb4a6;display:block;margin-top:4px}
-.btns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.btns{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+@media(max-width:420px){.btns .btn{padding-left:4px;padding-right:4px;font-size:13px}}
 .btn{background:#35302a;border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:13px;font-weight:600}
 .btn:hover:not(:disabled){background:#433c34}
 .btn:disabled{opacity:.4;cursor:default}
@@ -195,6 +199,7 @@ h1 span{font-size:12px;color:var(--muted);font-weight:500}
     <div id="card"></div>
     <div class="btns">
       <button class="btn" id="flipBtn" title="Flip the board">Flip</button>
+      <button class="btn" id="hintBtn" title="Get a hint (press again for more)">💡 Hint</button>
       <button class="btn" id="undoBtn" title="Take back your last move">Undo</button>
       <button class="btn" id="resignBtn" title="Resign this game">Resign</button>
       <button class="btn pri" id="newBtn">New game</button>
@@ -723,7 +728,7 @@ function chargeClock(){
 function doMove(m,sanStr,rec){
   chargeClock();
   const side=G.w?'w':'b';
-  make(m);S.hist.push(Object.assign({m,san:sanStr},rec||{}));S.keys.push(posKey());S.last=m;S.sel=null;S.targets=[];
+  S.hint=null;make(m);S.hist.push(Object.assign({m,san:sanStr},rec||{}));S.keys.push(posKey());S.last=m;S.sel=null;S.targets=[];
   if(S.mode.t){if(S.clockOn)S.clock[side]+=S.mode.inc*1000;if(S.hist.length>=2)S.clockOn=true;}
   const o=findOpening(gameSans());
   if(o&&o!==S.opening){S.opening=o;S.openFlash=true;}
@@ -863,7 +868,7 @@ function canUndo(){
   if(!S.human||!S.hist.length)return false;
   return S.local?true:S.hist.some(h=>h.q);
 }
-function undo(){
+function undo(){S.hint=null;
   if(!canUndo())return;
   // stop the bot if it's thinking or mid-move
   S.aiTok=(S.aiTok||0)+1;S.busy=false;S.ponder=null;S.dragFrom=null;
@@ -883,6 +888,20 @@ function undo(){
   resetResign();
   beginHumanTurn();
 }
+$('hintBtn').onclick=()=>{
+  if(!S.human||S.over||S.busy||!humanTurn())return;
+  if(!S.coach)analyze();
+  const bm=S.coach&&S.coach.bm;if(!bm)return;
+  S.sel=null;S.targets=[];
+  if(!S.hint||S.hint.from!==bm.from){
+    S.hint={from:bm.from,to:bm.to,stage:1};S.hints=(S.hints||0)+1;
+    S.card={q:null,title:'💡 Hint',text:`Look at your <b>${pieceName(bm.p)}</b>${bm.cap?' — it can capture something':''}. Press Hint again to see where it goes.`};
+  }else{
+    S.hint.stage=2;
+    S.card={q:null,title:'💡 Hint',text:`The coach's move is <b>${san(bm,S.legal)}</b>.`};
+  }
+  render();
+};
 $('undoBtn').onclick=undo;$('endUndoBtn').onclick=undo;
 /* ---- resign (two-step confirm) ---- */
 let resignTimer=null;
@@ -982,6 +1001,8 @@ function render(){
     if(sq===chk)cls+=' check';
     if(p&&isW(p)===humanW()&&humanTurn()&&!S.over&&S.human)cls+=' mine';
     const t=tg[sq];if(t)cls+=' tgt';
+    if(S.hint&&sq===S.hint.from)cls+=' hint';
+    if(S.hint&&S.hint.stage>1&&sq===S.hint.to)cls+=' hint-to'+(p?' has':'');
     if(S.ponder&&sq===S.ponder.from)cls+=' ponder';
     if(S.ponder&&sq===S.ponder.to)cls+=' ponder-to'+(p?' has':'');
     d.className=cls;
@@ -1052,6 +1073,7 @@ function render(){
   mv.innerHTML=mh||'<div style="padding:6px 12px;color:var(--muted)">No moves yet</div>';mv.scrollTop=mv.scrollHeight;
   $('resignBtn').disabled=!S.human||!!S.over;
   $('undoBtn').disabled=!canUndo();
+  $('hintBtn').disabled=!S.human||!!S.over||!!S.busy||!humanTurn();
   renderClocks();
 }
 function cell(h){return(h.q?`<i class="qd" style="background:${Q[h.q].col}" title="${Q[h.q].label}"></i>`:'')+h.san;}
@@ -1153,14 +1175,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24d';
+const GAME_VERSION='2026-11-24e';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('✨ Updated! A mysterious new opponent has appeared… Randy, bruh.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('✨ Updated! Stuck? Press 💡 Hint. (Also: a mysterious opponent named Randy appeared.)',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
