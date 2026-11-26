@@ -477,6 +477,19 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 .netscan .btn{position:absolute;bottom:10px;left:50%;transform:translateX(-50%)}
 .neterr{margin-top:10px;background:#3d1f1c;color:#ffd0ca;border-radius:8px;padding:10px 12px;font-size:14px}
 @media(max-width:760px){.netchoice{grid-template-columns:1fr}.qrwrap{flex-direction:column;align-items:center}.acad-top{grid-template-columns:1fr 1fr}.acad-top .at-r{grid-column:1/-1}.recbox{flex-direction:column;align-items:stretch}}
+
+/* sound */
+.hright{display:flex;align-items:center;gap:8px}
+.abtn{width:36px;height:36px;border-radius:50%;background:#26211b;border:1px solid #3a3127;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+.abtn:hover{background:#30291f}
+.audiopop{position:fixed;z-index:400;width:270px;background:#211c16;border:1px solid #3a3127;border-radius:12px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.55);display:none;color:var(--text)}
+.audiopop.on{display:block;animation:pop .18s ease}
+.ap-h{font-weight:800;margin-bottom:6px}
+.ap-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #2e2820;cursor:pointer}
+.ap-row b{display:block;font-size:14px}.ap-row small{color:var(--muted);font-size:12px}
+.ap-row input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.ap-vol{display:flex;align-items:center;gap:10px;padding-top:10px;font-size:13px;color:var(--muted)}
+.ap-vol input{flex:1;accent-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -494,7 +507,7 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
     <div class="prow"><div class="who" id="meWho"></div><span class="caps" id="capBot"></span><span class="clock" id="clkBot" hidden></span></div>
   </div>
   <aside class="panel">
-    <div class="toprow"><a class="home" href="../">← All games</a><div id="account"></div></div>
+    <div class="toprow"><a class="home" href="../">← All games</a><div class="hright"><button class="abtn" id="abGame" type="button" aria-label="Sound settings">🔊</button><div id="account"></div></div></div>
     <h1>Knightfall <span id="sideTxt"></span></h1>
     <div class="opening" id="opening"><span class="olab">Opening</span><span id="openTxt">Starting position</span></div>
     <div class="status" id="status"><span class="pip"></span><span id="statusTxt">Your move</span></div>
@@ -516,7 +529,7 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 <div class="home" id="home" aria-label="Knightfall main menu">
   <div class="hbg" aria-hidden="true"><div class="hknight"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="color-scheme:light only" viewBox="0 0 45 45"><g fill="none" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path fill="#000" d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21"/><path fill="#000" d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.04-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-1-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-2 2.5-3c1 0 1 3 1 3"/><path fill="#ececec" stroke="#ececec" d="M9.5 25.5a.5.5 0 1 1-1 0 .5.5 0 1 1 1 0m5.43-9.75a.5 1.5 30 1 1-.86-.5.5 1.5 30 1 1 .86.5"/><path fill="#ececec" stroke="none" d="m24.55 10.4-.45 1.45.5.15c3.15 1 5.65 2.49 7.9 6.75S35.75 29.06 35.25 39l-.05.5h2.25l.05-.5c.5-10.06-.88-16.85-3.25-21.34s-5.79-6.64-9.19-7.16z"/></g></svg></div></div>
   <div class="hwrap">
-    <div class="htop"><a class="hlink" href="../">← All games</a><div id="homeAccount"></div></div>
+    <div class="htop"><a class="hlink" href="../">← All games</a><div class="hright"><button class="abtn" id="abHome" type="button" aria-label="Sound settings">🔊</button><div id="homeAccount"></div></div></div>
     <div id="homeView"></div>
   </div>
 </div>
@@ -986,7 +999,9 @@ function insufficient(){
   return rest.length===0||(rest.length===1&&'NB'.includes(up(rest[0])));
 }
 function endGame(res){
-  S.over=res;S.busy=false;S.ponder=null;S.dragFrom=null;
+  S.over=res;
+  if(res.type==='poison')sfx('poison');
+  setTimeout(()=>sfx(res.type==='abandon'?'nope':S.local&&!S.net?(res.winner?'win':'draw'):res.winner?(res.winner===S.human?'win':'lose'):'draw'),res.type==='poison'?700:250);S.busy=false;S.ponder=null;S.dragFrom=null;
   document.querySelectorAll('.pc.ghost').forEach(g=>g.remove());D=null;document.body.classList.remove('dragging');
   $('promoOv').classList.remove('on');
   // bot reaction + rating
@@ -1067,6 +1082,7 @@ function traitorStart(){
   const g=S.gid;setTimeout(()=>{if(S.gid===g)poisonWave('☠️ One of your pieces has been poisoned…');},700);
 }
 function poisonWave(msg){
+  sfx('poison');
   S.pwave=performance.now();render();
   const b=$('board').getBoundingClientRect(),t=document.createElement('div');
   t.className='psnmsg';t.innerHTML=msg;t.style.left=b.left+b.width/2+'px';t.style.top=b.top+b.height/2+'px';
@@ -1118,6 +1134,7 @@ function trtFrame(t){
 }
 /* ---- Psychic powers ---- */
 function psychicReset(){
+  sfx('psychic');
   S.psyReset=true;S.busy=true;S.aiTok=(S.aiTok||0)+1;
   const line=pickLine(S.bot,'reset');S.moods[aiSide()]='scared';S.chat={text:line};
   S.card={q:null,title:'🔮 The Psychic rewinds time!',text:'You checkmated him, but he used his one-time magic to reset the whole board. Beat him again — he can\'t do it twice!'};
@@ -1136,7 +1153,7 @@ function psychicFogCheck(botScore){
   // when he's losing, there's a chance each turn he curses the board purple (once per game)
   if(!S.bot||S.bot.id!=='psychic'||S.psyFogUsed||S.over)return null;
   if(botScore<=-200&&Math.random()<.35){
-    S.psyFogUsed=true;S.psyFog=1; // permanent for the rest of the game
+    S.psyFogUsed=true;S.psyFog=1;sfx('psychic'); // permanent for the rest of the game
     S.card={q:null,title:'🟣 The purple haze!',text:'The Psychic pulled you into his world and turned every piece purple — for the rest of the game! You\'ll have to remember which pieces are yours.'};
     return pickLine(S.bot,'fog');
   }
@@ -1157,6 +1174,7 @@ function startGame(side,botId,modeId){
   resetResign();
   if(B.traitor)traitorStart();
   if(humanTurn())beginHumanTurn();else{S.busy=true;render();const g=S.gid,t=S.aiTok;setTimeout(()=>{if(S.gid===g&&S.aiTok===t&&!S.over)aiTurn();},500);}
+  setTimeout(()=>{if(!S.tut)sfx('start');musicSync();},0);
 }
 /* ---- opponent mood: scared when struggling, confident when winning ---- */
 function moodFor(side){
@@ -1197,6 +1215,7 @@ function doMove(m,sanStr,rec){
   chargeClock();
   const side=G.w?'w':'b',pb=S.poison;
   S.hint=null;make(m);S.hist.push(Object.assign({m,san:sanStr,pb},rec||{}));
+  sfx(m.castle?'castle':m.promo?'promote':(m.cap||m.ep)?'capture':'move');if(inCheck(G.w))setTimeout(()=>sfx('check'),70);
   if(pb!=null)poisonAfter(m,side,pb);S.keys.push(posKey());S.last=m;S.sel=null;S.targets=[];
   if(S.mode.t){if(S.clockOn)S.clock[side]+=S.mode.inc*1000;if(S.hist.length>=2)S.clockOn=true;}
   const o=findOpening(gameSans());
@@ -1331,6 +1350,7 @@ setInterval(()=>{
   if(!S.mode||!S.mode.t||S.over||!S.clockOn||$('home').classList.contains('on')){if(S)S.tickLast=performance.now();return;}
   chargeClock();
   const side=G.w?'w':'b';
+  if(side===S.human&&S.clock[side]<10000&&S.clock[side]>0){const sec=Math.ceil(S.clock[side]/1000);if(sec!==S.lastTick){S.lastTick=sec;sfx('tick');}}
   if(S.clock[side]<=0){
     S.clock[side]=0;
     const winner=side==='w'?'b':'w';
@@ -1346,7 +1366,7 @@ function canUndo(){
   if(S.net)return false;
   return S.local?true:S.hist.some(h=>h.q);
 }
-function undo(){if(S.tut){if(S.tut.kind==='puz'){puzzleSetup();puzCard();render();}else startLesson(S.tut.i,0);return;}S.hint=null;
+function undo(){sfx('undo');if(S.tut){if(S.tut.kind==='puz'){puzzleSetup();puzCard();render();}else startLesson(S.tut.i,0);return;}S.hint=null;
   if(!canUndo())return;
   // stop the bot if it's thinking or mid-move
   S.aiTok=(S.aiTok||0)+1;S.busy=false;S.ponder=null;S.dragFrom=null;
@@ -1367,6 +1387,7 @@ function undo(){if(S.tut){if(S.tut.kind==='puz'){puzzleSetup();puzCard();render(
   beginHumanTurn();
 }
 $('hintBtn').onclick=()=>{
+  sfx('hint');
   if(S.tut){if(humanTurn()&&!S.busy)(S.tut.kind==='puz'?puzHint:tutHint)();return;}
   if(!S.human||S.over||S.busy||!humanTurn())return;
   if(!S.coach)analyze();
@@ -1438,6 +1459,7 @@ function endDrag(e,cancel){
   if(!cancel&&d.moved){
     const to=sqFromPoint(e.clientX,e.clientY);
     if(to!==d.from&&tryMove(d.from,to))return;
+    if(to>=0&&to!==d.from)sfx('nope');
   }else if(!cancel&&d.wasSel){S.sel=null;S.targets=[];S.note=null;}
   render();
 }
@@ -1450,6 +1472,7 @@ function markOver(){
   }
 }
 function selectPiece(sq){
+  sfx('select');
   const p=G.b[sq];
   S.sel=sq;const t=S.legal.filter(m=>m.from===sq);
   const seen={};S.targets=[];
@@ -1564,6 +1587,7 @@ function render(){
   $('undoBtn').disabled=!canUndo();
   $('hintBtn').disabled=!S.human||!!S.over||!!S.busy||!humanTurn()||!!S.net;
   renderClocks();
+  musicSync();
 }
 function cell(h){return(h.q?`<i class="qd" style="background:${Q[h.q].col}" title="${Q[h.q].label}"></i>`:'')+h.san;}
 function endText(){
@@ -1592,6 +1616,7 @@ function showEnd(gid){
   const ec=$('endCrowns');
   if(S.local||S.net||S.over.winner!==S.human){ec.innerHTML=S.local||S.net?'':`<small>Win with no hints or takebacks to earn all 3 ${CROWN(true)}</small>`;}
   else{const n=S.crownsEarned||0,a=assists();
+    for(let k=0;k<n;k++)setTimeout(()=>sfx('crown',k),220+k*180);
     ec.innerHTML=`${crownsHTML(n,'big pop')}<b>${n===3?'Flawless — 3 crowns!':n+' crown'+(n>1?'s':'')}</b><small>${a?`${S.hints||0} hint${S.hints===1?'':'s'} and ${S.takebacks||0} takeback${S.takebacks===1?'':'s'} used`:'No hints, no takebacks.'}${S.crownNew?' · New best vs '+esc(S.bot.name)+'!':''}</small>`;}
   $('endBot').innerHTML=`${avatar(B,botMood())}<div><b>${B.name}</b> <span style="color:var(--muted)">${B.show||B.elo||''}</span><div style="margin-top:2px">“${S.chat?S.chat.text:''}”</div></div>`;
   const accOf=arr=>arr.length?Math.round(100*arr.reduce((a,h)=>a+Math.max(0,1-Math.min(h.loss,400)/400),0)/arr.length)+'%':'—';
@@ -1707,6 +1732,7 @@ function openHome(view){
   HOME.view=view||'main';
   $('setup').classList.remove('on');$('endOv').classList.remove('on');
   $('home').classList.add('on');renderHome();$('home').scrollTop=0;
+  musicSync();
 }
 function closeHome(){$('home').classList.remove('on');S.tickLast=performance.now();if(S.mode)render();}
 function openSetup(botId){
@@ -1892,6 +1918,173 @@ $('home').addEventListener('click',e=>{
 });
 window.ChessCoach.refreshHome=()=>{if(homeOpen())renderHome();};
 window.ChessCoach.totalCrowns=totalCrowns;
+/* ================= SOUND & MUSIC (all synthesised with Web Audio, no files) ================= */
+const AU={ctx:null,out:null,sfx:null,mus:null,verb:null,cur:null,curName:null,timer:null,
+  set:Object.assign({sfx:true,music:true,gameMusic:false,vol:.8},store.get('audio',{})||{})};
+const saveAudio=()=>store.set('audio',AU.set);
+function auInit(){
+  if(AU.ctx)return AU.ctx.state==='suspended'?AU.ctx.resume().catch(()=>{}):null;
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  const c=AU.ctx=new AC();
+  AU.out=c.createGain();AU.out.connect(c.destination);
+  const comp=c.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=3;comp.connect(AU.out);
+  AU.sfx=c.createGain();AU.sfx.connect(comp);
+  AU.mus=c.createGain();AU.mus.connect(comp);
+  // small hall reverb from a generated impulse
+  const len=c.sampleRate*2.4,ir=c.createBuffer(2,len,c.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+  AU.verb=c.createConvolver();AU.verb.buffer=ir;const vg=c.createGain();vg.gain.value=.32;AU.verb.connect(vg);vg.connect(comp);
+  auApply();musicSync();
+}
+function auApply(){
+  if(!AU.ctx)return;const t=AU.ctx.currentTime;
+  AU.out.gain.setTargetAtTime(AU.set.vol,t,.05);
+  AU.sfx.gain.setTargetAtTime(AU.set.sfx?1:0,t,.05);
+  AU.mus.gain.setTargetAtTime(.55,t,.05);
+}
+['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev,()=>auInit(),{capture:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;if(document.hidden)AU.ctx.suspend().catch(()=>{});else AU.ctx.resume().catch(()=>{});});
+// ---------- building blocks ----------
+const mtof=n=>440*Math.pow(2,(n-69)/12);
+function env(g,t,a,peak,d,end){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);}
+let NOISE=null;function noiseBuf(){if(NOISE)return NOISE;const c=AU.ctx,b=c.createBuffer(1,c.sampleRate*.5,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return NOISE=b;}
+function noise(t,dur,type,freq,q,vol,dest,verb){
+  const c=AU.ctx,s=c.createBufferSource();s.buffer=noiseBuf();
+  const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;
+  const g=c.createGain();env(g,t,.002,vol,dur);s.connect(f);f.connect(g);g.connect(dest);if(verb)g.connect(AU.verb);
+  s.start(t);s.stop(t+dur+.05);
+}
+function tone(t,freq,dur,type,vol,dest,o){
+  o=o||{};const c=AU.ctx,os=c.createOscillator();os.type=type||'sine';os.frequency.setValueAtTime(freq,t);
+  if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,t+(o.glide||dur));
+  if(o.detune)os.detune.value=o.detune;
+  const g=c.createGain();env(g,t,o.a||.005,vol,dur);
+  let node=os;if(o.lp){const f=c.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(o.lp,t);if(o.lpTo)f.frequency.exponentialRampToValueAtTime(o.lpTo,t+dur);os.connect(f);node=f;}
+  node.connect(g);g.connect(dest);if(o.verb)g.connect(AU.verb);
+  os.start(t);os.stop(t+(o.a||.005)+dur+.05);
+}
+function bell(t,n,vol,dest,dur){const f=mtof(n);[[1,1],[2.76,.45],[5.4,.22],[8.9,.1]].forEach(([r,v],k)=>tone(t,f*r,(dur||1.6)/(1+k*.6),'sine',vol*v,dest,{verb:true}));}
+function pluck(t,n,vol,dest,dur){ // lute-ish pluck
+  const f=mtof(n),c=AU.ctx;dur=dur||1.1;
+  const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;
+  const o2=c.createOscillator();o2.type='triangle';o2.frequency.value=f*2.003;
+  const lp=c.createBiquadFilter();lp.type='lowpass';lp.Q.value=1.5;lp.frequency.setValueAtTime(Math.min(9000,f*9),t);lp.frequency.exponentialRampToValueAtTime(Math.max(200,f*1.3),t+dur*.7);
+  const g=c.createGain();env(g,t,.004,vol,dur);const g2=c.createGain();g2.gain.value=.35;
+  o.connect(lp);o2.connect(g2);g2.connect(lp);lp.connect(g);g.connect(dest);g.connect(AU.verb);
+  o.start(t);o2.start(t);o.stop(t+dur+.1);o2.stop(t+dur+.1);
+}
+function pad(t,notes,dur,vol,dest,cut){
+  const c=AU.ctx;
+  notes.forEach(n=>[-7,7].forEach(dt=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=mtof(n);o.detune.value=dt;
+    const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=cut||700;const g=c.createGain();
+    g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+dur*.35);g.gain.linearRampToValueAtTime(.0001,t+dur);
+    o.connect(f);f.connect(g);g.connect(dest);g.connect(AU.verb);o.start(t);o.stop(t+dur+.05);}));
+}
+function drum(t,vol,dest,low){tone(t,low?70:120,.28,'sine',vol,dest,{to:low?38:60,glide:.18});noise(t,.06,'lowpass',900,.7,vol*.35,dest);}
+// ---------- sound effects ----------
+function sfx(name,opt){
+  if(!AU.ctx||!AU.set.sfx)return;
+  const c=AU.ctx,t=c.currentTime+.01,D=AU.sfx;
+  const wood=(tt,v,pitch)=>{noise(tt,.045,'bandpass',2100*(pitch||1),1.2,v*.9,D);tone(tt,190*(pitch||1),.07,'sine',v*.8,D,{to:120});noise(tt,.012,'highpass',5000,.5,v*.25,D);};
+  switch(name){
+    case'move':wood(t,.55,1);break;
+    case'capture':wood(t,.75,.82);noise(t+.012,.09,'bandpass',900,1,.45,D);tone(t,95,.12,'sine',.5,D,{to:60});break;
+    case'castle':wood(t,.5,1);wood(t+.11,.5,1.12);break;
+    case'promote':[72,76,79,84].forEach((n,i)=>bell(t+i*.07,n,.16,D,1.1));break;
+    case'check':tone(t,988,.09,'triangle',.18,D,{verb:true});tone(t+.1,740,.16,'triangle',.18,D,{verb:true});break;
+    case'start':bell(t,62,.16,D,1.6);bell(t+.12,69,.14,D,1.6);bell(t+.24,74,.14,D,2);break;
+    case'win':[60,64,67,72,76].forEach((n,i)=>bell(t+i*.11,n,.18,D,1.4));pad(t+.5,[60,64,67,72],2.2,.045,D,1400);break;
+    case'lose':[67,63,60,55].forEach((n,i)=>tone(t+i*.22,mtof(n),.5,'triangle',.16,D,{verb:true,lp:1600}));break;
+    case'draw':bell(t,67,.15,D,1.2);bell(t+.2,67,.12,D,1.5);break;
+    case'crown':bell(t,84+(opt||0)*3,.16,D,1.2);noise(t,.15,'highpass',7000,.5,.08,D,true);break;
+    case'tick':tone(t,1500,.03,'square',.06,D,{lp:3000});break;
+    case'nope':tone(t,140,.12,'triangle',.22,D,{to:100});break;
+    case'undo':noise(t,.08,'bandpass',1500,1,.25,D);tone(t,300,.1,'sine',.18,D,{to:520});break;
+    case'hint':bell(t,81,.12,D,.9);break;
+    case'good':bell(t,76,.13,D,.8);bell(t+.08,83,.11,D,.9);break;
+    case'wrong':tone(t,220,.14,'triangle',.18,D,{to:180});tone(t+.12,180,.2,'triangle',.16,D,{to:150});break;
+    case'solved':[76,79,83,88].forEach((n,i)=>bell(t+i*.06,n,.13,D,1));break;
+    case'ui':noise(t,.02,'bandpass',3200,2,.12,D);break;
+    case'select':noise(t,.018,'bandpass',2600,2,.08,D);break;
+    case'poison':tone(t,180,1.4,'sawtooth',.08,D,{to:70,lp:700,verb:true});noise(t,1.2,'bandpass',500,4,.12,D,true);break;
+    case'psychic':tone(t,300,1.3,'sine',.12,D,{to:1200,verb:true});tone(t+.05,450,1.3,'sine',.08,D,{to:1800,verb:true});break;
+  }
+}
+// ---------- music: generative tracks ----------
+const TRACKS={
+  // medieval: D dorian, lute arpeggios, drone, recorder-ish bells, frame drum
+  menu:{bpm:84,prog:[[50,53,57],[48,52,55],[46,50,53],[45,49,52]],scale:[62,64,65,67,69,71,72,74,76],lute:.11,mel:.08,drone:.035,drum:.12,arp:[0,1,2,3,2,1,2,1]},
+  game:{bpm:72,prog:[[50,53,57],[46,50,53],[48,52,55],[45,49,52]],scale:[62,64,65,67,69,70,72,74],lute:.06,mel:0,drone:.022,drum:0,arp:[0,2,1,3,0,2,1,2],sparse:true},
+  traitor:{bpm:66,prog:[[50,53,57],[51,55,58],[50,53,57],[48,51,55]],scale:[62,63,65,67,69,70,72,74],lute:.07,mel:.05,drone:.04,drum:.2,heart:true,arp:[0,2,1,2,3,2,1,2]},
+  space:{bpm:56,prog:[[48,52,55,59],[50,54,57,60],[48,52,55,59],[45,52,55,59]],scale:[72,74,76,78,79,81,83,84,86],lute:0,mel:.07,drone:0,pad:.03,drum:0,sparkle:true}
+};
+function musicStart(name){
+  const T=TRACKS[name],c=AU.ctx;if(!T)return;
+  const g=c.createGain();g.gain.setValueAtTime(.0001,c.currentTime);g.gain.linearRampToValueAtTime(1,c.currentTime+2);g.connect(AU.mus);
+  const st={name,T,g,step:0,next:c.currentTime+.15,on:true,melLast:4};
+  st.iv=setInterval(()=>{if(!st.on)return;while(st.next<c.currentTime+.3){musicStep(st,st.step,st.next);st.next+=60/T.bpm/2;st.step++;}},60);
+  return st;
+}
+function musicStop(st){if(!st)return;st.on=false;clearInterval(st.iv);const c=AU.ctx,t=c.currentTime;st.g.gain.cancelScheduledValues(t);st.g.gain.setValueAtTime(st.g.gain.value,t);st.g.gain.linearRampToValueAtTime(.0001,t+1.5);setTimeout(()=>{try{st.g.disconnect();}catch(e){}},1700);}
+function musicStep(st,step,t){
+  const T=st.T,D=st.g,e=step%8,bar=Math.floor(step/8),ch=T.prog[bar%T.prog.length],beat=60/T.bpm;
+  if(e===0){
+    if(T.drone)pad(t,[ch[0]-12,ch[0]-5],beat*4.2,T.drone,D,420);
+    if(T.pad)pad(t,ch.map(n=>n+12),beat*4.4,T.pad,D,900);
+  }
+  if(T.lute){
+    const tones=[ch[0]+12,ch[1]+12,ch[2]+12,ch[0]+24];
+    const play=T.sparse?(e%2===0&&Math.random()<.85):(Math.random()<.92);
+    if(play)pluck(t,tones[T.arp[e]],T.lute*(e===0?1.2:1),D,T.sparse?1.6:1.1);
+    if(e===0)pluck(t,ch[0],T.lute*.8,D,2);
+  }
+  if(T.mel&&e%2===0&&(bar%4<3)&&Math.random()<.7){
+    // a gentle random walk on the scale, landing on chord tones
+    let i=st.melLast+[-2,-1,-1,0,1,1,2][Math.floor(Math.random()*7)];i=Math.max(0,Math.min(T.scale.length-1,i));
+    let n=T.scale[i];if(e===0){const ct=ch.map(x=>x+24);n=ct.reduce((a,b)=>Math.abs(b-n)<Math.abs(a-n)?b:a);}
+    st.melLast=i;bell(t,n,T.mel,D,beat*2.2);
+  }
+  if(T.sparkle&&Math.random()<.18)bell(t+Math.random()*beat*.4,T.scale[Math.floor(Math.random()*T.scale.length)]+12,.035,D,2.4);
+  if(T.drum&&(e===0||e===4))drum(t,T.drum*(e===0?1:.6),D,true);
+  if(T.drum&&!T.heart&&e===6&&Math.random()<.5)noise(t,.05,'bandpass',3500,1.5,.04,D);
+  if(T.heart&&(e===0||e===1))drum(t+(e===1?beat*.15:0),T.drum*(e===0?1:.7),D,true);
+}
+function wantedTrack(){
+  if(!AU.set.music&&!AU.set.gameMusic)return null;
+  const menuOpen=$('home').classList.contains('on')||$('setup').classList.contains('on')||($('netOv')&&$('netOv').classList.contains('on'));
+  if(menuOpen||!S.human)return AU.set.music?'menu':null;
+  if(!AU.set.gameMusic||S.over)return null;
+  if(S.bot&&S.bot.traitor)return'traitor';
+  if(S.bot&&S.bot.id==='psychic')return'space';
+  return'game';
+}
+function musicSync(){
+  if(!AU.ctx)return;const w=wantedTrack();
+  if(w===AU.curName)return;
+  musicStop(AU.cur);AU.cur=null;AU.curName=w;
+  if(w)AU.cur=musicStart(w);
+}
+// ---------- settings popover ----------
+function audioPop(btn){
+  let p=$('audioPop');
+  if(p&&p.classList.contains('on')&&p.dataset.for===btn.id){p.classList.remove('on');return;}
+  if(!p){p=document.createElement('div');p.id='audioPop';p.className='audiopop';document.body.appendChild(p);
+    document.addEventListener('pointerdown',e=>{if(p.classList.contains('on')&&!p.contains(e.target)&&!e.target.closest('.abtn'))p.classList.remove('on');});}
+  p.dataset.for=btn.id;
+  const row=(k,l,s)=>`<label class="ap-row"><span><b>${l}</b><small>${s}</small></span><input type="checkbox" data-k="${k}" ${AU.set[k]?'checked':''}></label>`;
+  p.innerHTML=`<div class="ap-h">🔊 Sound</div>${row('sfx','Sound effects','Moves, captures, check and more')}${row('music','Menu music','Medieval theme on the title screen')}${row('gameMusic','Music during games','Quiet theme while you play')}
+    <label class="ap-vol"><span>Volume</span><input type="range" min="0" max="1" step="0.05" value="${AU.set.vol}" data-k="vol"></label>`;
+  p.oninput=p.onchange=e=>{const k=e.target.dataset.k;if(!k)return;AU.set[k]=k==='vol'?+e.target.value:e.target.checked;saveAudio();auInit();auApply();musicSync();updAudioBtns();if(k==='sfx'&&AU.set.sfx)sfx('ui');};
+  const r=btn.getBoundingClientRect();p.style.top=(r.bottom+8)+'px';p.style.left=Math.max(8,Math.min(window.innerWidth-280,r.right-270))+'px';
+  p.classList.add('on');
+}
+function updAudioBtns(){const on=AU.set.sfx||AU.set.music||AU.set.gameMusic;document.querySelectorAll('.abtn').forEach(b=>{b.textContent=on&&AU.set.vol>0?'🔊':'🔇';b.title='Sound settings';});}
+document.addEventListener('click',e=>{
+  const ab=e.target.closest('.abtn');if(ab){auInit();audioPop(ab);return;}
+  if(e.target.closest('.hbtn,.btn,.botcard,.seg button,.course,.lesson,.tabs button,.back,.mback,[data-tut]'))sfx('ui');
+},true);
+updAudioBtns();
+
 /* ================= ACADEMY: personalised puzzles with the coach ================= */
 const THEMES={
   mate1:{name:'Mate in 1',icon:'Q',intro:'Find the <b>checkmate in one move</b>.',tip:'Try every check you can give. One of them leaves the king with nowhere to go.'},
@@ -2003,7 +2196,7 @@ function puzMove(m){
   if(ok&&!last){
     const reply=findUci(P.line[T.ply+1]);
     if(!reply){return puzSolved();}
-    S.busy=true;puzCard('✅ Nice move!','good');render();
+    S.busy=true;sfx('good');puzCard('✅ Nice move!','good');render();
     const g=S.gid;
     setTimeout(()=>{if(S.gid!==g||!S.tut)return;
       animateMove(reply,500,()=>{if(S.gid!==g||!S.tut)return;doMove(reply,san(reply,legal(false)),{});S.opening=null;
@@ -2012,7 +2205,7 @@ function puzMove(m){
   }
   if(ok)return puzSolved();
   // wrong: explain what goes wrong
-  T.fails++;
+  T.fails++;sfx('wrong');
   let why='';
   try{
     if(P.theme.startsWith('mate')||P.theme==='endgame'){
@@ -2029,6 +2222,7 @@ function puzMove(m){
   const g=S.gid;setTimeout(()=>{if(S.gid!==g||!S.tut)return;puzzleSetup();puzCard(`❌ ${why}`,'bad');render();},1700);
 }
 function puzSolved(){
+  sfx('solved');
   const T=S.tut,P=PUZ[T.idx],A=acad();T.done=true;
   const clean=!T.fails&&!T.hints,score=clean?1:0,expct=1/(1+Math.pow(10,(P.r-A.pr)/400));
   const firstTry=!A.solved[T.idx];
@@ -2216,6 +2410,7 @@ async function scanImageFile(file,onText){
 }
 // ---- pairing screen ----
 function openNet(){
+  setTimeout(musicSync,0);
   loadScript('../lib/qrcode.js').catch(()=>{});
   $('home').classList.remove('on');$('netOv').classList.add('on');renderNet();
 }
@@ -2365,7 +2560,7 @@ function tutMove(m){
   doMove(m,sanStr,{});S.opening=null;S.hint=null;
   let ok=false;try{ok=st.goal(m);}catch(e){}
   if(ok){
-    T.fails=0;
+    T.fails=0;sfx(T.step+1<L.steps.length?'good':'solved');
     if(T.step+1<L.steps.length){
       tutCard(`✅ ${st.yes}`,'good');render();
       const g=S.gid;setTimeout(()=>{if(S.gid===g&&S.tut){startLesson(T.i,T.step+1);}},1600);
@@ -2378,7 +2573,7 @@ function tutMove(m){
       render();
     }
   }else{
-    T.fails++;
+    T.fails++;sfx('wrong');
     const why=(st.wrong&&st.wrong(m))||'Not quite. Read the coach\'s tip and try again.';
     tutCard(`❌ ${why}${T.fails>=2?' <i>(Stuck? Press 💡 Hint.)</i>':''}`,'bad');render();
     const g=S.gid,i=T.i,sp=T.step,f=T.fails;
@@ -2444,14 +2639,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-24y';
+const GAME_VERSION='2026-11-26a';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('🗡️ The Traitor no longer knows which of your pieces is poisoned. He only finds out if he takes it…',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('🔊 Knightfall now has sound: piece sounds, jingles and menu music. Tap 🔊 to change it.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
