@@ -1008,12 +1008,11 @@ function endGame(res){
   const B=S.bot;let score=.5;
   if(res.winner)score=res.winner===S.human?1:0;
   if(!S.local)S.chat={text:pickLine(B,score===1?'lose':score===0?'win':'draw')};
-  if(!S.local&&!S.net&&!B.special&&!S.takebacks&&S.hist.length>=2&&!S.rated){
-    S.rated=true;const r0=store.get('rating',800);
-    const exp=1/(1+Math.pow(10,(B.elo-r0)/400));
-    const r1=Math.max(100,Math.round(r0+32*(score-exp)));store.set('rating',r1);S.ratingChange=[r0,r1];
-    try{document.dispatchEvent(new CustomEvent('cc:rated',{detail:{rating:r1,before:r0,score,bot:B.id,botElo:B.elo,mode:S.mode.id}}));}catch(e){}
-  }else S.ratingChange=null;
+  S.ratingChange=null; // games against the computer never change your rating
+  if(!S.local&&!S.net&&!B.special&&S.hist.length>=2&&!S.rated){
+    S.rated=true;const r0=store.get('rating',800); // counted once for your win/loss record only
+    try{document.dispatchEvent(new CustomEvent('cc:rated',{detail:{rating:r0,before:r0,score,bot:B.id,botElo:B.elo,mode:S.mode.id}}));}catch(e){}
+  }
   awardCrowns(res);recordGame(res,score);
   render();setTimeout(()=>showEnd(S.gid),700);
 }
@@ -1381,7 +1380,7 @@ function undo(){sfx('undo');if(S.tut){if(S.tut.kind==='puz'){puzzleSetup();puzCa
   if(S.hist.length<2)S.clockOn=false;
   S.tickLast=performance.now();
   S.card={q:null,title:'Move taken back',text:S.local?`${sideName(G.w?'w':'b')} to move again.`:
-    (S.rated?'Try a different idea. (This game was already rated.)':'Try a different idea. Takebacks mean this game won\'t count toward your rating.')};
+    'Try a different idea. Each takeback costs a crown if you win.'};
   if(!S.local&&S.chat)S.chat={text:wasOver?'Back for another look? Sure.':'Changed your mind? Go ahead.'};
   resetResign();
   beginHumanTurn();
@@ -1632,7 +1631,7 @@ function showEnd(gid){
   $('endSum').innerHTML=`<div><b>${hm.length?acc+'%':'—'}</b>accuracy</div><div><b style="color:${Q.best.col}">${cnt('best')+cnt('excellent')+cnt('book')}</b>book / best</div><div><b style="color:${Q.good.col}">${cnt('good')}</b>good</div>
   <div><b style="color:${Q.inacc.col}">${cnt('inacc')}</b>inaccuracies</div><div><b style="color:${Q.mistake.col}">${cnt('mistake')}</b>mistakes</div><div><b style="color:${Q.blunder.col}">${cnt('blunder')}</b>blunders</div>`;
   const rc=S.ratingChange;
-  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.bot.special?'Special games don\'t change your rating.':S.net?'Nearby games aren\'t rated.':S.takebacks?'Takebacks were used, so this game isn\'t rated.':'Game too short to be rated.'}</span>`;
+  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?'Nearby games don\'t change your rating.':'Games against the computer don\'t change your rating.'}</span>`;
   $('endOv').classList.add('on');
 }
 /* ---- new-game menu ---- */
@@ -1787,7 +1786,7 @@ function renderHome(){
     v.innerHTML=`${vhead('Leaderboard')}
     <div class="tabs"><button class="${HOME.tab==='ladder'?'on':''}" data-tab="ladder">The Ladder</button><button class="${HOME.tab==='world'?'on':''}" data-tab="world">Worldwide</button></div>
     ${HOME.tab==='ladder'?`
-      <p class="lead">You're <b>#${myPos}</b> of ${rows.length}. Beat the opponents above you to climb, and win cleanly (no hints or takebacks) for all 3 crowns.
+      <p class="lead">You're <b>#${myPos}</b> of ${rows.length}. Beat each opponent to collect crowns. Win cleanly (no hints or takebacks) for all 3. Games against the computer don't change your rating, so play freely.
         <span class="crtot">${CROWN(true)} ${totalCrowns()} / ${BOTS.length*3}</span></p>
       <ol class="lb">${rows.map((x,i)=>{
         if(x.me)return`<li class="lbrow me"><span class="pos">${i+1}</span>${meAvatar()}<span class="nm"><b>${esc(meName())}</b>${rankBadge(r)}</span><span class="rec"></span><span class="rt">${r}</span><span class="act"></span></li>`;
@@ -1861,7 +1860,7 @@ function renderHome(){
         <p class="qbs">${['book','best','excellent','good','inacc','mistake','blunder'].map(qb).join(' ')}</p>
         <p><b>Book</b> means a known opening move. The opening's name shows at the top of the panel.</p></section>
       <section><h3>Crowns ${crownsHTML(3)}</h3><p>Beat a computer opponent to earn crowns. A clean win, with no hints and no takebacks, earns all <b>3 crowns</b>. Each hint or takeback costs one crown, but any win earns at least one. Each opponent keeps your best result, so there are ${BOTS.length*3} crowns to collect.</p></section>
-      <section><h3>Rating and ranks</h3><p>Everyone starts at 800. Win against stronger opponents to climb faster. Games where you used Undo aren't rated.</p>
+      <section><h3>Rating and ranks</h3><p>Everyone starts at 800. Games against the computer don't change your rating, so you can experiment freely. Your progress shows in your crowns, your stats and your Academy puzzle rating.</p>
         <div class="ranks">${RANKS.map(x=>`<span class="rank${x[1]==='Grandmaster'?' gm':''}"><span class="rp">${pieceHTML(x[2])}</span>${x[1]}<small>${x[0]}+</small></span>`).join('')}</div></section>
       <section><h3>Modes</h3><p><b>Casual</b> has no clock. <b>Bullet</b> (1 min), <b>Blitz</b> (3+2 or 5 min) and <b>Rapid</b> (10 min) use a clock, so run out of time and you lose. "+2" means 2 seconds are added after each move.</p></section>
       <section><h3>Play a friend</h3><p>Two players take turns on one device, with no internet needed. The board turns around after each move, and the coach rates both players.</p></section>
@@ -1872,7 +1871,7 @@ function renderHome(){
 function vhead(t,back){return`<div class="vhead"><button class="back" data-a="${back||'home'}">← Back</button><h2>${t}</h2></div>`;}
 function ratingChart(H){
   const R=H.filter(g=>g.rated&&g.r1).slice(0,60).reverse();
-  if(R.length<2)return`<div class="chart empty">Your rating graph appears after a couple of rated games.</div>`;
+  if(R.length<2)return`<div class="chart empty">Games against the computer don't change your rating, so there's no rating graph to show.</div>`;
   const pts=[R[0].r0].concat(R.map(g=>g.r1)),W=600,Hh=140,p=10;
   const lo=Math.min(...pts)-15,hi=Math.max(...pts)+15;
   const x=i=>p+i*(W-2*p)/(pts.length-1),y=v=>Hh-p-(v-lo)*(Hh-2*p)/(hi-lo);
@@ -2614,7 +2613,7 @@ const CC=window.ChessCoach;let chess=null;
 CC.authInfo=()=>({configured:state.configured,user:state.user});
 CC.fetchLeaderboard=fetchLeaderboard;
 const publish=()=>publishLeaderboard({rating:CC.getRating(),games:chess&&chess.games||0,crowns:CC.totalCrowns?CC.totalCrowns():0}).catch(e=>console.warn('leaderboard',e));
-const rows=()=>[['Chess rating',String(CC.getRating())],['Rated games',String(chess&&chess.games||0)],['Wins · Losses · Draws',chess?`${chess.wins||0} · ${chess.losses||0} · ${chess.draws||0}`:'0 · 0 · 0']];
+const rows=()=>[['Chess rating',String(CC.getRating())],['Games vs computer',String(chess&&chess.games||0)],['Wins · Losses · Draws',chess?`${chess.wins||0} · ${chess.losses||0} · ${chess.draws||0}`:'0 · 0 · 0']];
 const accts=[mountAccount(document.getElementById('account'),rows),mountAccount(document.getElementById('menuAccount'),rows),mountAccount(document.getElementById('homeAccount'),rows)];
 const acct={redraw:()=>accts.forEach(a=>a.redraw())};
 onAuth(async st=>{
@@ -2639,14 +2638,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-26a';
+const GAME_VERSION='2026-11-26b';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('🔊 Knightfall now has sound: piece sounds, jingles and menu music. Tap 🔊 to change it.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('ℹ️ Games against the computer no longer change your rating. Play freely!',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){

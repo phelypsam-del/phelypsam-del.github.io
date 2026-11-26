@@ -153,7 +153,7 @@ ib.onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.us
 <script type="module">
 import {mountAccount,onAuth,loadPlayer} from './auth.js';
 let chess=null;
-const acct=mountAccount(document.getElementById('account'),()=>chess?[['Chess rating',String(chess.rating??'—')],['Rated chess games',String(chess.games||0)]]:[['Chess rating','Play a rated game']]);
+const acct=mountAccount(document.getElementById('account'),()=>chess?[['Chess rating',String(chess.rating??'—')],['Chess games vs computer',String(chess.games||0)]]:[['Chess rating','800']]);
 onAuth(async st=>{
   if(!st.user){chess=null;return;}
   try{const d=await loadPlayer();chess=d&&d.chess||null;acct.redraw();}catch(e){}
