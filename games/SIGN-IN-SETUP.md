@@ -43,3 +43,33 @@ service cloud.firestore {
    (Or send the block to Claude and it will add it for you.)
 
 The values in that block are safe to publish. They only identify your project, and the rules in step 3 are what protect players' data.
+
+## Online play (Knightfall)
+
+Online games use **Anonymous** sign-in (Authentication → Sign-in method → Anonymous → Enable, with auto clean-up on) so people can play without a Google account, plus this block inside the Firestore rules, next to `players` and `leaderboard`:
+
+```
+match /games/{code} {
+  allow read: if request.auth != null;
+  allow create: if request.auth != null
+    && request.resource.data.host == request.auth.uid
+    && request.resource.data.guest == null
+    && request.resource.data.events.size() == 0
+    && request.resource.data.status in ['waiting', 'public'];
+  allow update: if request.auth != null && (
+    (resource.data.guest == null && resource.data.host != request.auth.uid
+      && request.resource.data.guest == request.auth.uid
+      && request.resource.data.status == 'playing'
+      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['guest', 'guestName', 'status', 'updatedAt']))
+    ||
+    ((request.auth.uid == resource.data.host || request.auth.uid == resource.data.guest)
+      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['events', 'status', 'updatedAt'])
+      && (request.resource.data.events == resource.data.events
+        || (request.resource.data.events.size() == resource.data.events.size() + 1
+          && request.resource.data.events[0:resource.data.events.size()] == resource.data.events
+          && request.resource.data.events[resource.data.events.size()].from == request.auth.uid)))
+  );
+}
+```
+
+Only the two players in a game can add moves, each move is signed with the sender's id, and earlier moves can never be edited.

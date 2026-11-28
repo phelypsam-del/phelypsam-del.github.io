@@ -490,6 +490,16 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 .ap-row input{width:20px;height:20px;accent-color:var(--accent);flex:none}
 .ap-vol{display:flex;align-items:center;gap:10px;padding-top:10px;font-size:13px;color:var(--muted)}
 .ap-vol input{flex:1;accent-color:var(--accent)}
+
+/* online play */
+.joinrow{margin-top:10px}.jr{display:flex;gap:8px}
+.jr input,.linkrow input{flex:1;min-width:0;background:#15120e;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font:600 18px ui-monospace,monospace;letter-spacing:3px;text-transform:uppercase}
+.linkrow{display:flex;gap:8px;margin:10px 0}.linkrow input{font:13px ui-monospace,monospace;letter-spacing:0;text-transform:none}
+.invite{text-align:center;background:#221d18;border:1px solid #a37c2c;border-radius:14px;padding:16px;margin:6px 0}
+.invite .code{font:800 42px ui-monospace,monospace;letter-spacing:8px;color:#f3d892}.invite small{color:var(--muted)}
+.searching{display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid #3a3127;border-top-color:var(--accent);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -531,6 +541,14 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
   <div class="hwrap">
     <div class="htop"><a class="hlink" href="../">← All games</a><div class="hright"><button class="abtn" id="abHome" type="button" aria-label="Sound settings">🔊</button><div id="homeAccount"></div></div></div>
     <div id="homeView"></div>
+  </div>
+</div>
+
+<div class="overlay" id="onlineOv">
+  <div class="modal wide">
+    <button class="mback" type="button" data-o="close">← Menu</button>
+    <h2>Play online</h2>
+    <div id="onlineBody"></div>
   </div>
 </div>
 
@@ -1159,6 +1177,7 @@ function psychicFogCheck(botScore){
   return null;
 }
 function startGame(side,botId,modeId){
+  if(botId!=='remote'&&typeof ONLINE!=='undefined'&&ONLINE.code)onlineStop(true);
   resetPos();
   document.querySelectorAll('.pc.ghost').forEach(g=>g.remove());
   if(side==='r')side=Math.random()<.5?'w':'b';
@@ -1631,7 +1650,7 @@ function showEnd(gid){
   $('endSum').innerHTML=`<div><b>${hm.length?acc+'%':'—'}</b>accuracy</div><div><b style="color:${Q.best.col}">${cnt('best')+cnt('excellent')+cnt('book')}</b>book / best</div><div><b style="color:${Q.good.col}">${cnt('good')}</b>good</div>
   <div><b style="color:${Q.inacc.col}">${cnt('inacc')}</b>inaccuracies</div><div><b style="color:${Q.mistake.col}">${cnt('mistake')}</b>mistakes</div><div><b style="color:${Q.blunder.col}">${cnt('blunder')}</b>blunders</div>`;
   const rc=S.ratingChange;
-  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?'Nearby games don\'t change your rating.':'Games against the computer don\'t change your rating.'}</span>`;
+  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?(S.online?'Online':'Nearby')+' games don\'t change your rating.':'Games against the computer don\'t change your rating.'}</span>`;
   $('endOv').classList.add('on');
 }
 /* ---- new-game menu ---- */
@@ -1688,7 +1707,7 @@ function recordGame(res,score){
   if(S.hist.length<2)return;
   try{
     const H=gameHistory();
-    const rec={t:S.recordedAt||Date.now(),local:!!(S.local||S.net),net:S.net?S.bot.name:null,bot:S.bot.id,score:S.local?null:score,winner:res.winner||null,type:res.type,
+    const rec={t:S.recordedAt||Date.now(),local:!!(S.local||S.net),net:S.net?S.bot.name:null,online:!!S.online,bot:S.bot.id,score:S.local?null:score,winner:res.winner||null,type:res.type,
       mode:S.mode.id,rated:!!S.ratingChange,r0:S.ratingChange?S.ratingChange[0]:null,r1:S.ratingChange?S.ratingChange[1]:null,
       acc:S.local?null:accPct(S.hist.filter(h=>h.q)),opening:S.opening?S.opening.name:null,moves:Math.ceil(S.hist.length/2),
       side:S.local?null:S.human,crowns:S.crownsEarned||0,hints:S.hints||0,takebacks:S.takebacks||0};
@@ -1769,6 +1788,7 @@ function renderHome(){
         <button class="hbtn${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Academy</b><small>${(()=>{const A=acad(),n=Object.keys(A.solved).length+tutDone().length;return n?`${n} lessons done · puzzle rating ${A.pr}`:'Hundreds of lessons and puzzles, picked for you';})()}</small></span></button>
         <button class="hbtn" data-a="new">${icon('Q')}<span><b>New game</b><small>Pick a time control and opponent</small></span></button>
         <button class="hbtn" data-a="friend">${icon('P')}<span><b>Play a friend</b><small>2 players, 1 device, no internet needed</small></span></button>
+        <button class="hbtn" data-a="online"><span class="hic lt">${pieceHTML('k')}</span><span><b>Play online</b><small>Anyone, anywhere: quick match or invite a friend</small></span></button>
         <button class="hbtn" data-a="nearby"><span class="hic lt">${pieceHTML('q')}</span><span><b>Nearby play</b><small>${NET.open?`Connected to ${esc(NET.peer)}`:'Phone to phone, no internet needed'}</small></span></button>
         <button class="hbtn" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Climb the ladder, collect crowns</small></span></button>
         <button class="hbtn" data-a="stats">${icon('B')}<span><b>Stats &amp; history</b><small>${st.all?`${st.all} game${st.all>1?'s':''} played`:'Your games will show up here'}</small></span></button>
@@ -1817,7 +1837,7 @@ function renderHome(){
     ${H.length?`<ul class="games">${H.slice(0,30).map(g=>{
       const B=g.local?null:botById(g.bot),res=g.net?(g.winner?(g.winner===g.side?'Win':'Loss'):'Draw'):g.local?(g.winner?sideName(g.winner)+' won':'Draw'):g.score===1?'Win':g.score===0?'Loss':'Draw';
       const cls=g.local?'d':g.score===1?'w':g.score===0?'l':'d';
-      return`<li><span class="res ${cls}">${res}</span><span class="g-main"><b>${g.net?'Nearby game vs '+esc(g.net):g.local?'2-player game':'vs '+esc(B.name)+' <span class="e">'+B.elo+'</span>'}</b>
+      return`<li><span class="res ${cls}">${res}</span><span class="g-main"><b>${g.net?(g.online?'Online':'Nearby')+' game vs '+esc(g.net):g.local?'2-player game':'vs '+esc(B.name)+' <span class="e">'+B.elo+'</span>'}</b>
         <small>${esc(modeById(g.mode).name)} · ${g.moves} moves${g.opening?' · '+esc(g.opening):''}</small></span>
         <span class="g-side">${g.crowns?crownsHTML(g.crowns,'sm'):''}${g.acc!=null?`<small>${g.acc}% acc</small>`:''}
         ${g.rated?`<small class="${g.r1>=g.r0?'up':'dn'}">${g.r1>=g.r0?'+':''}${g.r1-g.r0}</small>`:g.local?'':'<small>unrated</small>'}<small>${ago(g.t)}</small></span></li>`;}).join('')}</ul>`
@@ -1913,6 +1933,7 @@ $('home').addEventListener('click',e=>{
   else if(a==='train')startSession(null);
   else if(a==='basics-next'){const d=tutDone();const i=LESSONS.findIndex((L,k)=>!d.includes(k));startLesson(i<0?0:i,0);}
   else if(a==='nearby')openNet();
+  else if(a==='online')openOnline();
   else if(a==='clear'){if(t.dataset.sure){store.set('history',[]);renderHome();}else{t.dataset.sure='1';t.textContent='Tap again to clear all history';}}
 });
 window.ChessCoach.refreshHome=()=>{if(homeOpen())renderHome();};
@@ -2050,7 +2071,7 @@ function musicStep(st,step,t){
 }
 function wantedTrack(){
   if(!AU.set.music&&!AU.set.gameMusic)return null;
-  const menuOpen=$('home').classList.contains('on')||$('setup').classList.contains('on')||($('netOv')&&$('netOv').classList.contains('on'));
+  const menuOpen=$('home').classList.contains('on')||$('setup').classList.contains('on')||($('netOv')&&$('netOv').classList.contains('on'))||($('onlineOv')&&$('onlineOv').classList.contains('on'));
   if(menuOpen||!S.human)return AU.set.music?'menu':null;
   if(!AU.set.gameMusic||S.over)return null;
   if(S.bot&&S.bot.traitor)return'traitor';
@@ -2294,7 +2315,7 @@ function wireDC(dc){
   dc.onmessage=e=>{let msg;try{msg=JSON.parse(e.data);}catch(err){return;}netRecv(msg);};
   dc.onclose=()=>netLost();
 }
-const netSend=o=>{try{if(NET.dc&&NET.dc.readyState==='open')NET.dc.send(JSON.stringify(o));}catch(e){}};
+const netSend=o=>{if(typeof ONLINE!=='undefined'&&ONLINE.code&&ONLINE.started&&OL()){OL().send(ONLINE.code,{...o,from:OL().uid(),id:Math.random().toString(36).slice(2)}).catch(()=>{});return;}try{if(NET.dc&&NET.dc.readyState==='open')NET.dc.send(JSON.stringify(o));}catch(e){}};
 async function netHost(){
   netReset();NET.role='host';NET.step='making';renderNet();
   try{
@@ -2344,7 +2365,7 @@ function netRecv(msg){
   if(msg.t==='hi'){NET.peer=msg.name||NET.peer;REMOTE.name=NET.peer;renderNet();if(S.net)render();}
   else if(msg.t==='start'){startNetGame(msg.color,msg.mode);}
   else if(msg.t==='move'){
-    if(!S.net||S.over)return;
+    if(!S.net||S.over||humanTurn())return; // only the opponent's own moves
     const m=legal(false).find(x=>uciOf(x)===msg.u);if(!m)return;
     const opp=G.w?'w':'b',sanStr=san(m,legal(false));
     const go=()=>{doMove(m,sanStr,{ai:true});if(S.mode.t&&msg.ms!=null)S.clock[opp]=msg.ms;
@@ -2363,7 +2384,7 @@ function netRecv(msg){
 function netLost(bye){
   if(!NET.open&&!bye)return;
   NET.open=false;
-  if(S.net&&!S.over){S.card={q:null,title:'Connection lost',text:`The connection to ${esc(NET.peer)} dropped${bye?' (they left the game)':''}. You can reconnect from the menu: Nearby play.`};S.busy=false;S.over={type:'abandon'};render();}
+  if(S.net&&!S.over){S.card={q:null,title:'Connection lost',text:`The connection to ${esc(NET.peer)} dropped${bye?' (they left the game)':''}. You can start a new game from the menu${S.online?': Play online':': Nearby play'}.`};S.busy=false;S.over={type:'abandon'};render();}
   renderNet();
 }
 // ---- QR codes ----
@@ -2600,6 +2621,122 @@ $('card').addEventListener('click',e=>{
 });
 
 
+/* ================= ONLINE PLAY: anywhere in the world, relayed through Firebase ================= */
+const ONLINE={code:null,role:null,myColor:null,unsub:null,seen:0,ping:null,stage:'idle',err:null,mode:store.get('onlineMode','blitz5'),color:'r',started:false};
+const OL=()=>window.ChessCoach&&window.ChessCoach.online;
+function onlineReady(){return new Promise((res,rej)=>{let n=0;const t=setInterval(()=>{const o=OL();if(o){clearInterval(t);res(o);}else if(++n>60){clearInterval(t);rej(new Error('unavailable'));}},100);});}
+const inviteLink=code=>`${location.origin}${location.pathname}?join=${code}`;
+function onlineMsg(e){
+  const m=String(e&&e.message||e||'');
+  if(m==='not-configured'||m==='unavailable')return'Online play couldn\'t load. Check your internet connection.';
+  if(m==='need-signin')return'Sign in with Google (button at the top) to play online.';
+  if(/offline|network|unavailable/i.test(m)||!navigator.onLine)return'You\'re offline. Online play needs internet. Try Nearby play instead.';
+  if(/permission/i.test(m))return'The game server refused that request. Please try again.';
+  return m;
+}
+function onlineStop(sendBye){
+  const O=OL();
+  if(sendBye&&ONLINE.code&&O){if(ONLINE.started)O.send(ONLINE.code,{t:'bye',from:O.uid(),id:Math.random().toString(36).slice(2)}).catch(()=>{});else O.close(ONLINE.code).catch(()=>{});}
+  if(ONLINE.unsub)try{ONLINE.unsub();}catch(e){}
+  clearInterval(ONLINE.ping);
+  Object.assign(ONLINE,{code:null,role:null,unsub:null,seen:0,ping:null,stage:'idle',started:false});
+}
+function onlineWatchGame(){
+  const O=OL(),uid=O.uid();
+  ONLINE.unsub=O.watch(ONLINE.code,(d,err)=>{
+    if(!d){if(ONLINE.started&&S.net)netLost(true);else{ONLINE.err=err?onlineMsg(err):'That game was cancelled.';ONLINE.stage='idle';renderOnline();}return;}
+    if(ONLINE.role==='host'&&!ONLINE.started&&d.guest){ // someone joined my game
+      ONLINE.started=true;clearInterval(ONLINE.ping);
+      Object.assign(NET,{peer:d.guestName||'Opponent',role:'host',open:true,myRematch:false,theirRematch:false,lastHostColor:ONLINE.myColor});
+      netOpts.mode=d.mode;startNetGame(ONLINE.myColor,d.mode);S.online=true;$('onlineOv').classList.remove('on');sfx('start');render();
+    }
+    const ev=d.events||[];
+    for(;ONLINE.seen<ev.length;ONLINE.seen++){const e=ev[ONLINE.seen];if(e&&e.from!==uid&&ONLINE.started)netRecv(e);}
+    if(d.status==='closed'&&ONLINE.started&&S.net&&!S.over)netLost(true);
+  });
+}
+async function onlineHost(pub){
+  ONLINE.err=null;ONLINE.stage=pub?'searching':'creating';renderOnline();
+  try{
+    const O=await onlineReady();
+    if(pub){ // first look for someone already waiting
+      const found=await O.findPublic(myNetName(),ONLINE.mode);
+      if(found)return onlineBeginGuest(found.code,found.game);
+    }
+    const color=ONLINE.color==='r'?(Math.random()<.5?'w':'b'):ONLINE.color;
+    const code=await O.create({name:myNetName(),color,mode:ONLINE.mode,pub});
+    Object.assign(ONLINE,{code,role:'host',myColor:color,seen:0,stage:pub?'searching':'invite'});
+    ONLINE.ping=setInterval(()=>{if(ONLINE.code&&!ONLINE.started)O.ping(ONLINE.code).catch(()=>{});},25000);
+    onlineWatchGame();renderOnline();
+  }catch(e){ONLINE.err=onlineMsg(e);ONLINE.stage='idle';renderOnline();}
+}
+async function onlineJoinCode(code){
+  code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(code.length!==6){ONLINE.err='Game codes have 6 letters and numbers.';renderOnline();return;}
+  ONLINE.err=null;ONLINE.stage='joining';renderOnline();
+  try{const O=await onlineReady();const g=await O.join(code,myNetName());onlineBeginGuest(code,g);}
+  catch(e){ONLINE.err=onlineMsg(e);ONLINE.stage='idle';renderOnline();}
+}
+function onlineBeginGuest(code,g){
+  const mine=g.hostColor==='w'?'b':'w';
+  Object.assign(ONLINE,{code,role:'guest',myColor:mine,seen:0,started:true,stage:'playing'});
+  Object.assign(NET,{peer:g.hostName||'Opponent',role:'guest',open:true,myRematch:false,theirRematch:false});
+  netOpts.mode=g.mode;startNetGame(mine,g.mode);S.online=true;
+  $('onlineOv').classList.remove('on');onlineWatchGame();
+  OL().send(code,{t:'hi',name:myNetName(),from:OL().uid(),id:Math.random().toString(36).slice(2)}).catch(()=>{});
+  render();
+}
+function openOnline(code){
+  $('home').classList.remove('on');$('onlineOv').classList.add('on');
+  if(code)ONLINE.prefill=code;
+  renderOnline();setTimeout(musicSync,0);
+  if(code&&ONLINE.stage==='idle')onlineJoinCode(code);
+}
+function renderOnline(){
+  const v=$('onlineBody');if(!v)return;const st=ONLINE.stage,m=modeById(ONLINE.mode);
+  const modes=`<div class="seg sm wrap" id="olMode">${MODES.map(x=>`<button data-v="${x.id}" class="${ONLINE.mode===x.id?'on':''}">${x.name}<small>${x.sub}</small></button>`).join('')}</div>`;
+  let h='';
+  if(st==='idle'){
+    h=`<p class="lead">Play someone on <b>any device, anywhere in the world</b>. All you need is an internet connection, no account required.</p>
+    <label class="nm-in">Your name <input id="olName" maxlength="16" value="${esc(myNetName()==='Player'?'':myNetName())}" placeholder="Player"></label>
+    <div class="opt"><div class="lab">Time control</div>${modes}</div>
+    <div class="netchoice">
+      <div class="nc"><h3>⚡ Quick match</h3><p>Get paired with another player who's looking for a ${esc(m.name)}${m.t?' '+m.sub:''} game.</p><button class="btn pri full" data-o="quick">Find an opponent</button></div>
+      <div class="nc"><h3>✉️ Invite a friend</h3><p>Get a code and a link to send them.</p>
+        <div class="seg sm" id="olColor">${[['w','White'],['b','Black'],['r','Random']].map(([k,l])=>`<button data-v="${k}" class="${ONLINE.color===k?'on':''}">${l}</button>`).join('')}</div>
+        <button class="btn full" data-o="invite">Create invite</button></div>
+    </div>
+    <div class="nc joinrow"><h3>🔑 Have a code?</h3><div class="jr"><input id="olCode" maxlength="7" placeholder="ABC123" value="${esc(ONLINE.prefill||'')}" autocapitalize="characters"><button class="btn pri" data-o="join">Join</button></div></div>
+    ${ONLINE.err?`<div class="neterr">⚠ ${esc(ONLINE.err)}</div>`:''}`;
+  }else if(st==='creating'||st==='joining'){h=`<div class="empty">${st==='joining'?'Joining the game…':'Setting up your game…'}</div>`;}
+  else if(st==='searching'){h=`<div class="empty searching"><div class="spin"></div><b>Looking for an opponent…</b><br>${esc(m.name)}${m.t?' '+m.sub:''} · this can take a minute. You'll be matched with the next player who searches.</div>
+    <button class="btn full" data-o="cancel">Cancel</button>`;}
+  else if(st==='invite'){const link=inviteLink(ONLINE.code);
+    h=`<p class="lead">Send this to your friend. The game starts as soon as they join.</p>
+    <div class="invite"><div class="code">${ONLINE.code}</div><small>Game code</small></div>
+    <div class="linkrow"><input readonly id="olLink" value="${esc(link)}"><button class="btn pri" data-o="share">${navigator.share?'Share link':'Copy link'}</button></div>
+    <div class="empty searching"><div class="spin"></div>Waiting for your friend to join… You'll play <b>${ONLINE.myColor==='w'?'White':'Black'}</b>, ${esc(m.name)}${m.t?' '+m.sub:''}.</div>
+    <button class="btn full" data-o="cancel">Cancel invite</button>`;}
+  v.innerHTML=h;
+  const nm=$('olName');if(nm)nm.oninput=()=>store.set('netName',nm.value.trim());
+  const mo=$('olMode');if(mo)mo.onclick=e=>{const b=e.target.closest('button');if(!b)return;ONLINE.mode=b.dataset.v;store.set('onlineMode',ONLINE.mode);renderOnline();};
+  const co=$('olColor');if(co)co.onclick=e=>{const b=e.target.closest('button');if(!b)return;ONLINE.color=b.dataset.v;[...co.children].forEach(x=>x.classList.toggle('on',x===b));};
+  const ci=$('olCode');if(ci)ci.onkeydown=e=>{if(e.key==='Enter')onlineJoinCode(ci.value);};
+}
+$('onlineOv').addEventListener('click',e=>{
+  const b=e.target.closest('[data-o],[data-n]');if(!b)return;const a=b.dataset.o||b.dataset.n;
+  if(a==='quick')onlineHost(true);
+  else if(a==='invite')onlineHost(false);
+  else if(a==='join')onlineJoinCode($('olCode').value);
+  else if(a==='cancel'){onlineStop(true);renderOnline();}
+  else if(a==='share'){const link=inviteLink(ONLINE.code);
+    if(navigator.share)navigator.share({title:'Play me in Knightfall',text:`Join my chess game! Code ${ONLINE.code}`,url:link}).catch(()=>{});
+    else{try{navigator.clipboard.writeText(link);b.textContent='Copied!';}catch(err){$('olLink').select();}}}
+  else if(a==='close'){$('onlineOv').classList.remove('on');if(!ONLINE.started)onlineStop(true);openHome('main');}
+});
+// an invite link opens straight into the game
+(()=>{try{const j=new URLSearchParams(location.search).get('join');if(j){history.replaceState(null,'',location.pathname);setTimeout(()=>openOnline(j.toUpperCase()),300);}}catch(e){}})();
+
 // boot: show a board behind the title screen
 resetPos();S={gid:0,human:null,bot:botById(pref.bot),mode:modeById('casual'),hist:[],keys:[posKey()],over:null,busy:false,flip:false,sel:null,targets:[],evalW:0,legal:[],clock:{w:0,b:0},
   card:{q:null,title:'Welcome',text:'Pick a mode and an opponent to begin.'},chat:null};
@@ -2608,16 +2745,17 @@ if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.ser
 </script>
 <script type="module">
 // Google sign-in: your rating and game record follow your Google account across devices.
-import {mountAccount,onAuth,loadPlayer,savePlayer,recordChessGame,publishLeaderboard,fetchLeaderboard,state} from '../auth.js';
+import {mountAccount,onAuth,loadPlayer,savePlayer,recordChessGame,publishLeaderboard,fetchLeaderboard,state,myUid,onlineCreate,onlineJoin,onlineFindPublic,onlineSend,onlinePing,onlineClose,onlineWatch} from '../auth.js';
 const CC=window.ChessCoach;let chess=null;
 CC.authInfo=()=>({configured:state.configured,user:state.user});
 CC.fetchLeaderboard=fetchLeaderboard;
+CC.online={create:onlineCreate,join:onlineJoin,findPublic:onlineFindPublic,send:onlineSend,ping:onlinePing,close:onlineClose,watch:onlineWatch,uid:myUid};
 const publish=()=>publishLeaderboard({rating:CC.getRating(),games:chess&&chess.games||0,crowns:CC.totalCrowns?CC.totalCrowns():0}).catch(e=>console.warn('leaderboard',e));
 const rows=()=>[['Chess rating',String(CC.getRating())],['Games vs computer',String(chess&&chess.games||0)],['Wins · Losses · Draws',chess?`${chess.wins||0} · ${chess.losses||0} · ${chess.draws||0}`:'0 · 0 · 0']];
 const accts=[mountAccount(document.getElementById('account'),rows),mountAccount(document.getElementById('menuAccount'),rows),mountAccount(document.getElementById('homeAccount'),rows)];
 const acct={redraw:()=>accts.forEach(a=>a.redraw())};
 onAuth(async st=>{
-  if(!st.user){CC.setProfile(null);chess=null;CC.refreshHome&&CC.refreshHome();return;}
+  if(!st.user||st.user.anon){CC.setProfile(null);chess=null;CC.refreshHome&&CC.refreshHome();return;}
   CC.setProfile({name:st.user.name,photo:st.user.photo});
   try{
     const d=await loadPlayer();chess=d&&d.chess||null;
@@ -2627,7 +2765,7 @@ onAuth(async st=>{
   }catch(e){console.warn('Could not load saved chess data',e);}
 });
 document.addEventListener('cc:rated',async e=>{
-  if(!state.user)return;
+  if(!state.user||state.user.anon)return;
   const{rating,score}=e.detail;
   if(chess){chess.rating=rating;chess.games=(chess.games||0)+1;if(score===1)chess.wins=(chess.wins||0)+1;else if(score===0)chess.losses=(chess.losses||0)+1;else chess.draws=(chess.draws||0)+1;}
   try{await recordChessGame({rating,score});}catch(err){console.warn('Could not save game',err);}
@@ -2638,14 +2776,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-26b';
+const GAME_VERSION='2026-11-28a';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('ℹ️ Games against the computer no longer change your rating. Play freely!',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('🌍 New: Play online! Quick match with anyone, or invite a friend with a code.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){

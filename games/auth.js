@@ -22,7 +22,7 @@ async function init() {
     await authMod.setPersistence(auth, authMod.browserLocalPersistence);
     authMod.getRedirectResult(auth).catch(() => {});
     authMod.onAuthStateChanged(auth, u => {
-      state.user = u ? { uid: u.uid, name: u.displayName || 'Player', photo: u.photoURL || '', email: u.email || '' } : null;
+      state.user = u ? { uid: u.uid, name: u.displayName || 'Player', photo: u.photoURL || '', email: u.email || '', anon: !!u.isAnonymous } : null;
       state.ready = true; state.error = null; emit();
     });
   } catch (e) {
@@ -82,6 +82,61 @@ export async function fetchLeaderboard(n = 50) {
   return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
 }
 
+
+// ---------- online games: games/{CODE} holds both players and an append-only list of events ----------
+export const myUid = () => (auth && auth.currentUser ? auth.currentUser.uid : null);
+export async function ensurePlayer() {
+  if (!state.configured) throw new Error('not-configured');
+  if (!auth) throw new Error(state.error || 'unavailable');
+  if (auth.currentUser) return auth.currentUser;
+  try { return (await fb.signInAnonymously(auth)).user; }
+  catch (e) { if (/admin-restricted|operation-not-allowed/.test(e.code || '')) throw new Error('need-signin'); throw e; }
+}
+const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const newCode = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), x => CODE_CHARS[x % CODE_CHARS.length]).join('');
+export async function onlineCreate({ name, color, mode, pub }) {
+  const u = await ensurePlayer();
+  for (let i = 0; i < 6; i++) {
+    const code = newCode(), ref = fb.doc(db, 'games', code);
+    try {
+      await fb.runTransaction(db, async tx => {
+        if ((await tx.get(ref)).exists()) throw new Error('taken');
+        tx.set(ref, { host: u.uid, hostName: name, hostColor: color, mode, guest: null, guestName: null,
+          status: pub ? 'public' : 'waiting', events: [], createdAt: fb.serverTimestamp(), updatedAt: fb.serverTimestamp() });
+      });
+      return code;
+    } catch (e) { if (e.message !== 'taken') throw e; }
+  }
+  throw new Error('Couldn\'t make a game code. Try again.');
+}
+export async function onlineJoin(code, name) {
+  const u = await ensurePlayer(), ref = fb.doc(db, 'games', code);
+  return fb.runTransaction(db, async tx => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) throw new Error('There\'s no game with that code.');
+    const d = snap.data();
+    if (d.host === u.uid) throw new Error('That\'s your own game. Send the code to a friend.');
+    if (d.status === 'closed') throw new Error('That game has ended.');
+    if (d.guest && d.guest !== u.uid) throw new Error('That game already has two players.');
+    if (!d.guest) tx.update(ref, { guest: u.uid, guestName: name, status: 'playing', updatedAt: fb.serverTimestamp() });
+    return { ...d, guest: u.uid, guestName: name };
+  });
+}
+export async function onlineFindPublic(name, mode) {
+  const u = await ensurePlayer();
+  const snap = await fb.getDocs(fb.query(fb.collection(db, 'games'), fb.where('status', '==', 'public'), fb.limit(25)));
+  const now = Date.now();
+  const open = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+    .filter(d => d.host !== u.uid && d.mode === mode && d.updatedAt && now - d.updatedAt.toMillis() < 70000)
+    .sort((a, b) => a.updatedAt.toMillis() - b.updatedAt.toMillis());
+  for (const g of open) { try { return { code: g.id, game: await onlineJoin(g.id, name) }; } catch (e) { /* someone else got it */ } }
+  return null;
+}
+export const onlineSend = (code, ev) => fb.updateDoc(fb.doc(db, 'games', code), { events: fb.arrayUnion(ev), updatedAt: fb.serverTimestamp() });
+export const onlinePing = code => fb.updateDoc(fb.doc(db, 'games', code), { updatedAt: fb.serverTimestamp() });
+export const onlineClose = code => fb.updateDoc(fb.doc(db, 'games', code), { status: 'closed', updatedAt: fb.serverTimestamp() });
+export const onlineWatch = (code, cb) => fb.onSnapshot(fb.doc(db, 'games', code), s => cb(s.exists() ? s.data() : null), err => cb(null, err));
+
 // ---------- shared account button (homepage + games) ----------
 const G_LOGO = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 const CSS = `
@@ -120,7 +175,7 @@ export function mountAccount(el, extra) {
   el.classList.add('hf-acct');
   let open = false;
   const draw = () => {
-    if (!state.user) {
+    if (!state.user || state.user.anon) {
       el.innerHTML = `<button class="hf-gbtn" type="button" ${state.ready ? '' : 'disabled'}>${G_LOGO}<span>Sign in with Google</span></button>`;
       el.querySelector('button').onclick = async () => {
         const r = await signIn(); if (MSG[r]) note(MSG[r]);
