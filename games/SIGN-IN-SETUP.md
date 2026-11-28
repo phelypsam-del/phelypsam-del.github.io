@@ -66,8 +66,8 @@ match /games/{code} {
       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['events', 'status', 'updatedAt'])
       && (request.resource.data.events == resource.data.events
         || (request.resource.data.events.size() == resource.data.events.size() + 1
-          && request.resource.data.events[0:resource.data.events.size()] == resource.data.events
-          && request.resource.data.events[resource.data.events.size()].from == request.auth.uid)))
+          && request.resource.data.events.hasAll(resource.data.events)
+          && request.resource.data.events[request.resource.data.events.size() - 1].from == request.auth.uid)))
   );
 }
 ```

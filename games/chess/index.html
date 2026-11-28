@@ -443,6 +443,7 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 .rb-l small{color:var(--accent);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
 .rb-l b{display:block;font-size:20px;margin:2px 0}.rb-l p{margin:0;color:#d9cdb9;font-size:14px}
 .recbox .btn{flex:none;padding:11px 16px}
+.lead.txt{display:block;line-height:1.5}
 .lead.small{font-size:13px;color:var(--muted)}
 .courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
 .course{display:flex;align-items:center;gap:12px;text-align:left;background:#221d18;border:1px solid #362e25;border-radius:12px;padding:10px 12px;color:var(--text)}
@@ -1806,7 +1807,7 @@ function renderHome(){
     v.innerHTML=`${vhead('Leaderboard')}
     <div class="tabs"><button class="${HOME.tab==='ladder'?'on':''}" data-tab="ladder">The Ladder</button><button class="${HOME.tab==='world'?'on':''}" data-tab="world">Worldwide</button></div>
     ${HOME.tab==='ladder'?`
-      <p class="lead">You're <b>#${myPos}</b> of ${rows.length}. Beat each opponent to collect crowns. Win cleanly (no hints or takebacks) for all 3. Games against the computer don't change your rating, so play freely.
+      <p class="lead txt">You're <b>#${myPos}</b> of ${rows.length}. Beat each opponent to collect crowns. Win cleanly (no hints or takebacks) for all 3. Games against the computer don't change your rating, so play freely.
         <span class="crtot">${CROWN(true)} ${totalCrowns()} / ${BOTS.length*3}</span></p>
       <ol class="lb">${rows.map((x,i)=>{
         if(x.me)return`<li class="lbrow me"><span class="pos">${i+1}</span>${meAvatar()}<span class="nm"><b>${esc(meName())}</b>${rankBadge(r)}</span><span class="rec"></span><span class="rt">${r}</span><span class="act"></span></li>`;
@@ -2445,7 +2446,7 @@ function renderNet(){
     <details><summary>Paste a text code instead</summary><textarea id="netCodeIn" placeholder="KF1.…"></textarea><button class="btn sm" data-n="paste">Connect</button></details>`;
   let h='';
   if(st==='idle'||st==='error'){
-    h=`<p class="lead">Play a friend on <b>another phone, tablet or computer</b> with no internet. Both devices need to be on the <b>same Wi-Fi</b>, or one can connect to the other's phone hotspot.</p>
+    h=`<p class="lead txt">Play a friend on <b>another phone, tablet or computer</b> with no internet. Both devices need to be on the <b>same Wi-Fi</b>, or one can connect to the other's phone hotspot.</p>
     <label class="nm-in">Your name <input id="netName" maxlength="16" value="${esc(myNetName()==='Player'?'':myNetName())}" placeholder="Player"></label>
     <div class="netchoice">
       <div class="nc"><h3>Host a game</h3><p>Pick colours and a clock, then show your friend a QR code.</p>
@@ -2697,7 +2698,7 @@ function renderOnline(){
   const modes=`<div class="seg sm wrap" id="olMode">${MODES.map(x=>`<button data-v="${x.id}" class="${ONLINE.mode===x.id?'on':''}">${x.name}<small>${x.sub}</small></button>`).join('')}</div>`;
   let h='';
   if(st==='idle'){
-    h=`<p class="lead">Play someone on <b>any device, anywhere in the world</b>. All you need is an internet connection, no account required.</p>
+    h=`<p class="lead txt">Play someone on <b>any device, anywhere in the world</b>. All you need is an internet connection, no account required.</p>
     <label class="nm-in">Your name <input id="olName" maxlength="16" value="${esc(myNetName()==='Player'?'':myNetName())}" placeholder="Player"></label>
     <div class="opt"><div class="lab">Time control</div>${modes}</div>
     <div class="netchoice">
@@ -2709,13 +2710,13 @@ function renderOnline(){
     <div class="nc joinrow"><h3>🔑 Have a code?</h3><div class="jr"><input id="olCode" maxlength="7" placeholder="ABC123" value="${esc(ONLINE.prefill||'')}" autocapitalize="characters"><button class="btn pri" data-o="join">Join</button></div></div>
     ${ONLINE.err?`<div class="neterr">⚠ ${esc(ONLINE.err)}</div>`:''}`;
   }else if(st==='creating'||st==='joining'){h=`<div class="empty">${st==='joining'?'Joining the game…':'Setting up your game…'}</div>`;}
-  else if(st==='searching'){h=`<div class="empty searching"><div class="spin"></div><b>Looking for an opponent…</b><br>${esc(m.name)}${m.t?' '+m.sub:''} · this can take a minute. You'll be matched with the next player who searches.</div>
+  else if(st==='searching'){h=`<div class="empty searching"><div class="spin"></div><span><b>Looking for an opponent…</b><br>${esc(m.name)}${m.t?' '+m.sub:''} · this can take a minute. You'll be matched with the next player who searches.</span></div>
     <button class="btn full" data-o="cancel">Cancel</button>`;}
   else if(st==='invite'){const link=inviteLink(ONLINE.code);
     h=`<p class="lead">Send this to your friend. The game starts as soon as they join.</p>
     <div class="invite"><div class="code">${ONLINE.code}</div><small>Game code</small></div>
     <div class="linkrow"><input readonly id="olLink" value="${esc(link)}"><button class="btn pri" data-o="share">${navigator.share?'Share link':'Copy link'}</button></div>
-    <div class="empty searching"><div class="spin"></div>Waiting for your friend to join… You'll play <b>${ONLINE.myColor==='w'?'White':'Black'}</b>, ${esc(m.name)}${m.t?' '+m.sub:''}.</div>
+    <div class="empty searching"><div class="spin"></div><span>Waiting for your friend to join… You'll play <b>${ONLINE.myColor==='w'?'White':'Black'}</b>, ${esc(m.name)}${m.t?' '+m.sub:''}.</span></div>
     <button class="btn full" data-o="cancel">Cancel invite</button>`;}
   v.innerHTML=h;
   const nm=$('olName');if(nm)nm.oninput=()=>store.set('netName',nm.value.trim());
