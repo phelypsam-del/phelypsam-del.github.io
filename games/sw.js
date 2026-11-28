@@ -1,8 +1,8 @@
 // Hammerfall Games: offline support for the games site and Chess Coach.
 // Network first (so updates show up right away), falling back to the saved copy when offline.
-const CACHE='hammerfall-v20';
+const CACHE='hammerfall-v21';
 const PRECACHE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./auth.js','./firebase-config.js',
-  './chess/','./chess/index.html','./chess/puzzles.js','./lib/qrcode.js','./lib/jsQR.js','./chess/manifest.webmanifest','./chess/icon-192.png','./chess/icon-512.png','./chess/preview.jpg'];
+  './chess/','./chess/index.html','./chess/puzzles.js','./chess/manifest.webmanifest','./chess/icon-192.png','./chess/icon-512.png','./chess/preview.jpg'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(PRECACHE)).then(()=>self.skipWaiting()));
 });

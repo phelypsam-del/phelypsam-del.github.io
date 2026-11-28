@@ -424,6 +424,11 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 .tut-ctrl button:hover{background:#433c34}
 .tut-ctrl button.go{background:var(--accent);color:#1d1a15;border-color:transparent}
 .card .t small{color:var(--muted);font-weight:500}
+.mhead{margin:6px 2px -2px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.mhead:first-child{margin-top:0}
+.hpair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hbtn.sm{padding:9px 11px;gap:10px}.hbtn.sm b{font-size:15px}.hbtn.sm small{font-size:12px}
+@media(max-width:380px){.hpair{grid-template-columns:1fr}}
 .hbtn.learnhi{border-color:#a37c2c;box-shadow:0 0 0 1px rgba(240,195,90,.35)}
 .tut-start{width:100%;margin-bottom:12px}
 .lessons{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
@@ -456,19 +461,12 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
 .toplay{color:var(--muted);font-size:13px}
 .prt{margin-top:8px;color:var(--muted);font-size:12px}.prt b{color:var(--text)}
 .tut-fb .up{color:#7de0a6;font-weight:700}.tut-fb .dn{color:#ff9d93;font-weight:700}
-/* nearby play */
 .nm-in{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-bottom:12px}
 .nm-in input{flex:1;max-width:220px;background:#15120e;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--text);font:inherit}
 .netchoice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .nc{background:#221d18;border:1px solid #362e25;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .nc h3{margin:0;font-size:17px}.nc p{margin:0;color:var(--muted);font-size:13px}
 .seg.sm button{padding:6px 4px;font-size:13px}
-.scanrow{display:flex;gap:6px;flex-wrap:wrap}.scanrow .btn{flex:1;text-align:center;cursor:pointer}
-#netOv details{margin-top:8px;font-size:13px;color:var(--muted)}#netOv summary{cursor:pointer}
-#netOv textarea{width:100%;height:70px;margin:6px 0;background:#15120e;border:1px solid var(--line);border-radius:8px;color:var(--text);font:12px ui-monospace,monospace;padding:6px;word-break:break-all}
-.qrwrap{display:flex;gap:14px;align-items:flex-start;margin:6px 0 12px}
-.qr{width:min(260px,60vw);flex:none;background:#fff;border-radius:12px;padding:6px;line-height:0}.qr svg{width:100%;height:auto}
-.qrside{flex:1;min-width:0}.qrside b{font-size:16px}.qrside p{color:var(--muted);font-size:13px;margin:4px 0}
 .steps{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 12px;counter-reset:s}
 .steps li{flex:1;font-size:12px;color:var(--muted);background:#1b1713;border:1px solid #332b22;border-radius:8px;padding:6px 8px;counter-increment:s}
 .steps li::before{content:counter(s) ". ";font-weight:800}
@@ -553,21 +551,6 @@ body.trt-theme .sq .coord{color:rgba(255,245,225,.75);text-shadow:0 1px 2px #000
   </div>
 </div>
 
-<div class="overlay" id="netOv">
-  <div class="modal wide">
-    <button class="mback" type="button" data-n="close">← Menu</button>
-    <h2>Nearby play</h2>
-    <div id="netBody"></div>
-    <div class="netscan" id="netScan" hidden><video id="netVideo" playsinline muted></video><button class="btn" type="button" data-n="stopscan">Cancel scan</button></div>
-  </div>
-</div>
-
-<canvas id="psySpace" aria-hidden="true"></canvas>
-<div id="trtWorld" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"><defs>
-<linearGradient id="trtSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e0a17"/><stop offset=".55" stop-color="#2b1420"/><stop offset=".85" stop-color="#6a2616"/><stop offset="1" stop-color="#a0401a"/></linearGradient>
-<radialGradient id="trtMoon"><stop offset="0" stop-color="#f6e7c6"/><stop offset=".45" stop-color="#f1d9a8" stop-opacity=".5"/><stop offset="1" stop-color="#f1d9a8" stop-opacity="0"/></radialGradient></defs>
-<rect width="1600" height="900" fill="url(#trtSky)"/><circle cx="230" cy="190" r="170" fill="url(#trtMoon)" opacity=".5"/><circle cx="230" cy="190" r="58" fill="#f3e2bd"/>
-<path d="M0 640 Q200 560 420 610 T860 590 T1300 600 T1600 570 V900 H0Z" fill="#24131a"/><g fill="#2a1a1e" stroke="#4a2a26" stroke-width="2"><rect x="430" y="560" width="740" height="260"/><rect x="430" y="542" width="18" height="18"/><rect x="466" y="542" width="18" height="18"/><rect x="502" y="542" width="18" height="18"/><rect x="538" y="542" width="18" height="18"/><rect x="574" y="542" width="18" height="18"/><rect x="610" y="542" width="18" height="18"/><rect x="646" y="542" width="18" height="18"/><rect x="682" y="542" width="18" height="18"/><rect x="718" y="542" width="18" height="18"/><rect x="754" y="542" width="18" height="18"/><rect x="790" y="542" width="18" height="18"/><rect x="826" y="542" width="18" height="18"/><rect x="862" y="542" width="18" height="18"/><rect x="898" y="542" width="18" height="18"/><rect x="934" y="542" width="18" height="18"/><rect x="970" y="542" width="18" height="18"/><rect x="1006" y="542" width="18" height="18"/><rect x="1042" y="542" width="18" height="18"/><rect x="1078" y="542" width="18" height="18"/><rect x="1114" y="542" width="18" height="18"/><rect x="1150" y="542" width="18" height="18"/><rect x="390" y="420" width="110" height="400"/><rect x="390" y="404" width="16" height="16"/><rect x="422" y="404" width="16" height="16"/><rect x="454" y="404" width="16" height="16"/><rect x="486" y="404" width="16" height="16"/><rect x="1100" y="420" width="110" height="400"/><rect x="1100" y="404" width="16" height="16"/><rect x="1132" y="404" width="16" height="16"/><rect x="1164" y="404" width="16" height="16"/><rect x="1196" y="404" width="16" height="16"/><rect x="690" y="300" width="220" height="520"/><rect x="690" y="284" width="16" height="16"/><rect x="722" y="284" width="16" height="16"/><rect x="754" y="284" width="16" height="16"/><rect x="786" y="284" width="16" height="16"/><rect x="818" y="284" width="16" height="16"/><rect x="850" y="284" width="16" height="16"/><rect x="882" y="284" width="16" height="16"/><path d="M690 300 L800 160 L910 300Z"/><path d="M390 420 L445 330 L500 420Z"/><path d="M1100 420 L1155 330 L1210 420Z"/></g><path d="M760 820 V720 Q800 670 840 720 V820Z" fill="#2a120c"/><rect class="win" style="animation-delay:-0.00s" x="780" y="360" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.37s" x="820" y="360" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.74s" x="760" y="450" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-1.11s" x="840" y="450" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-1.48s" x="800" y="540" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-1.85s" x="430" y="480" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.22s" x="470" y="480" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.59s" x="1140" y="480" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.96s" x="1180" y="480" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-1.33s" x="560" y="640" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-1.70s" x="1040" y="640" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.07s" x="660" y="640" width="12" height="22" rx="6" fill="#ffae42"/><rect class="win" style="animation-delay:-0.44s" x="940" y="640" width="12" height="22" rx="6" fill="#ffae42"/><line x1="800" y1="160" x2="800" y2="100" stroke="#2a1a1e" stroke-width="4"/><path class="flag" d="M802 102 L860 114 L802 128Z" fill="#8e2f2a"/><line x1="445" y1="330" x2="445" y2="285" stroke="#2a1a1e" stroke-width="3"/><path class="flag" d="M447 287 L490 296 L447 306Z" fill="#8e2f2a"/><line x1="1155" y1="330" x2="1155" y2="285" stroke="#2a1a1e" stroke-width="3"/><path class="flag" d="M1157 287 L1200 296 L1157 306Z" fill="#8e2f2a"/><path d="M0 820 Q400 790 800 812 T1600 800 V900 H0Z" fill="#070405"/></svg><canvas id="trtEmbers"></canvas></div>
 <div class="overlay" id="setup">
   <div class="modal wide">
     <button class="mback" id="setupBack" type="button">← Menu</button>
@@ -1565,7 +1548,7 @@ function render(){
   const bw=bottomSide()==='w',hc=bw?capB:capW,ac=bw?capW:capB,adv=bw?mat:-mat;
   $('capBot').innerHTML=capStr(hc,bw?'b':'w',adv);
   $('capTop').innerHTML=capStr(ac,bw?'w':'b',-adv);
-  $('sideTxt').textContent=S.tut?(S.tut.kind==='puz'?'Puzzle':'Lesson'):S.net?'Nearby':S.local?'2 players · offline':S.human?'You: '+(humanW()?'White':'Black'):'';
+  $('sideTxt').textContent=S.tut?(S.tut.kind==='puz'?'Puzzle':'Lesson'):S.net?'Online':S.local?'2 players · offline':S.human?'You: '+(humanW()?'White':'Black'):'';
   $('modeTxt').innerHTML=esc(S.mode?S.mode.name+(S.mode.t?' '+S.mode.sub:''):'')+(S.human&&!S.local&&!S.over?` · <span title="Crowns for winning this game (each hint or takeback costs one)">${crownsHTML(crownsAtStake(),'sm')}</span>`:'');
   // opening
   const op=$('opening');
@@ -1599,7 +1582,7 @@ function render(){
   // moves
   const mv=$('moves');let mh='';
   for(let i=0;i<S.hist.length;i+=2){
-    mh+=`<div class="mrow"><span class="n">${i/2+1}.</span><span class="mv">${cell(S.hist[i])}</span><span class="mv">${S.hist[i+1]?cell(S.hist[i+1]):''}</span></div>`;
+    mh+=`<div class="hpair"><span class="n">${i/2+1}.</span><span class="mv">${cell(S.hist[i])}</span><span class="mv">${S.hist[i+1]?cell(S.hist[i+1]):''}</span></div>`;
   }
   mv.innerHTML=mh||'<div style="padding:6px 12px;color:var(--muted)">No moves yet</div>';mv.scrollTop=mv.scrollHeight;
   $('resignBtn').disabled=!S.human||!!S.over||!!S.tut;
@@ -1651,7 +1634,7 @@ function showEnd(gid){
   $('endSum').innerHTML=`<div><b>${hm.length?acc+'%':'—'}</b>accuracy</div><div><b style="color:${Q.best.col}">${cnt('best')+cnt('excellent')+cnt('book')}</b>book / best</div><div><b style="color:${Q.good.col}">${cnt('good')}</b>good</div>
   <div><b style="color:${Q.inacc.col}">${cnt('inacc')}</b>inaccuracies</div><div><b style="color:${Q.mistake.col}">${cnt('mistake')}</b>mistakes</div><div><b style="color:${Q.blunder.col}">${cnt('blunder')}</b>blunders</div>`;
   const rc=S.ratingChange;
-  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?(S.online?'Online':'Nearby')+' games don\'t change your rating.':'Games against the computer don\'t change your rating.'}</span>`;
+  $('endRating').innerHTML=rc?`Your rating: ${rc[0]} → <b>${rc[1]}</b> <span class="${rc[1]>=rc[0]?'up':'dn'}">(${rc[1]>=rc[0]?'+':''}${rc[1]-rc[0]})</span>`:`<span style="color:var(--muted)">${S.net?'Online games don\'t change your rating.':'Games against the computer don\'t change your rating.'}</span>`;
   $('endOv').classList.add('on');
 }
 /* ---- new-game menu ---- */
@@ -1682,7 +1665,7 @@ $('newBtn').onclick=()=>openHome();
 $('setupBack').onclick=()=>openHome();
 $('againBtn').onclick=openMenu;
 $('rematchBtn').onclick=()=>{
-  if(S.net){if(!NET.open){openNet();return;}NET.myRematch=true;netSend({t:'rematch'});$('rematchBtn').textContent='Waiting…';
+  if(S.net){if(!NET.open){openOnline();return;}NET.myRematch=true;netSend({t:'rematch'});$('rematchBtn').textContent='Waiting…';
     if(NET.theirRematch&&NET.role==='host')netStartFromHost();return;}
   startGame(pref.side,pref.bot,pref.mode);};
 $('reviewBtn').onclick=()=>$('endOv').classList.remove('on');
@@ -1785,15 +1768,21 @@ function renderHome(){
       </section>
       <nav class="hmenu">
         ${gameInProgress()?`<button class="hbtn primary" data-a="resume">${icon('K')}<span><b>Resume game</b><small>vs ${esc(S.local?'a friend':S.bot.name)} · move ${Math.ceil((S.hist.length+1)/2)}</small></span></button>`:''}
+        <h4 class="mhead">Play</h4>
         <button class="hbtn${gameInProgress()?'':' primary'}" data-a="quick">${icon('N')}<span><b>Quick play</b><small>${M.name}${M.t?' '+M.sub:''} · ${QB.id==='friend'?'vs a friend':'vs '+esc(QB.name)}</small></span></button>
-        <button class="hbtn${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Academy</b><small>${(()=>{const A=acad(),n=Object.keys(A.solved).length+tutDone().length;return n?`${n} lessons done · puzzle rating ${A.pr}`:'Hundreds of lessons and puzzles, picked for you';})()}</small></span></button>
-        <button class="hbtn" data-a="new">${icon('Q')}<span><b>New game</b><small>Pick a time control and opponent</small></span></button>
-        <button class="hbtn" data-a="friend">${icon('P')}<span><b>Play a friend</b><small>2 players, 1 device, no internet needed</small></span></button>
+        <button class="hbtn" data-a="new">${icon('Q')}<span><b>Play the computer</b><small>Pick an opponent and a time control</small></span></button>
         <button class="hbtn" data-a="online"><span class="hic lt">${pieceHTML('k')}</span><span><b>Play online</b><small>Anyone, anywhere: quick match or invite a friend</small></span></button>
-        <button class="hbtn" data-a="nearby"><span class="hic lt">${pieceHTML('q')}</span><span><b>Nearby play</b><small>${NET.open?`Connected to ${esc(NET.peer)}`:'Phone to phone, no internet needed'}</small></span></button>
-        <button class="hbtn" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Climb the ladder, collect crowns</small></span></button>
-        <button class="hbtn" data-a="stats">${icon('B')}<span><b>Stats &amp; history</b><small>${st.all?`${st.all} game${st.all>1?'s':''} played`:'Your games will show up here'}</small></span></button>
-        <button class="hbtn" data-a="how"><span class="hic lt">${pieceHTML('p')}</span><span><b>How to play</b><small>The coach, crowns, ranks and modes</small></span></button>
+        <button class="hbtn" data-a="friend">${icon('P')}<span><b>Pass &amp; play</b><small>2 players taking turns on this screen</small></span></button>
+        <h4 class="mhead">Learn</h4>
+        <div class="hpair">
+          <button class="hbtn sm${!tutDone().length&&!stats().all?' learnhi':''}" data-a="learn"><span class="hic lt">${pieceHTML('n')}</span><span><b>Academy</b><small>${(()=>{const A=acad(),n=Object.keys(A.solved).length+tutDone().length;return n?`${n} done · puzzles ${A.pr}`:'Lessons &amp; puzzles';})()}</small></span></button>
+          <button class="hbtn sm" data-a="how"><span class="hic lt">${pieceHTML('p')}</span><span><b>How to play</b><small>Coach, crowns, ranks</small></span></button>
+        </div>
+        <h4 class="mhead">Progress</h4>
+        <div class="hpair">
+          <button class="hbtn sm" data-a="board">${icon('R')}<span><b>Leaderboard</b><small>Ladder &amp; crowns</small></span></button>
+          <button class="hbtn sm" data-a="stats">${icon('B')}<span><b>Stats</b><small>${st.all?`${st.all} game${st.all>1?'s':''} played`:'Your history'}</small></span></button>
+        </div>
       </nav>
     </div>
     <section class="chal">
@@ -1884,7 +1873,7 @@ function renderHome(){
       <section><h3>Rating and ranks</h3><p>Everyone starts at 800. Games against the computer don't change your rating, so you can experiment freely. Your progress shows in your crowns, your stats and your Academy puzzle rating.</p>
         <div class="ranks">${RANKS.map(x=>`<span class="rank${x[1]==='Grandmaster'?' gm':''}"><span class="rp">${pieceHTML(x[2])}</span>${x[1]}<small>${x[0]}+</small></span>`).join('')}</div></section>
       <section><h3>Modes</h3><p><b>Casual</b> has no clock. <b>Bullet</b> (1 min), <b>Blitz</b> (3+2 or 5 min) and <b>Rapid</b> (10 min) use a clock, so run out of time and you lose. "+2" means 2 seconds are added after each move.</p></section>
-      <section><h3>Play a friend</h3><p>Two players take turns on one device, with no internet needed. The board turns around after each move, and the coach rates both players.</p></section>
+      <section><h3>Pass &amp; play</h3><p>Two players take turns on one screen, with no internet needed. The board turns around after each move, and the coach rates both players.</p></section>
       <section><h3>Hints and Undo</h3><p>💡 <b>Hint</b> shows the piece to move, and pressing it again shows where it goes. <b>Undo</b> takes back your last move. Both cost a crown.</p></section>
     </div>`;
   }
@@ -1933,7 +1922,6 @@ $('home').addEventListener('click',e=>{
   else if(a==='board'||a==='stats'||a==='how'||a==='learn'||a==='basics')openHome(a);
   else if(a==='train')startSession(null);
   else if(a==='basics-next'){const d=tutDone();const i=LESSONS.findIndex((L,k)=>!d.includes(k));startLesson(i<0?0:i,0);}
-  else if(a==='nearby')openNet();
   else if(a==='online')openOnline();
   else if(a==='clear'){if(t.dataset.sure){store.set('history',[]);renderHome();}else{t.dataset.sure='1';t.textContent='Tap again to clear all history';}}
 });
@@ -2072,7 +2060,7 @@ function musicStep(st,step,t){
 }
 function wantedTrack(){
   if(!AU.set.music&&!AU.set.gameMusic)return null;
-  const menuOpen=$('home').classList.contains('on')||$('setup').classList.contains('on')||($('netOv')&&$('netOv').classList.contains('on'))||($('onlineOv')&&$('onlineOv').classList.contains('on'));
+  const menuOpen=$('home').classList.contains('on')||$('setup').classList.contains('on')||($('onlineOv')&&$('onlineOv').classList.contains('on'));
   if(menuOpen||!S.human)return AU.set.music?'menu':null;
   if(!AU.set.gameMusic||S.over)return null;
   if(S.bot&&S.bot.traitor)return'traitor';
@@ -2280,69 +2268,13 @@ function puzHint(){
   render();
 }
 
-/* ================= NEARBY PLAY: device to device, no internet (WebRTC + QR pairing) ================= */
-const REMOTE={id:'remote',name:'Friend',elo:null,col:'#5b8fd0',tag:'Nearby player',
+/* ================= NETWORK GAME CORE (used by online play) ================= */
+const REMOTE={id:'remote',name:'Friend',elo:null,col:'#5b8fd0',tag:'Online player',
   lines:{hi:['Connected! Good luck, have fun.'],cap:[''],lost:[''],check:[''],win:['Good game!'],lose:['Good game!'],draw:['Good game!']}};
 const NET={pc:null,dc:null,role:null,peer:'Friend',open:false,myRematch:false,theirRematch:false,step:'idle',err:null};
-const loadScript=src=>new Promise((res,rej)=>{if(document.querySelector(`script[data-src="${src}"]`))return res();const s=document.createElement('script');s.src=src;s.dataset.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});
-const b64=u8=>{let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
-const unb64=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;};
-async function packDesc(desc){
-  const sdp=desc.sdp.split('\r\n').filter(l=>l&&!/^a=candidate:\S+ \d+ tcp /i.test(l)&&!/^a=extmap/.test(l)).join('\r\n')+'\r\n';
-  const raw=new TextEncoder().encode(JSON.stringify({t:desc.type,s:sdp,n:myNetName()}));
-  if('CompressionStream' in window){
-    const z=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
-    return 'KF1.'+b64(z);
-  }
-  return 'KF0.'+b64(raw);
-}
-async function unpackDesc(code){
-  code=String(code||'').trim();const m=code.match(/KF([01])\.([A-Za-z0-9_-]+)/);if(!m)throw new Error('That isn\'t a Knightfall code.');
-  let u=unb64(m[2]);
-  if(m[1]==='1')u=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
-  return JSON.parse(new TextDecoder().decode(u));
-}
 const myNetName=()=>(PROFILE&&PROFILE.name?PROFILE.name.split(' ')[0]:store.get('netName',''))||'Player';
-function waitIce(pc){return new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const t=setTimeout(res,3000);pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);res();}});});}
-function netReset(){try{NET.dc&&NET.dc.close();}catch(e){}try{NET.pc&&NET.pc.close();}catch(e){}Object.assign(NET,{pc:null,dc:null,role:null,open:false,myRematch:false,theirRematch:false,step:'idle',err:null});stopScan();}
-function newPC(){
-  const pc=new RTCPeerConnection({iceServers:[]});
-  pc.onconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.connectionState))netLost();};
-  return pc;
-}
-function wireDC(dc){
-  NET.dc=dc;
-  dc.onopen=()=>{NET.open=true;NET.step='connected';netSend({t:'hi',name:myNetName(),v:1});if(NET.role==='host')netStartFromHost();renderNet();};
-  dc.onmessage=e=>{let msg;try{msg=JSON.parse(e.data);}catch(err){return;}netRecv(msg);};
-  dc.onclose=()=>netLost();
-}
-const netSend=o=>{if(typeof ONLINE!=='undefined'&&ONLINE.code&&ONLINE.started&&OL()){OL().send(ONLINE.code,{...o,from:OL().uid(),id:Math.random().toString(36).slice(2)}).catch(()=>{});return;}try{if(NET.dc&&NET.dc.readyState==='open')NET.dc.send(JSON.stringify(o));}catch(e){}};
-async function netHost(){
-  netReset();NET.role='host';NET.step='making';renderNet();
-  try{
-    const pc=NET.pc=newPC();wireDC(pc.createDataChannel('knightfall',{ordered:true}));
-    await pc.setLocalDescription(await pc.createOffer());await waitIce(pc);
-    NET.code=await packDesc(pc.localDescription);NET.step='offer';renderNet();
-  }catch(e){NET.err='Couldn\'t start a connection on this device. ('+e.message+')';NET.step='error';renderNet();}
-}
-async function netJoinWith(code){
-  try{
-    const d=await unpackDesc(code);
-    if(NET.role==='host'){ // host receiving the answer
-      if(d.t!=='answer')throw new Error('That\'s a host code. Scan the code shown on the joining device.');
-      NET.peer=d.n||'Friend';NET.step='linking';renderNet();
-      await NET.pc.setRemoteDescription({type:'answer',sdp:d.s});
-      setTimeout(()=>{if(!NET.open&&NET.step==='linking'){NET.err='The devices couldn\'t reach each other. Make sure both are on the same Wi-Fi (or one is using the other\'s hotspot), then try again.';NET.step='error';renderNet();}},15000);
-      return;
-    }
-    if(d.t!=='offer')throw new Error('That\'s a reply code. Scan the code on the hosting device.');
-    netReset();NET.role='guest';NET.peer=d.n||'Friend';NET.step='making';renderNet();
-    const pc=NET.pc=newPC();pc.ondatachannel=e=>wireDC(e.channel);
-    await pc.setRemoteDescription({type:'offer',sdp:d.s});
-    await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
-    NET.code=await packDesc(pc.localDescription);NET.step='answer';renderNet();
-  }catch(e){NET.err=e.message||'That code didn\'t work.';NET.step='error';renderNet();}
-}
+function netReset(){try{NET.dc&&NET.dc.close();}catch(e){}try{NET.pc&&NET.pc.close();}catch(e){}Object.assign(NET,{pc:null,dc:null,role:null,open:false,myRematch:false,theirRematch:false,step:'idle',err:null});}
+const netSend=o=>{if(typeof ONLINE!=='undefined'&&ONLINE.code&&ONLINE.started&&OL()){OL().send(ONLINE.code,{...o,from:OL().uid(),id:Math.random().toString(36).slice(2)}).catch(()=>{});return;}};
 // host decides colours and clock
 let netOpts={color:'w',mode:'casual'};
 function netStartFromHost(){
@@ -2355,11 +2287,10 @@ function netStartFromHost(){
 }
 function startNetGame(color,mode){
   REMOTE.name=NET.peer||'Friend';
-  $('netOv').classList.remove('on');
   startGame(color,'remote',mode);
   S.net=true;S.chat={text:`Connected to ${esc(REMOTE.name)}. Good luck!`};
   if(!humanTurn())S.busy=true;
-  S.card={q:null,title:'Nearby game',text:`You're playing <b>${esc(REMOTE.name)}</b> on another device, with no internet needed. You have ${color==='w'?'White, so you move first':'Black'}.`};
+  S.card={q:null,title:'Online game',text:`You're playing <b>${esc(REMOTE.name)}</b> online. You have ${color==='w'?'White, so you move first':'Black'}.`};
   render();
 }
 function netRecv(msg){
@@ -2385,100 +2316,10 @@ function netRecv(msg){
 function netLost(bye){
   if(!NET.open&&!bye)return;
   NET.open=false;
-  if(S.net&&!S.over){S.card={q:null,title:'Connection lost',text:`The connection to ${esc(NET.peer)} dropped${bye?' (they left the game)':''}. You can start a new game from the menu${S.online?': Play online':': Nearby play'}.`};S.busy=false;S.over={type:'abandon'};render();}
+  if(S.net&&!S.over){S.card={q:null,title:'Connection lost',text:`The connection to ${esc(NET.peer)} dropped${bye?' (they left the game)':''}. You can start a new game from the menu: Play online.`};S.busy=false;S.over={type:'abandon'};render();}
   renderNet();
 }
-// ---- QR codes ----
-function qrSVG(text){
-  if(typeof qrcode!=='function')return'';
-  const q=qrcode(0,'L');q.addData(text);q.make();
-  return q.createSvgTag({cellSize:4,margin:3,scalable:true});
-}
-let SCAN=null;
-async function startScan(onText){
-  stopScan();
-  const box=$('netScan');box.hidden=false;
-  const video=$('netVideo');
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    video.srcObject=stream;await video.play();
-    let detector=null;
-    if('BarcodeDetector' in window){try{const f=await BarcodeDetector.getSupportedFormats();if(f.includes('qr_code'))detector=new BarcodeDetector({formats:['qr_code']});}catch(e){}}
-    if(!detector)await loadScript('../lib/jsQR.js');
-    const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
-    SCAN={stream,on:true};
-    const tick=async()=>{
-      if(!SCAN||!SCAN.on)return;
-      let text=null;
-      try{
-        if(detector){const r=await detector.detect(video);if(r[0])text=r[0].rawValue;}
-        else if(video.videoWidth){cv.width=video.videoWidth;cv.height=video.videoHeight;cx.drawImage(video,0,0);const img=cx.getImageData(0,0,cv.width,cv.height);const r=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});if(r)text=r.data;}
-      }catch(e){}
-      if(text&&/KF[01]\./.test(text)){stopScan();onText(text);return;}
-      setTimeout(tick,detector?150:250);
-    };
-    tick();
-  }catch(e){box.hidden=true;NET.err='Couldn\'t open the camera. You can paste the code instead, or upload a photo of the QR code.';renderNet();}
-}
-function stopScan(){if(SCAN){SCAN.on=false;try{SCAN.stream.getTracks().forEach(t=>t.stop());}catch(e){}SCAN=null;}const b=$('netScan');if(b)b.hidden=true;}
-async function scanImageFile(file,onText){
-  try{
-    const bmp=await createImageBitmap(file);let text=null;
-    if('BarcodeDetector' in window){try{const r=await new BarcodeDetector({formats:['qr_code']}).detect(bmp);if(r[0])text=r[0].rawValue;}catch(e){}}
-    if(!text){await loadScript('../lib/jsQR.js');const cv=document.createElement('canvas');cv.width=bmp.width;cv.height=bmp.height;const cx=cv.getContext('2d');cx.drawImage(bmp,0,0);const img=cx.getImageData(0,0,cv.width,cv.height);const r=jsQR(img.data,img.width,img.height);if(r)text=r.data;}
-    if(text)onText(text);else{NET.err='No QR code found in that picture.';renderNet();}
-  }catch(e){NET.err='Couldn\'t read that picture.';renderNet();}
-}
-// ---- pairing screen ----
-function openNet(){
-  setTimeout(musicSync,0);
-  loadScript('../lib/qrcode.js').catch(()=>{});
-  $('home').classList.remove('on');$('netOv').classList.add('on');renderNet();
-}
-function renderNet(){
-  const v=$('netBody');if(!v)return;
-  const st=NET.step,code=NET.code||'';
-  const codeBox=(title,sub)=>`<div class="qrwrap"><div class="qr" id="netQR">${qrSVG(code)||'<small>Loading QR…</small>'}</div>
-    <div class="qrside"><b>${title}</b><p>${sub}</p>
-    <details><summary>No camera? Use a text code</summary><textarea readonly id="netCodeOut">${code}</textarea><button class="btn sm" data-n="copy">Copy code</button></details></div></div>`;
-  const scanBox=(label)=>`<div class="scanrow"><button class="btn pri" data-n="scan">📷 ${label}</button>
-    <label class="btn"><input type="file" accept="image/*" id="netFile" hidden>🖼 Photo of the code</label></div>
-    <details><summary>Paste a text code instead</summary><textarea id="netCodeIn" placeholder="KF1.…"></textarea><button class="btn sm" data-n="paste">Connect</button></details>`;
-  let h='';
-  if(st==='idle'||st==='error'){
-    h=`<p class="lead txt">Play a friend on <b>another phone, tablet or computer</b> with no internet. Both devices need to be on the <b>same Wi-Fi</b>, or one can connect to the other's phone hotspot.</p>
-    <label class="nm-in">Your name <input id="netName" maxlength="16" value="${esc(myNetName()==='Player'?'':myNetName())}" placeholder="Player"></label>
-    <div class="netchoice">
-      <div class="nc"><h3>Host a game</h3><p>Pick colours and a clock, then show your friend a QR code.</p>
-        <div class="seg sm" id="netColor">${[['w','White'],['b','Black'],['r','Random']].map(([k,l])=>`<button data-v="${k}" class="${netOpts.color===k?'on':''}">${l}</button>`).join('')}</div>
-        <div class="seg sm wrap" id="netMode">${MODES.map(m=>`<button data-v="${m.id}" class="${netOpts.mode===m.id?'on':''}">${m.name}<small>${m.sub}</small></button>`).join('')}</div>
-        <button class="btn pri full" data-n="host">Host game</button></div>
-      <div class="nc"><h3>Join a game</h3><p>Scan the QR code on your friend's screen.</p>${scanBox('Scan host\'s code')}</div>
-    </div>${NET.err?`<div class="neterr">⚠ ${esc(NET.err)}</div>`:''}`;
-  }else if(st==='making'){h='<div class="empty">Getting ready…</div>';}
-  else if(st==='offer'){h=`<ol class="steps"><li class="cur">Your friend scans this code</li><li>You scan the code they show</li><li>Play!</li></ol>
-    ${codeBox('Step 1: let your friend scan this','On their device: Knightfall → Nearby play → Join a game.')}
-    <h3>Step 2: scan their reply</h3>${scanBox('Scan friend\'s reply')}${NET.err?`<div class="neterr">⚠ ${esc(NET.err)}</div>`:''}`;}
-  else if(st==='answer'){h=`<ol class="steps"><li class="done">Scanned the host's code</li><li class="cur">The host scans this code</li><li>Play!</li></ol>
-    ${codeBox(`Show this to ${esc(NET.peer)}`,'They scan it with their device, then the game starts automatically.')}<div class="empty">Waiting for ${esc(NET.peer)} to connect…</div>`;}
-  else if(st==='linking'){h=`<div class="empty">Connecting to ${esc(NET.peer)}…</div>`;}
-  else if(st==='connected'){h=`<div class="empty"><b>✅ Connected to ${esc(NET.peer)}!</b><br>${NET.role==='host'?'Starting the game…':'Waiting for the host to start…'}</div>`;}
-  v.innerHTML=h;
-  const f=$('netFile');if(f)f.onchange=()=>{if(f.files[0])scanImageFile(f.files[0],netJoinWith);};
-  const nm=$('netName');if(nm)nm.oninput=()=>store.set('netName',nm.value.trim());
-  ['netColor','netMode'].forEach(id=>{const el=$(id);if(el)el.onclick=e=>{const b=e.target.closest('button');if(!b)return;[...el.children].forEach(x=>x.classList.toggle('on',x===b));if(id==='netColor')netOpts.color=b.dataset.v;else netOpts.mode=b.dataset.v;};});
-  if(code&&!qrSVG(code))loadScript('../lib/qrcode.js').then(()=>{const q=$('netQR');if(q)q.innerHTML=qrSVG(code);}).catch(()=>{});
-}
-$('netOv').addEventListener('click',e=>{
-  const b=e.target.closest('[data-n]');if(!b)return;const a=b.dataset.n;
-  if(a==='host')netHost();
-  else if(a==='scan'){NET.err=null;startScan(netJoinWith);}
-  else if(a==='paste'){netJoinWith($('netCodeIn').value);}
-  else if(a==='copy'){try{navigator.clipboard.writeText(NET.code);b.textContent='Copied!';}catch(err){$('netCodeOut').select();}}
-  else if(a==='stopscan')stopScan();
-  else if(a==='close'){stopScan();$('netOv').classList.remove('on');if(!S.net||S.over)openHome('main');}
-  else if(a==='restart'){netSend({t:'bye'});netReset();renderNet();}
-});
+function renderNet(){}
 
 /* ================= LEARN: tutorial lessons with the coach ================= */
 const isMateNow=()=>inCheck(G.w)&&legal(false).length===0;
@@ -2631,7 +2472,7 @@ function onlineMsg(e){
   const m=String(e&&e.message||e||'');
   if(m==='not-configured'||m==='unavailable')return'Online play couldn\'t load. Check your internet connection.';
   if(m==='need-signin')return'Sign in with Google (button at the top) to play online.';
-  if(/offline|network|unavailable/i.test(m)||!navigator.onLine)return'You\'re offline. Online play needs internet. Try Nearby play instead.';
+  if(/offline|network|unavailable/i.test(m)||!navigator.onLine)return'You\'re offline. Online play needs internet. You can still play the computer or Pass &amp; play.';
   if(/permission/i.test(m))return'The game server refused that request. Please try again.';
   return m;
 }
@@ -2777,14 +2618,14 @@ document.addEventListener('cc:rated',async e=>{
 <div class="upd" id="updBar" role="status"><span id="updTxt">🎉 The game has updated!</span><button id="updBtn">Refresh</button><button class="x" id="updX" aria-label="Dismiss">×</button></div>
 <script>
 {
-const GAME_VERSION='2026-11-28a';
+const GAME_VERSION='2026-11-28b';
 const bar=document.getElementById('updBar'),txt=document.getElementById('updTxt');
 const show=(t,btn)=>{txt.textContent=t;document.getElementById('updBtn').hidden=!btn;bar.classList.add('on');};
 document.getElementById('updBtn').onclick=()=>location.reload();
 document.getElementById('updX').onclick=()=>bar.classList.remove('on');
 // just updated? say so once
 try{const seen=localStorage.getItem('cc_ver');localStorage.setItem('cc_ver',GAME_VERSION);
-  if(seen&&seen!==GAME_VERSION){show('🌍 New: Play online! Quick match with anyone, or invite a friend with a code.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
+  if(seen&&seen!==GAME_VERSION){show('🗂 Tidier menu: Play, Learn and Progress sections. Play online from anywhere.',false);setTimeout(()=>bar.classList.remove('on'),6000);}}catch(e){}
 // a newer version was published while this page is open
 let found=false;
 async function check(){
